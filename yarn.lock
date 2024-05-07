@@ -2780,10 +2780,10 @@ tar@^6.1.11, tar@^6.1.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-test-rrr-sdk@0.0.10-alpha:
-  version "0.0.10-alpha"
-  resolved "https://registry.yarnpkg.com/test-rrr-sdk/-/test-rrr-sdk-0.0.10-alpha.tgz#b2daf9a1c78025af803a3d0aa1eb53686b780c6f"
-  integrity sha512-Atfd1M5oZZQ+maAA2XLq4aDCrDjlPgfqJWy5sHRXSBJq+nqKlBBJJ4joL87AdCL8/gYCuuewtIFBpF56EhqIcA==
+test-rrr-sdk@0.0.1-3.alpha:
+  version "0.0.1-3.alpha"
+  resolved "https://registry.yarnpkg.com/test-rrr-sdk/-/test-rrr-sdk-0.0.1-3.alpha.tgz#7ff9faaa6dabdf67bce0219093eb6faec97c7f30"
+  integrity sha512-f+t5ParUqOx++5/6fRmyO8ztyW4WPZBCyPfmWLcP9BxVSdmXiUklsfQZFIWX2UrAqij6Mbu8GMk3l2l4Or+GAQ==
   dependencies:
     "@project-serum/serum" "^0.13.65"
     "@solana/buffer-layout" "^4.0.1"
