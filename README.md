@@ -1,7 +1,9 @@
-# RAYDIUM SDK V2 demo
+# RAYDIUM SDK V1 demo
+
+## About the project
+This project is for [RAYDIUM SDK](https://github.com/raydium-io/raydium-sdk) demonstration
 
 ## Getting Started
-
 ### Installation
 
 `yarn install`
@@ -9,18 +11,23 @@
 this will install the dependencies for running the demo script
 
 ### Prerequisites
-
-Modify `src/common/connection.ts` to fit your configuration
+Modify `config.ts.template` to fit your configuration, and rename it to `config.ts`
 
 - `<YOUR_WALLET_SECRET_KEY>`: replace to your own one
 - `<YOUR_RPC_URL>`: replace to your prefer one
 
 ### Usage
 
-- `yarn test` run all demo functions
-- `yarn test test/<SCRIPT_NAME>.test.ts` run the specific demo test script. e.g. yarn test test/cpmm/create-pool.test.ts
-- `yarn test test/<FOLDER_NAME>` run the specific feature all demo test script. e.g. yarn test test/cpmm/\*
+- `yarn clean` clean up the old scripts (you don't need this for the very first time)
+- `yarn build` build the scripts
+- `yarn start js/src/<SCRIPT_NAME>` run the specific demo script
+- `yarn ammv3-market 2QdhepnKRTLjjSqPL1PtKNwqrUkoLee5Gqs8bvZhRdMv 10 20` run ammv3 market maker, arguments 0: poolId, 1: create position deviation, 2: close position deviation, remember to replace rpc url and secret key in code and uncomment `closePositionTx` and `createPositionTx` code part
 
-### Skip test
+![image](https://github.com/raydium-io/raydium-sdk-V1-demo/assets/6680106/95ddb134-fd02-40eb-a868-3effcfdb2d5e)
 
-if you want to skip some test function, modify test function `it(` -> `it.skip(` in test/xxx.test.ts file.
+
+
+you can simply combine the command to run a demo, e.g
+
+`yarn clean && yarn build && yarn start js/src/stakeFarm.js`
+
