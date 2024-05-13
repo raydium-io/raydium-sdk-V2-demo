@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 
 export const depositCpmm = async () => {
   const raydium = await initSdk()
-  const data = await raydium.api.fetchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
+  const data = await raydium.api.searchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
   const poolInfo = data.data[0] as ApiV3PoolInfoStandardItem
 
   const baseIn = true

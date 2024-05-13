@@ -10,7 +10,7 @@ import { initSdk } from '../config'
 export const withdrawClmmLp = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
-  const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
+  const data = await raydium.api.searchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
   const poolInfo = data.data[0] as ApiV3PoolInfoConcentratedItem
 
   const balanceMints = raydium.account.tokenAccountRawInfos.filter((acc) => acc.accountInfo.amount.eq(new BN(1)))
