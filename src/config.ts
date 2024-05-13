@@ -1,4 +1,4 @@
-import { Raydium } from 'test-rrr-sdk'
+import { Raydium } from '@raydium-io/raydium-sdk-v2'
 import { Connection, Keypair, clusterApiUrl } from '@solana/web3.js'
 import bs58 from 'bs58'
 
