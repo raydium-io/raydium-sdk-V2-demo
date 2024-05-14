@@ -1,6 +1,6 @@
 import { ApiV3PoolInfoStandardItem } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 
 export const depositCpmm = async () => {
@@ -23,6 +23,7 @@ export const depositCpmm = async () => {
     anotherAmount: res.anotherAmount.raw,
     liquidity: res.liquidity,
     baseIn: true,
+    txVersion,
   })
 
   const { txId } = await execute()

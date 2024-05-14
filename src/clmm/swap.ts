@@ -1,8 +1,8 @@
-import { ApiV3PoolInfoConcentratedItem, PoolUtils, Percent } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoConcentratedItem, PoolUtils } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 
-export const clmmSwap = async () => {
+export const swap = async () => {
   const raydium = await initSdk()
   const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
   const inputAmount = new BN(1)
@@ -37,10 +37,9 @@ export const clmmSwap = async () => {
     amountOutMin: minAmountOut.amount.raw,
     ownerInfo: {},
     remainingAccounts,
+    txVersion,
   })
 
   const { txId } = await execute()
   console.log('swapped in clmm pool:', { txId })
 }
-
-clmmSwap()

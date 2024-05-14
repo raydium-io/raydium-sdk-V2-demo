@@ -5,9 +5,9 @@ import {
   PositionInfoLayout,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 
-export const withdrawClmmLp = async () => {
+export const withdraw = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
@@ -42,10 +42,9 @@ export const withdrawClmmLp = async () => {
     liquidity: position.liquidity,
     amountMinA: new BN(0),
     amountMinB: new BN(0),
+    txVersion,
   })
 
   const { txId } = await execute()
   console.log('clmm position closed:', { txId })
 }
-
-withdrawClmmLp()

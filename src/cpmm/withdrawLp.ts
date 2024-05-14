@@ -1,6 +1,6 @@
 import { ApiV3PoolInfoStandardItem } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 
 export const withdrawCpmm = async () => {
@@ -37,6 +37,7 @@ export const withdrawCpmm = async () => {
         .mul(1 - slippage)
         .toFixed(0, Decimal.ROUND_DOWN)
     ),
+    txVersion,
   })
 
   const { txId } = await execute()

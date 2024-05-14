@@ -1,9 +1,9 @@
 import { ApiV3PoolInfoConcentratedItem, TickUtils, PoolUtils } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 
-export const depositClmm = async () => {
+export const deposit = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
@@ -46,10 +46,11 @@ export const depositClmm = async () => {
     ownerInfo: {},
     baseAmount: new BN(new Decimal(inputAmount || '0').mul(10 ** poolInfo.mintA.decimals).toFixed(0)),
     otherAmountMax: res.amountSlippageB.amount,
+    txVersion,
   })
 
   const { txId } = await execute()
   console.log('clmm position opened:', { txId })
 }
 
-depositClmm()
+deposit()

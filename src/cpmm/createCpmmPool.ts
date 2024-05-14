@@ -1,6 +1,6 @@
 import { DEV_CREATE_POOL_PROGRAM, DEV_CREATE_POOL_FEE_ACC } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 
 export const create = async () => {
   const raydium = await initSdk()
@@ -19,6 +19,7 @@ export const create = async () => {
     ownerInfo: {
       useSOLBalance: false,
     },
+    txVersion,
   })
 
   const { txId } = await execute()

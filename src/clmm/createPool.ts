@@ -1,6 +1,6 @@
 import { CLMM_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
-import { initSdk } from '../config'
+import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 import BN from 'bn.js'
 
@@ -18,6 +18,7 @@ export const createPool = async () => {
     ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '' },
     initialPrice: new Decimal(1),
     startTime: new BN(0),
+    txVersion,
   })
   const { txId } = await execute()
   console.log('clmm pool created:', { txId })
