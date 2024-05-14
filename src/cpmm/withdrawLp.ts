@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 
 export const withdrawCpmm = async () => {
   const raydium = await initSdk()
-  const data = await raydium.api.searchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
+  const data = await raydium.api.fetchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
   const poolInfo = data.data[0] as ApiV3PoolInfoStandardItem
 
   const userLpAccount = raydium.account.tokenAccounts.find((t) => t.mint.toBase58() === poolInfo.lpMint.address)
@@ -20,7 +20,7 @@ export const withdrawCpmm = async () => {
     new Decimal(poolInfo.lpAmount).mul(10 ** poolInfo.lpMint.decimals),
   ]
 
-  const { execute } = await raydium.liquidity.withdrawCpmmLiquidity({
+  const { execute } = await raydium.cpmm.withdrawLiquidity({
     poolInfo,
     lpAmount,
     amountMintA: new BN(

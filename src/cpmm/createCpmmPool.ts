@@ -7,7 +7,7 @@ export const create = async () => {
   const mintA = await raydium.token.getTokenInfo('ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ')
   const mintB = await raydium.token.getTokenInfo('6HwDNdyEypkuPKUvnJEJ4vu9xMj9uvXG37Y3jrhokXhR')
 
-  const { execute, extInfo } = await raydium.liquidity.createCpmmPool({
+  const { execute, extInfo } = await raydium.cpmm.createPool({
     programId: DEV_CREATE_POOL_PROGRAM,
     poolFeeAccount: DEV_CREATE_POOL_FEE_ACC,
     mintA,

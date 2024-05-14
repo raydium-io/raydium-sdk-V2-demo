@@ -7,7 +7,7 @@ export const clmmSwap = async () => {
   const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
   const inputAmount = new BN(1)
   // RAY-USDC pool
-  const data = await raydium.api.searchPoolById({ ids: poolId })
+  const data = await raydium.api.fetchPoolById({ ids: poolId })
   const poolInfo = data.data[0] as ApiV3PoolInfoConcentratedItem
 
   const clmmPoolInfo = await PoolUtils.fetchComputeClmmInfo({

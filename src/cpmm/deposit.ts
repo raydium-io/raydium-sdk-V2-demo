@@ -5,7 +5,7 @@ import Decimal from 'decimal.js'
 
 export const depositCpmm = async () => {
   const raydium = await initSdk()
-  const data = await raydium.api.searchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
+  const data = await raydium.api.fetchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
   const poolInfo = data.data[0] as ApiV3PoolInfoStandardItem
 
   const baseIn = true
@@ -17,7 +17,7 @@ export const depositCpmm = async () => {
     slippage: 0.1,
   })
 
-  const { execute } = await raydium.liquidity.addCpmmLiquidity({
+  const { execute } = await raydium.cpmm.addLiquidity({
     poolInfo,
     inputAmount: new BN(new Decimal(inputAmount).mul(10 ** poolInfo[baseIn ? 'mintA' : 'mintB'].decimals).toFixed(0)),
     anotherAmount: res.anotherAmount.raw,
