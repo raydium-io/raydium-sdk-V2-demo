@@ -4,10 +4,11 @@
   "description": "An SDK for building applications on top of Raydium.",
   "license": "GPL-3.0",
   "dependencies": {
+    "@raydium-io/raydium-sdk-v2": "0.0.28-alpha",
+    "@solana/spl-token": "^0.4.6",
     "bs58": "^5.0.0",
     "decimal.js": "^10.4.3",
     "node-cron": "^3.0.3",
-    "@raydium-io/raydium-sdk-v2": "0.0.28-alpha",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3"
   },

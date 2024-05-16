@@ -20,7 +20,11 @@ export const swap = async () => {
     rpcData.configInfo!.tradeFeeRate
   )
 
-  swapResult.destinationAmountSwapped
+  /**
+   * swapResult.sourceAmountSwapped -> input amount
+   * swapResult.destinationAmountSwapped -> output amount
+   * swapResult.tradeFee -> this swap fee, charge input mint
+   */
 
   const { execute } = await raydium.cpmm.swap({
     poolInfo,
