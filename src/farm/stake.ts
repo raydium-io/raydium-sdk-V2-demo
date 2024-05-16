@@ -21,3 +21,6 @@ export const stake = async () => {
   const { txId } = await execute()
   console.log('farm deposited:', { txId })
 }
+
+/** uncomment code below to execute */
+// stake()

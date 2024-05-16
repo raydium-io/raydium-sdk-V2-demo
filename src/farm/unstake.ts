@@ -18,3 +18,6 @@ export const unstake = async () => {
   const { txId } = await execute()
   console.log('farm staked:', { txId })
 }
+
+/** uncomment code below to execute */
+// unstake()

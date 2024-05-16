@@ -1,31 +1,41 @@
-import { ApiV3PoolInfoStandardItem } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoStandardItemCpmm, Percent } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 
-export const depositCpmm = async () => {
+export const deposit = async () => {
   const raydium = await initSdk()
-  const data = await raydium.api.fetchPoolById({ ids: 'ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ' })
-  const poolInfo = data.data[0] as ApiV3PoolInfoStandardItem
 
+  // SOL - USDC pool
+  const data = await raydium.api.fetchPoolById({ ids: '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny' })
+
+  const poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
+  const uiInputAmount = '0.0001'
+  const inputAmount = new BN(new Decimal(uiInputAmount).mul(10 ** poolInfo.mintA.decimals).toFixed(0))
+  const slippage = new Percent(1, 100) // 1%
   const baseIn = true
-  const inputAmount = '100'
-  const res = raydium.liquidity.computePairAmount({
+
+  // computePairAmount is not necessary, addLiquidity will compute automatically,
+  // just for ui display
+  /*
+  const computeRes = raydium.cpmm.computePairAmount({
     poolInfo,
-    amount: inputAmount,
+    amount: uiInputAmount,
+    slippage,
     baseIn,
-    slippage: 0.1,
   })
+  */
 
   const { execute } = await raydium.cpmm.addLiquidity({
     poolInfo,
-    inputAmount: new BN(new Decimal(inputAmount).mul(10 ** poolInfo[baseIn ? 'mintA' : 'mintB'].decimals).toFixed(0)),
-    anotherAmount: res.anotherAmount.raw,
-    liquidity: res.liquidity,
-    baseIn: true,
+    inputAmount,
+    slippage,
+    baseIn,
     txVersion,
   })
-
   const { txId } = await execute()
   console.log('pool deposited', { txId })
 }
+
+/** uncomment code below to execute */
+// deposit()

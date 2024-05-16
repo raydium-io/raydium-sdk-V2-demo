@@ -1,15 +1,19 @@
-import { DEV_CREATE_POOL_PROGRAM, DEV_CREATE_POOL_FEE_ACC } from '@raydium-io/raydium-sdk-v2'
+import { CREATE_CPMM_POOL_PROGRAM, CREATE_CPMM_POOL_FEE_ACC } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 
-export const create = async () => {
-  const raydium = await initSdk()
-  const mintA = await raydium.token.getTokenInfo('ovmBQjzQNK2XHwLS5msaRDDkb5E3NPQXxgKLVxWR9wZ')
-  const mintB = await raydium.token.getTokenInfo('6HwDNdyEypkuPKUvnJEJ4vu9xMj9uvXG37Y3jrhokXhR')
+export const createPool = async () => {
+  const raydium = await initSdk({ loadToken: true })
+
+  // check token list here: https://api-v3.raydium.io/mint/list
+  // RAY
+  const mintA = await raydium.token.getTokenInfo('4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R')
+  // USDC
+  const mintB = await raydium.token.getTokenInfo('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
 
   const { execute, extInfo } = await raydium.cpmm.createPool({
-    programId: DEV_CREATE_POOL_PROGRAM,
-    poolFeeAccount: DEV_CREATE_POOL_FEE_ACC,
+    programId: CREATE_CPMM_POOL_PROGRAM,
+    poolFeeAccount: CREATE_CPMM_POOL_FEE_ACC,
     mintA,
     mintB,
     mintAAmount: new BN(100),
@@ -17,7 +21,7 @@ export const create = async () => {
     startTime: new BN(0),
     associatedOnly: false,
     ownerInfo: {
-      useSOLBalance: false,
+      useSOLBalance: true,
     },
     txVersion,
   })
@@ -28,4 +32,6 @@ export const create = async () => {
     poolKeys: extInfo.address,
   })
 }
-create()
+
+/** uncomment code below to execute */
+// createPool()

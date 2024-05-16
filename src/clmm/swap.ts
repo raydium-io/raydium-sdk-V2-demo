@@ -8,7 +8,7 @@ export const swap = async () => {
   const inputAmount = new BN(1)
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: poolId })
-  const poolInfo = data.data[0] as ApiV3PoolInfoConcentratedItem
+  const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
 
   const clmmPoolInfo = await PoolUtils.fetchComputeClmmInfo({
     owner: raydium.ownerPubKey,
@@ -43,3 +43,6 @@ export const swap = async () => {
   const { txId } = await execute()
   console.log('swapped in clmm pool:', { txId })
 }
+
+/** uncomment code below to execute */
+// swap()

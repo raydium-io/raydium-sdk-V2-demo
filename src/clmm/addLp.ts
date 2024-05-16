@@ -3,11 +3,11 @@ import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 
-export const deposit = async () => {
+export const addLp = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
-  const poolInfo = data.data[0] as ApiV3PoolInfoConcentratedItem
+  const poolInfo = (data as any)[0] as ApiV3PoolInfoConcentratedItem
 
   const inputAmount = 1 // RAY amount
   const [startPrice, endPrice] = [0.1, 100]
@@ -53,4 +53,5 @@ export const deposit = async () => {
   console.log('clmm position opened:', { txId })
 }
 
-deposit()
+/** uncomment code below to execute */
+// addLp()

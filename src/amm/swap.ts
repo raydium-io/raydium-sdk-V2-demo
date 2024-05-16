@@ -44,4 +44,6 @@ export const swap = async () => {
   const { txId } = await execute()
   console.log(`swap ${poolInfo.mintA.symbol} -> ${poolInfo.mintB.symbol} in amm pool:`, { txId })
 }
-swap()
+
+/** uncomment code below to execute */
+// swap()

@@ -6,7 +6,7 @@ export const withdrawLiquidity = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg' })
-  const poolInfo = data.data[0] as ApiV3PoolInfoStandardItem
+  const poolInfo = data[0] as ApiV3PoolInfoStandardItem
 
   const { execute } = await raydium.liquidity.removeLiquidity({
     poolInfo,
@@ -17,3 +17,6 @@ export const withdrawLiquidity = async () => {
   const { txId } = await execute()
   console.log('liquidity withdraw:', { txId })
 }
+
+/** uncomment code below to execute */
+// withdrawLiquidity()

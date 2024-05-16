@@ -7,11 +7,11 @@ import {
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 
-export const withdraw = async () => {
+export const withdrawLp = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
-  const poolInfo = data.data[0] as ApiV3PoolInfoConcentratedItem
+  const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
 
   const balanceMints = raydium.account.tokenAccountRawInfos.filter((acc) => acc.accountInfo.amount.eq(new BN(1)))
   const allPositionKey = balanceMints.map(
@@ -48,3 +48,6 @@ export const withdraw = async () => {
   const { txId } = await execute()
   console.log('clmm position closed:', { txId })
 }
+
+/** uncomment code below to execute */
+// withdrawLp()
