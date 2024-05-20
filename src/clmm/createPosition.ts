@@ -3,7 +3,7 @@ import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 
-export const addLp = async () => {
+export const createPosition = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
@@ -25,7 +25,6 @@ export const addLp = async () => {
   })
 
   const epochInfo = await raydium.fetchEpochInfo()
-
   const res = await PoolUtils.getLiquidityAmountOutFromAmountIn({
     poolInfo,
     slippage: 0,
@@ -38,7 +37,7 @@ export const addLp = async () => {
     epochInfo: epochInfo,
   })
 
-  const { execute } = await raydium.clmm.openPositionFromBase({
+  const { execute, extInfo } = await raydium.clmm.openPositionFromBase({
     poolInfo,
     tickUpper: Math.max(lowerTick, upperTick),
     tickLower: Math.min(lowerTick, upperTick),
@@ -50,8 +49,8 @@ export const addLp = async () => {
   })
 
   const { txId } = await execute()
-  console.log('clmm position opened:', { txId })
+  console.log('clmm position opened:', { txId }, ', nft mint:', extInfo.nftMint.toBase58())
 }
 
 /** uncomment code below to execute */
-// addLp()
+// createPosition()

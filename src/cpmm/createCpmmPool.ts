@@ -11,6 +11,15 @@ export const createPool = async () => {
   // USDC
   const mintB = await raydium.token.getTokenInfo('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
 
+  /**
+   * you also can provide mint info directly like below, then don't have to call token info api
+   *  {
+      address: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R',
+      programId: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+      decimals: 6,
+    } 
+   */
+
   const { execute, extInfo } = await raydium.cpmm.createPool({
     programId: CREATE_CPMM_POOL_PROGRAM,
     poolFeeAccount: CREATE_CPMM_POOL_FEE_ACC,

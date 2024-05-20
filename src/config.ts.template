@@ -13,7 +13,6 @@ export const initSdk = async (params?: { loadToken?: boolean }) => {
   raydium = await Raydium.load({
     owner,
     connection,
-    cluster: 'devnet',
     disableFeatureCheck: true,
     disableLoadToken: !params?.loadToken,
   })
