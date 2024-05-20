@@ -18,6 +18,7 @@ Modify `config.ts.template` to fit your configuration, and rename it to `config.
 
 - `<YOUR_WALLET_SECRET_KEY>`: replace to your own one
 - `<YOUR_RPC_URL>`: replace to your prefer one
+- `<API_HOST>`: by default it's no needed to provide raydium api host, only provide it when test on devent.
 
 ### Usage
 
