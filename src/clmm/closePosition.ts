@@ -8,6 +8,10 @@ export const closePosition = async () => {
   const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
   if (!poolInfo) throw new Error('pool not found')
 
+  /** code below will get on chain realtime price to avoid slippage error, uncomment it if necessary */
+  // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
+  // poolInfo.price = rpcData.currentPrice
+
   const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: poolInfo.programId })
   if (!allPosition.length) throw new Error('use do not have position')
 

@@ -9,6 +9,10 @@ export const createPosition = async () => {
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
   const poolInfo = (data as any)[0] as ApiV3PoolInfoConcentratedItem
 
+  /** code below will get on chain realtime price to avoid slippage error, uncomment it if necessary */
+  // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
+  // poolInfo.price = rpcData.currentPrice
+
   const inputAmount = 1 // RAY amount
   const [startPrice, endPrice] = [0.1, 100]
 

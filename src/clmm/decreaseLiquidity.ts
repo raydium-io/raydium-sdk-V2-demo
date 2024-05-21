@@ -1,4 +1,4 @@
-import { ApiV3PoolInfoConcentratedItem } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoConcentratedItem, printSimulate } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 
@@ -13,6 +13,10 @@ export const decreaseLiquidity = async () => {
 
   const position = allPosition.find((p) => p.poolId.toBase58() === poolInfo.id)
   if (!position) throw new Error(`use do not have position in pool: ${poolInfo.id}`)
+
+  /** code below will get on chain realtime price to avoid slippage error, uncomment it if necessary */
+  // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
+  // poolInfo.price = rpcData.currentPrice
 
   const { execute } = await raydium.clmm.decreaseLiquidity({
     poolInfo,
