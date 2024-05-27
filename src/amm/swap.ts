@@ -40,6 +40,11 @@ export const swap = async () => {
     inputMint: poolInfo.mintA.address,
     associatedOnly: false,
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 6000,
+    //   microLamports: 100000000,
+    // },
   })
   const { txId } = await execute()
   console.log(`swap ${poolInfo.mintA.symbol} -> ${poolInfo.mintB.symbol} in amm pool:`, { txId })
