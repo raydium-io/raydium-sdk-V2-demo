@@ -22,7 +22,7 @@ export const createMarket = async () => {
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {
-    //   units: 6000,
+    //   units: 600000,
     //   microLamports: 100000000,
     // },
   })

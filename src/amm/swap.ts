@@ -4,7 +4,7 @@ import BN from 'bn.js'
 
 export const swap = async () => {
   const raydium = await initSdk()
-  const amountIn = 10000
+  const amountIn = 100
   const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
 
   // RAY-USDC pool
@@ -42,7 +42,7 @@ export const swap = async () => {
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {
-    //   units: 6000,
+    //   units: 600000,
     //   microLamports: 100000000,
     // },
   })
@@ -51,4 +51,4 @@ export const swap = async () => {
 }
 
 /** uncomment code below to execute */
-// swap()
+swap()
