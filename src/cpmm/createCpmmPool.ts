@@ -38,7 +38,13 @@ export const createPool = async () => {
   const { txId } = await execute()
   console.log('pool created', {
     txId,
-    poolKeys: extInfo.address,
+    poolKeys: Object.keys(extInfo.address).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: extInfo.address[cur as keyof typeof extInfo.address].toString(),
+      }),
+      {}
+    ),
   })
 }
 

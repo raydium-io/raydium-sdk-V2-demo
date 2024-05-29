@@ -5,13 +5,13 @@ import { initSdk, txVersion } from '../config'
 export const swap = async () => {
   const raydium = await initSdk()
   const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
-  const inputAmount = new BN(1)
+  const inputAmount = new BN(100)
   // RAY-USDC pool
+  // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: poolId })
   const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
 
   const clmmPoolInfo = await PoolUtils.fetchComputeClmmInfo({
-    owner: raydium.ownerPubKey,
     connection: raydium.connection,
     poolInfo,
   })

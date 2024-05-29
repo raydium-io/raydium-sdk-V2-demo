@@ -6,6 +6,7 @@ import Decimal from 'decimal.js'
 export const createPosition = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
+  // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
   const poolInfo = (data as any)[0] as ApiV3PoolInfoConcentratedItem
 

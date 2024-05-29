@@ -7,6 +7,7 @@ export const deposit = async () => {
   const raydium = await initSdk()
 
   // SOL - USDC pool
+  // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny' })
 
   const poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm

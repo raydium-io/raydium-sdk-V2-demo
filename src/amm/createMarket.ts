@@ -27,7 +27,16 @@ export const createMarket = async () => {
     // },
   })
 
-  console.log(`create market total ${transactions.length} txs, market info: `, extInfo.address)
+  console.log(
+    `create market total ${transactions.length} txs, market info: `,
+    Object.keys(extInfo.address).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: extInfo.address[cur as keyof typeof extInfo.address].toBase58(),
+      }),
+      {}
+    )
+  )
 
   const txIds = await execute({
     // set sequentially to true means tx will be sent when previous one confirmed

@@ -5,6 +5,7 @@ import { initSdk, txVersion } from '../config'
 export const decreaseLiquidity = async () => {
   const raydium = await initSdk()
   // SOL-USDC pool
+  // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '2QdhepnKRTLjjSqPL1PtKNwqrUkoLee5Gqs8bvZhRdMv' })
   const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
 

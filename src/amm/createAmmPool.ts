@@ -23,7 +23,7 @@ export const createAmmPool = async () => {
   const baseMintInfo = await raydium.token.getTokenInfo(baseMint)
   const quoteMintInfo = await raydium.token.getTokenInfo(quoteMint)
 
-  const { execute, extInfo, transaction } = await raydium.liquidity.createPoolV4({
+  const { execute, extInfo } = await raydium.liquidity.createPoolV4({
     programId: AMM_V4, // devnet: DEVNET_PROGRAM_ID.AmmV4
     marketInfo: {
       marketId,
@@ -54,7 +54,18 @@ export const createAmmPool = async () => {
   })
 
   const { txId } = await execute()
-  console.log('amm pool created! txId: ', txId)
+  console.log(
+    'amm pool created! txId: ',
+    txId,
+    ', poolKeys:',
+    Object.keys(extInfo.address).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: extInfo.address[cur as keyof typeof extInfo.address].toBase58(),
+      }),
+      {}
+    )
+  )
 }
 
 /** uncomment code below to execute */

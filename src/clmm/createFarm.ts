@@ -5,6 +5,7 @@ import Decimal from 'decimal.js'
 export const createFarm = async () => {
   const raydium = await initSdk()
   // note: please ensure you this is owned by yourself
+  // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
   const poolInfo = (data as any)[0] as ApiV3PoolInfoConcentratedItem
 

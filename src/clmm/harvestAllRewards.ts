@@ -9,6 +9,7 @@ export const harvestAllRewards = async () => {
   if (!nonZeroPosition.length) throw new Error('use do not have position')
 
   // RAY-USDC pool
+  // note: api doesn't support get devnet pool info
   const positionPoolInfoList = (await raydium.api.fetchPoolById({
     ids: nonZeroPosition.map((p) => p.poolId.toBase58()).join(','),
   })) as ApiV3PoolInfoConcentratedItem[]

@@ -8,6 +8,7 @@ export const swap = async () => {
   const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
 
   // RAY-USDC pool
+  // note: api doesn't support get devnet pool info
   const data = (await raydium.api.fetchPoolById({ ids: poolId })) as any
   const poolInfo = data[0] as ApiV3PoolInfoStandardItem
   const poolKeys = await raydium.liquidity.getAmmPoolKeys(poolId)
