@@ -1,4 +1,10 @@
-import { MARKET_STATE_LAYOUT_V3, AMM_V4, OPEN_BOOK_PROGRAM } from '@raydium-io/raydium-sdk-v2'
+import {
+  MARKET_STATE_LAYOUT_V3,
+  AMM_V4,
+  OPEN_BOOK_PROGRAM,
+  FEE_DESTINATION_ID,
+  DEVNET_PROGRAM_ID,
+} from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
@@ -18,10 +24,10 @@ export const createAmmPool = async () => {
   const quoteMintInfo = await raydium.token.getTokenInfo(quoteMint)
 
   const { execute, extInfo, transaction } = await raydium.liquidity.createPoolV4({
-    programId: AMM_V4,
+    programId: AMM_V4, // devnet: DEVNET_PROGRAM_ID.AmmV4
     marketInfo: {
       marketId,
-      programId: OPEN_BOOK_PROGRAM,
+      programId: OPEN_BOOK_PROGRAM, // devnet: DEVNET_PROGRAM_ID.OPENBOOK_MARKET
     },
     baseMintInfo: {
       mint: baseMint,
@@ -31,24 +37,24 @@ export const createAmmPool = async () => {
       mint: quoteMint,
       decimals: quoteMintInfo.decimals, // if you know mint decimals here, can pass number directly
     },
-    baseAmount: new BN(100),
-    quoteAmount: new BN(100),
+    baseAmount: new BN(1000),
+    quoteAmount: new BN(1000),
     startTime: new BN(0),
     ownerInfo: {
       useSOLBalance: true,
     },
     associatedOnly: false,
     txVersion,
-    feeDestinationId: new PublicKey('7YttLkHDoNj9wyDur5pM1ejNaAvT9X4eqaYcHQqtj2G5'),
+    feeDestinationId: FEE_DESTINATION_ID, // devnet: DEVNET_PROGRAM_ID.FEE_DESTINATION_ID
     // optional: set up priority fee here
-    // computeBudgetConfig: {
-    //   units: 600000,
-    //   microLamports: 10000000,
-    // },
+    computeBudgetConfig: {
+      units: 600000,
+      microLamports: 10000000,
+    },
   })
 
-  // const { txId } = await execute()
-  // console.log('amm pool created! txId: ', txId)
+  const { txId } = await execute()
+  console.log('amm pool created! txId: ', txId)
 }
 
 /** uncomment code below to execute */

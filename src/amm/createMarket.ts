@@ -1,4 +1,4 @@
-import { RAYMint, USDCMint, OPEN_BOOK_PROGRAM } from '@raydium-io/raydium-sdk-v2'
+import { RAYMint, USDCMint, OPEN_BOOK_PROGRAM, DEVNET_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 
 export const createMarket = async () => {
@@ -10,15 +10,15 @@ export const createMarket = async () => {
   const { execute, extInfo, transactions } = await raydium.marketV2.create({
     baseInfo: {
       mint: RAYMint,
-      decimals: 6,
+      decimals: 9,
     },
     quoteInfo: {
       mint: USDCMint,
-      decimals: 6,
+      decimals: 9,
     },
     lotSize: 1,
     tickSize: 0.01,
-    dexProgramId: OPEN_BOOK_PROGRAM,
+    dexProgramId: OPEN_BOOK_PROGRAM, // devnet: DEVNET_PROGRAM_ID.OPENBOOK_MARKET
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {
@@ -29,23 +29,12 @@ export const createMarket = async () => {
 
   console.log(`create market total ${transactions.length} txs, market info: `, extInfo.address)
 
-  execute({
+  const txIds = await execute({
     // set sequentially to true means tx will be sent when previous one confirmed
     sequentially: true,
-    onTxUpdate: (txInfoList) => {
-      if (txInfoList.some((info) => info.status === 'error')) {
-        console.log('create market failed')
-        return
-      }
-      if (txInfoList.filter((info) => info.status === 'success').length === transactions.length) {
-        console.log('create market success!')
-        return
-      }
-      txInfoList.forEach((info, idx) => {
-        console.log(`create market tx${idx + 1} status: ${info.status}, txId: ${info.txId}`)
-      })
-    },
   })
+
+  console.log('create market txIds:', txIds)
 }
 
 /** uncomment code below to execute */
