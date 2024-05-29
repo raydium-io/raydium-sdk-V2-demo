@@ -27,8 +27,8 @@ export const swap = async () => {
       quoteReserve: pool.quoteReserve,
     },
     amountIn: new BN(amountIn),
-    mintIn: poolInfo.mintA.address,
-    mintOut: poolInfo.mintB.address,
+    mintIn: poolInfo.mintA.address, // swap mintB -> mintA, use: poolInfo.mintB.address
+    mintOut: poolInfo.mintB.address, // swap mintB -> mintA, use: poolInfo.mintA.address
     slippage: 0.001,
   })
 
@@ -37,7 +37,7 @@ export const swap = async () => {
     amountIn: new BN(amountIn),
     amountOut: out.amountOut,
     fixedSide: 'in',
-    inputMint: poolInfo.mintA.address,
+    inputMint: poolInfo.mintA.address, // swap mintB -> mintA, use: poolInfo.mintB.address
     associatedOnly: false,
     txVersion,
     // optional: set up priority fee here
@@ -47,8 +47,8 @@ export const swap = async () => {
     // },
   })
   const { txId } = await execute()
-  console.log(`swap ${poolInfo.mintA.symbol} -> ${poolInfo.mintB.symbol} in amm pool:`, { txId })
+  console.log(`swap successfully in amm pool:`, { txId })
 }
 
 /** uncomment code below to execute */
-swap()
+// swap()
