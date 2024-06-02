@@ -35,6 +35,7 @@ export const swap = async () => {
     inputMint: poolInfo.mintA.address,
     amountIn: inputAmount,
     amountOutMin: minAmountOut.amount.raw,
+    observationId: clmmPoolInfo.observationId,
     ownerInfo: {},
     remainingAccounts,
     txVersion,
@@ -45,4 +46,4 @@ export const swap = async () => {
 }
 
 /** uncomment code below to execute */
-// swap()
+swap()
