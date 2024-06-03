@@ -1,16 +1,19 @@
 import { ApiV3PoolInfoStandardItem, fetchMultipleInfo } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import BN from 'bn.js'
+import { isValidAmm } from './utils'
 
 export const swap = async () => {
   const raydium = await initSdk()
   const amountIn = 100
-  const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
+  const poolId = 'FCEnSxyJfRSKsz6tASUENCsfGwKgkH6YuRn1AMmyHhZn'
 
   // RAY-USDC pool
   // note: api doesn't support get devnet pool info
   const data = (await raydium.api.fetchPoolById({ ids: poolId })) as any
   const poolInfo = data[0] as ApiV3PoolInfoStandardItem
+
+  if (!isValidAmm(poolInfo.programId)) throw new Error('target pool is not AMM pool')
   const poolKeys = await raydium.liquidity.getAmmPoolKeys(poolId)
 
   const res = await fetchMultipleInfo({
@@ -30,7 +33,7 @@ export const swap = async () => {
     amountIn: new BN(amountIn),
     mintIn: poolInfo.mintA.address, // swap mintB -> mintA, use: poolInfo.mintB.address
     mintOut: poolInfo.mintB.address, // swap mintB -> mintA, use: poolInfo.mintA.address
-    slippage: 0.001,
+    slippage: 0.01,
   })
 
   const { execute } = await raydium.liquidity.swap({

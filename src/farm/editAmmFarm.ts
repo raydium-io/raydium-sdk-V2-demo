@@ -15,7 +15,7 @@ export const editAmmFarm = async () => {
   const currentChainTime = await raydium.currentBlockChainTime()
   const openTime = Math.floor(currentChainTime / 1000) // in seconds
   const endTime = openTime + 60 * 60 * 24 * 7
-
+  // note: reward doesn't support 2022 mint at this moment
   const newRewardInfos: FarmRewardInfo[] = [
     {
       mint: new PublicKey(rewardMint.address),

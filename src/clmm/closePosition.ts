@@ -1,5 +1,6 @@
 import { ApiV3PoolInfoConcentratedItem } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
+import { isValidClmm } from './utils'
 
 export const closePosition = async () => {
   const raydium = await initSdk()
@@ -8,6 +9,7 @@ export const closePosition = async () => {
   const data = await raydium.api.fetchPoolById({ ids: '2QdhepnKRTLjjSqPL1PtKNwqrUkoLee5Gqs8bvZhRdMv' })
   const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
   if (!poolInfo) throw new Error('pool not found')
+  if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
 
   /** code below will get on chain realtime price to avoid slippage error, uncomment it if necessary */
   // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })

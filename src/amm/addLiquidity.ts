@@ -1,5 +1,6 @@
 import { ApiV3PoolInfoStandardItem, TokenAmount, toToken, Percent } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
+import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 
 export const addLiquidity = async () => {
@@ -8,6 +9,8 @@ export const addLiquidity = async () => {
   // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg' })
   const poolInfo = data[0] as ApiV3PoolInfoStandardItem
+
+  if (!isValidAmm(poolInfo.programId)) throw new Error('target pool is not AMM pool')
 
   const inputAmount = '1'
 

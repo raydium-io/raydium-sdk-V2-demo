@@ -1,6 +1,7 @@
-import { ApiV3PoolInfoConcentratedItem, RAYMint, SOLMint } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoConcentratedItem, RAYMint } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
+import { isValidClmm } from './utils'
 
 export const setFarmRewards = async () => {
   const raydium = await initSdk()
@@ -8,6 +9,7 @@ export const setFarmRewards = async () => {
   // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '364UXpiEuXbngVmd7oJWRKncewiRPm1ouLLLoHuewWkE' })
   const poolInfo = (data as any)[0] as ApiV3PoolInfoConcentratedItem
+  if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
 
   const mint = await raydium.token.getTokenInfo(RAYMint.toBase58())
   const currentChainTime = await raydium.currentBlockChainTime()

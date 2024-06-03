@@ -2,6 +2,7 @@ import { ApiV3PoolInfoConcentratedItem, TickUtils, PoolUtils } from '@raydium-io
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
+import { isValidClmm } from './utils'
 
 export const createPosition = async () => {
   const raydium = await initSdk()
@@ -9,6 +10,7 @@ export const createPosition = async () => {
   // note: api doesn't support get devnet pool info
   const data = await raydium.api.fetchPoolById({ ids: '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht' })
   const poolInfo = (data as any)[0] as ApiV3PoolInfoConcentratedItem
+  if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
 
   /** code below will get on chain realtime price to avoid slippage error, uncomment it if necessary */
   // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
