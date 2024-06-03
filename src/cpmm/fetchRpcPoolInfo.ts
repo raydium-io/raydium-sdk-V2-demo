@@ -10,7 +10,7 @@ export const fetchRpcPoolInfo = async () => {
   const pool1Info = res[pool1]
 
   console.log('SOL-RAY pool price:', pool1Info.poolPrice)
-  console.log('clmm pool infos:', res)
+  console.log('cpmm pool infos:', res)
 }
 
 /** uncomment code below to execute */
