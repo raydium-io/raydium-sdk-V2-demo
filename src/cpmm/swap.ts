@@ -8,7 +8,7 @@ export const swap = async () => {
 
   // SOL - USDC pool
   // note: api doesn't support get devnet pool info
-  const data = await raydium.api.fetchPoolById({ ids: '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny' })
+  const data = await raydium.api.fetchPoolById({ ids: '8THC7UQN8zPXRL61o75fP4gcwRyB5W3o74yHyqarkqZ9' })
   const poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
   if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
   const rpcData = await raydium.cpmm.getRpcPoolInfo(poolInfo.id, true)
@@ -32,6 +32,7 @@ export const swap = async () => {
   const { execute } = await raydium.cpmm.swap({
     poolInfo,
     swapResult,
+    slippage: 0.1, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn: true,
   })
 
@@ -40,4 +41,4 @@ export const swap = async () => {
 }
 
 /** uncomment code below to execute */
-// swap()
+swap()
