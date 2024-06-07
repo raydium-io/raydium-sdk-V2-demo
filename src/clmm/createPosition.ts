@@ -53,6 +53,11 @@ export const createPosition = async () => {
     baseAmount: new BN(new Decimal(inputAmount || '0').mul(10 ** poolInfo.mintA.decimals).toFixed(0)),
     otherAmountMax: res.amountSlippageB.amount,
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
 
   const { txId } = await execute()

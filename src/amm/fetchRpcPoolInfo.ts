@@ -8,6 +8,7 @@ export const fetchRpcPoolInfo = async () => {
   // RAY-USDC
   const pool2 = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
 
+  // note: api doesn't support get devnet pool info
   const res = await raydium.liquidity.getRpcPoolInfos([pool1, pool2])
 
   const pool1Info = res[pool1]

@@ -31,6 +31,11 @@ export const decreaseLiquidity = async () => {
     amountMinA: new BN(0),
     amountMinB: new BN(0),
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
 
   const { txId } = await execute()

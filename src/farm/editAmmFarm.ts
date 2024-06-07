@@ -6,7 +6,7 @@ export const editAmmFarm = async () => {
   const raydium = await initSdk()
 
   // RAY-USDC farm
-  // note: please ensure you this is owned by yourself
+  // note: please ensure you this is owned by yourself, not support devnet
   const farmInfo = (await raydium.api.fetchFarmInfoById({ ids: '3f7UP66ZtrRgpd3z39WfM9oiRVKV9uiZWABTsWG76Zqy' }))[0]
   if (!farmInfo) throw new Error('farm not found')
 

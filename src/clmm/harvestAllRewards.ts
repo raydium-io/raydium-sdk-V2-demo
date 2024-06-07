@@ -36,6 +36,11 @@ export const harvestAllRewards = async () => {
     },
     programId: CLMM_PROGRAM_ID,
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
 
   const { txIds } = await execute()

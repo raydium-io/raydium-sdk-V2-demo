@@ -33,6 +33,11 @@ export const addLiquidity = async () => {
     ),
     fixedSide: 'a',
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
 
   const { txId } = await execute()

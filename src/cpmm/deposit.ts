@@ -40,6 +40,11 @@ export const deposit = async () => {
     slippage,
     baseIn,
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
   const { txId } = await execute()
   console.log('pool deposited', { txId })

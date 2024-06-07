@@ -26,6 +26,19 @@ Modify `config.ts.template` to fit your configuration, and rename it to `config.
 
 ### Sdk Methods
 
+#### Transaction methods return data
+
+all transaction related build function (e.g. await raydium.clmm.openPositionFromBase/ await raydium.cpmm.createPool ..etc) will return all transactions and instructions
+
+```
+const { execute, transaction, builder, extInfo } = await raydium.clmm.openPositionFromBase({ xxx })
+
+```
+
+- `transaction or transactions`: all built transactions
+- `builder`: all instructions in transaction. e.g. builder.allInstructions, builder.AllTxData
+- `extInfo`: transaction related publicKeys. (e.g: extInfo from raydium.cpmm.createPool includes poolId, programId...etc)
+
 #### Fetch pool list by mints
 
 ```
@@ -39,4 +52,16 @@ const list = await raydium.api.fetchPoolByMints({
   order: 'desc', // optional
   page: 1, // optional
 })
+```
+
+### Fetch Mint info from Api or Rpc
+
+```
+await raydium.token.getTokenInfo('<Mint address>')
+```
+
+### Fetch token account
+
+```
+await raydium.account.fetchWalletTokenAccounts() // if need to force fetching token account, pass param { forceUpdate: true }
 ```

@@ -48,6 +48,11 @@ export const increaseLiquidity = async () => {
     amountMaxB: new BN(new Decimal(res.amountSlippageB.amount.toString()).mul(1 + slippage).toFixed(0)),
     checkCreateATAOwner: true,
     txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
 
   const { txId } = await execute()

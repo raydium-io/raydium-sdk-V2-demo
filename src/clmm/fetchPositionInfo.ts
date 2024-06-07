@@ -27,6 +27,7 @@ export const fetchPositionInfo = async () => {
   // if (!allPosition.length) throw new Error('use do not have position')
   // const position = allPosition[0]
 
+  // note: api doesn't support get devnet pool info
   const poolInfo = (
     await raydium.api.fetchPoolById({ ids: position.poolId.toBase58() })
   )[0] as ApiV3PoolInfoConcentratedItem

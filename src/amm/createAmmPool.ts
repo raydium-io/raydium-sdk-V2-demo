@@ -47,10 +47,10 @@ export const createAmmPool = async () => {
     txVersion,
     feeDestinationId: FEE_DESTINATION_ID, // devnet: DEVNET_PROGRAM_ID.FEE_DESTINATION_ID
     // optional: set up priority fee here
-    computeBudgetConfig: {
-      units: 600000,
-      microLamports: 10000000,
-    },
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 10000000,
+    // },
   })
 
   const { txId } = await execute()

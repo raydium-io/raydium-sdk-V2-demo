@@ -33,13 +33,13 @@ export const swap = async () => {
     amountIn: new BN(amountIn),
     mintIn: poolInfo.mintA.address, // swap mintB -> mintA, use: poolInfo.mintB.address
     mintOut: poolInfo.mintB.address, // swap mintB -> mintA, use: poolInfo.mintA.address
-    slippage: 0.01,
+    slippage: 0.01, // range: 1 ~ 0.0001, means 100% ~ 0.01%
   })
 
   const { execute } = await raydium.liquidity.swap({
     poolInfo,
     amountIn: new BN(amountIn),
-    amountOut: out.amountOut,
+    amountOut: out.minAmountOut, // out.amountOut means amount 'without' slippage
     fixedSide: 'in',
     inputMint: poolInfo.mintA.address, // swap mintB -> mintA, use: poolInfo.mintB.address
     associatedOnly: false,
@@ -50,6 +50,7 @@ export const swap = async () => {
     //   microLamports: 100000000,
     // },
   })
+
   const { txId } = await execute()
   console.log(`swap successfully in amm pool:`, { txId })
 }

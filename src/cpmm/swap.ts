@@ -34,6 +34,11 @@ export const swap = async () => {
     swapResult,
     slippage: 0.1, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn: true,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 100000000,
+    // },
   })
 
   const { txId } = await execute()
@@ -41,4 +46,4 @@ export const swap = async () => {
 }
 
 /** uncomment code below to execute */
-swap()
+// swap()
