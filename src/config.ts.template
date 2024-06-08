@@ -17,7 +17,7 @@ export const initSdk = async (params?: { loadToken?: boolean }) => {
     disableFeatureCheck: true,
     disableLoadToken: !params?.loadToken,
     // urlConfigs: {
-    //   BASE_HOST: '<API_HOST>', // by default, you don't have to set API_HOST, only provide it to when want to test on devnet
+    //   BASE_HOST: '<API_HOST>', // api url configs, currently api doesn't support devnet
     // },
   })
 
