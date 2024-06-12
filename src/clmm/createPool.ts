@@ -1,4 +1,4 @@
-import { CLMM_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
+import { CLMM_PROGRAM_ID, DEVNET_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
@@ -15,7 +15,7 @@ export const createPool = async () => {
   const clmmConfigs = await raydium.api.getClmmConfigs()
 
   const { execute } = await raydium.clmm.createPool({
-    programId: CLMM_PROGRAM_ID,
+    programId: CLMM_PROGRAM_ID, // devnet: DEVNET_PROGRAM_ID.CLMM
     mint1,
     mint2,
     ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '' },

@@ -65,3 +65,15 @@ await raydium.token.getTokenInfo('<Mint address>')
 ```
 await raydium.account.fetchWalletTokenAccounts() // if need to force fetching token account, pass param { forceUpdate: true }
 ```
+
+### FAQ
+
+#### Error: block height exceeded
+
+- transactions were expired, set higher priority fees (computeBudgetConfig) to make it go through smoothly
+- if you are testing in devnet, remember to replace programId to devnet one.
+
+#### raydium.api.fetchPoolById/raydium.api.fetchFarmInfoById return null
+
+- currently api doesn't support devnet pool/farm data, please test on mainnet.
+- only raydium.xxxx.getRpcPoolInfos support get devnet `rpc` pool info.

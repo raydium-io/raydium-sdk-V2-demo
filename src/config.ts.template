@@ -16,6 +16,7 @@ export const initSdk = async (params?: { loadToken?: boolean }) => {
     cluster: 'mainnet', // 'mainnet' | 'devnet'
     disableFeatureCheck: true,
     disableLoadToken: !params?.loadToken,
+    blockhashCommitment: 'finalized',
     // urlConfigs: {
     //   BASE_HOST: '<API_HOST>', // api url configs, currently api doesn't support devnet
     // },
