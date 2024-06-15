@@ -4,10 +4,12 @@
   "description": "Raydium SDK V2 demo.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@raydium-io/raydium-sdk-v2": "0.1.14-alpha",
+    "@raydium-io/raydium-sdk-v2": "0.1.15-alpha",
     "@solana/spl-token": "^0.4.6",
+    "@types/jsonfile": "^6.1.4",
     "bs58": "^5.0.0",
     "decimal.js": "^10.4.3",
+    "jsonfile": "^6.1.0",
     "node-cron": "^3.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3"

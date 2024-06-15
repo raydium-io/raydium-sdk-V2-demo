@@ -5,3 +5,5 @@ yarn-debug.log*
 yarn-error.log*
 src/config.ts
 **/*.todo
+src/test/**/*
+src/data/**/*
