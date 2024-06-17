@@ -24,10 +24,12 @@ export const createAmmPool = async () => {
   const quoteMintInfo = await raydium.token.getTokenInfo(quoteMint)
 
   const { execute, extInfo } = await raydium.liquidity.createPoolV4({
-    programId: AMM_V4, // devnet: DEVNET_PROGRAM_ID.AmmV4
+    programId: AMM_V4,
+    // programId: DEVNET_PROGRAM_ID.AmmV4, // devnet
     marketInfo: {
       marketId,
-      programId: OPEN_BOOK_PROGRAM, // devnet: DEVNET_PROGRAM_ID.OPENBOOK_MARKET
+      programId: OPEN_BOOK_PROGRAM,
+      // programId: DEVNET_PROGRAM_ID.OPENBOOK_MARKET, // devent
     },
     baseMintInfo: {
       mint: baseMint,
@@ -39,13 +41,19 @@ export const createAmmPool = async () => {
     },
     baseAmount: new BN(1000),
     quoteAmount: new BN(1000),
-    startTime: new BN(0),
+
+    // sol devnet faucet: https://faucet.solana.com/
+    // baseAmount: new BN(4 * 10 ** 9), // if devent pool with sol/wsol, better use amount >= 4*10**9
+    // quoteAmount: new BN(4 * 10 ** 9), // if devent pool with sol/wsol, better use amount >= 4*10**9
+
+    startTime: new BN(0), // unit in seconds
     ownerInfo: {
       useSOLBalance: true,
     },
     associatedOnly: false,
     txVersion,
-    feeDestinationId: FEE_DESTINATION_ID, // devnet: DEVNET_PROGRAM_ID.FEE_DESTINATION_ID
+    feeDestinationId: FEE_DESTINATION_ID,
+    // feeDestinationId: DEVNET_PROGRAM_ID.FEE_DESTINATION_ID, // devnet
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
@@ -69,4 +77,4 @@ export const createAmmPool = async () => {
 }
 
 /** uncomment code below to execute */
-// createAmmPool()
+createAmmPool()
