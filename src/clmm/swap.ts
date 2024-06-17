@@ -37,7 +37,9 @@ export const swap = async () => {
     amountIn: inputAmount,
     amountOutMin: minAmountOut.amount.raw,
     observationId: clmmPoolInfo.observationId,
-    ownerInfo: {},
+    ownerInfo: {
+      useSOLBalance: true,
+    },
     remainingAccounts,
     txVersion,
   })
