@@ -77,3 +77,8 @@ await raydium.account.fetchWalletTokenAccounts() // if need to force fetching to
 
 - currently api doesn't support devnet pool/farm data, please test on mainnet.
 - only raydium.xxxx.getRpcPoolInfos support get devnet `rpc` pool info.
+
+#### create amm pool error
+
+- `0x10001a9`: you might use https://openbook-tools.dexlab.space/market/create?network=devnet to create devnet market, and they used wrong devent program id, so please use createMarket.ts in demo to create market
+- `lp amount is too less`: please provide more base/quote amount when create pool, if there's SOL/WSOL in your market, it's better provide more than 4 sol(4\*10\*\*9) in initial amount.
