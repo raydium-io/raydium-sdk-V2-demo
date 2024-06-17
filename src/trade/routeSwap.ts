@@ -114,4 +114,4 @@ async function routeSwap() {
   console.log('txIds:', txIds)
 }
 /** uncomment code below to execute */
-routeSwap()
+// routeSwap()
