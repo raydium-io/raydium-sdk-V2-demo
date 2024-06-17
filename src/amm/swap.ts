@@ -29,6 +29,8 @@ export const swap = async () => {
       ...poolInfo,
       baseReserve: pool.baseReserve,
       quoteReserve: pool.quoteReserve,
+      status: pool.status.toNumber(),
+      version: 4,
     },
     amountIn: new BN(amountIn),
     mintIn: poolInfo.mintA.address, // swap mintB -> mintA, use: poolInfo.mintB.address
