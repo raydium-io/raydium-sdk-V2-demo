@@ -11,6 +11,7 @@ import {
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { initSdk, txVersion } from '../config'
 import { readCachePoolData, writeCachePoolData } from '../cache/utils'
+import { PublicKey } from '@solana/web3.js'
 
 async function routeSwap() {
   const raydium = await initSdk()
@@ -24,7 +25,7 @@ async function routeSwap() {
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
   // code below is a simple way to cache it, you can implement it with any other ways
   let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
-  // let poolData = readCachePoolData(1000*60*60*24) // example for cache 1 day
+  // let poolData = readCachePoolData(1000 * 60 * 60 * 24) // example for cache 1 day
   if (poolData.ammPools.length === 0) {
     console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
@@ -88,7 +89,7 @@ async function routeSwap() {
     output: targetRoute.amountOut.amount.toExact(),
     minimumOut: targetRoute.minAmountOut.amount.toExact(),
     swapType: targetRoute.routeType,
-    routes: targetRoute.poolInfoList.map((p) => `${p.version === 4 ? 'AMM' : 'CLMM'} ${p.id}`).join(` -> `),
+    routes: targetRoute.poolInfoList.map((p) => `${p.version === 4 ? 'AMM' : 'CLMM'} ${p.id} }`).join(` -> `),
   })
 
   console.log('fetching swap route pool keys..')
