@@ -23,9 +23,9 @@ async function routeSwap() {
 
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
   // code below is a simple way to cache it, you can implement it with any other ways
-  let poolData = readCachePoolData()
+  let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
   if (poolData.ammPools.length === 0) {
-    console.log('fetching all pool basic info, this might take a while..')
+    console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
     writeCachePoolData(poolData)
   }
