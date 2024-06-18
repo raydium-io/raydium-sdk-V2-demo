@@ -8,18 +8,20 @@ export const swap = async () => {
 
   // SOL - USDC pool
   // note: api doesn't support get devnet pool info
-  const data = await raydium.api.fetchPoolById({ ids: '8THC7UQN8zPXRL61o75fP4gcwRyB5W3o74yHyqarkqZ9' })
+  const data = await raydium.api.fetchPoolById({ ids: 'CnoKYnj3GNdTxQfKKBxmq33rJMShyt3eC1zWGgfptzkT' })
   const poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
   if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
   const rpcData = await raydium.cpmm.getRpcPoolInfo(poolInfo.id, true)
 
   const inputAmount = new BN(100)
+  const inputMint = poolInfo.mintA.address
+  const baseIn = inputMint === poolInfo.mintA.address
 
   // swap pool mintA for mintB
   const swapResult = CurveCalculator.swap(
     inputAmount,
-    rpcData.baseReserve,
-    rpcData.quoteReserve,
+    baseIn ? rpcData.baseReserve : rpcData.quoteReserve,
+    baseIn ? rpcData.quoteReserve : rpcData.baseReserve,
     rpcData.configInfo!.tradeFeeRate
   )
 
@@ -33,7 +35,7 @@ export const swap = async () => {
     poolInfo,
     swapResult,
     slippage: 0.1, // range: 1 ~ 0.0001, means 100% ~ 0.01%
-    baseIn: true,
+    baseIn,
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
