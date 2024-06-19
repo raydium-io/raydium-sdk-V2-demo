@@ -27,15 +27,14 @@ async function routeSwap() {
 
   const inputAmount = '100'
   const SOL = NATIVE_MINT // or WSOLMint
-  // const [inputMint, outputMint] = [SOL, USDCMint]
   const [inputMint, outputMint] = [SOL, USDCMint]
   // const [inputMint, outputMint] = [USDCMint, SOL]
   const [inputMintStr, outputMintStr] = [inputMint.toBase58(), outputMint.toBase58()]
 
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
   // code below is a simple way to cache it, you can implement it with any other ways
-  // let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
-  let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
+  let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
+  // let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
   if (poolData.ammPools.length === 0) {
     console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
@@ -143,4 +142,4 @@ async function routeSwap() {
   console.log('txIds:', txIds)
 }
 /** uncomment code below to execute */
-routeSwap()
+// routeSwap()
