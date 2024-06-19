@@ -7,11 +7,19 @@ import {
   Router,
   TokenAmount,
   Token,
+  printSimulate,
 } from '@raydium-io/raydium-sdk-v2'
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { initSdk, txVersion } from '../config'
 import { readCachePoolData, writeCachePoolData } from '../cache/utils'
 import { PublicKey } from '@solana/web3.js'
+
+const poolType: Record<number, string> = {
+  4: 'AMM',
+  5: 'AMM Stable',
+  6: 'CLMM',
+  7: 'CPMM',
+}
 
 async function routeSwap() {
   const raydium = await initSdk()
@@ -19,13 +27,15 @@ async function routeSwap() {
 
   const inputAmount = '100'
   const SOL = NATIVE_MINT // or WSOLMint
+  // const [inputMint, outputMint] = [SOL, USDCMint]
   const [inputMint, outputMint] = [SOL, USDCMint]
+  // const [inputMint, outputMint] = [USDCMint, SOL]
   const [inputMintStr, outputMintStr] = [inputMint.toBase58(), outputMint.toBase58()]
 
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
   // code below is a simple way to cache it, you can implement it with any other ways
-  let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
-  // let poolData = readCachePoolData(1000 * 60 * 60 * 24) // example for cache 1 day
+  // let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
+  let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
   if (poolData.ammPools.length === 0) {
     console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
@@ -33,20 +43,27 @@ async function routeSwap() {
   }
 
   console.log('computing swap route..')
+  // route here also can cache for a time period by pair to reduce time
+  // e.g.{inputMint}-${outputMint}'s routes, if poolData don't change, routes should be almost same
   const routes = raydium.tradeV2.getAllRoute({
     inputMint,
     outputMint,
     ...poolData,
   })
 
+  // data here also can try to cache if you wants e.g. mintInfos
+  // but rpc related info doesn't suggest to cache it for a long time, because base/quote reserve and pool price change by time
   const {
     routePathDict,
     mintInfos,
     ammPoolsRpcInfo,
     ammSimulateCache,
+
     clmmPoolsRpcInfo,
     computeClmmPoolInfo,
     computePoolTickData,
+
+    computeCpmmData,
   } = await raydium.tradeV2.fetchSwapRoutesData({
     routes,
     inputMint,
@@ -63,7 +80,10 @@ async function routeSwap() {
       }),
       inputAmount
     ),
-    directPath: routes.directPath.map((p) => ammSimulateCache[p.id.toBase58()] || computeClmmPoolInfo[p.id.toBase58()]),
+    directPath: routes.directPath.map(
+      (p) =>
+        ammSimulateCache[p.id.toBase58()] || computeClmmPoolInfo[p.id.toBase58()] || computeCpmmData[p.id.toBase58()]
+    ),
     routePathDict,
     simulateCache: ammSimulateCache,
     tickCache: computePoolTickData,
@@ -83,13 +103,14 @@ async function routeSwap() {
 
   // swapRoutes are sorted by out amount, so first one should be the best route
   const targetRoute = swapRoutes[0]
+  if (!targetRoute) throw new Error('no swap routes were found')
 
   console.log('best swap route:', {
     input: targetRoute.amountIn.amount.toExact(),
     output: targetRoute.amountOut.amount.toExact(),
     minimumOut: targetRoute.minAmountOut.amount.toExact(),
     swapType: targetRoute.routeType,
-    routes: targetRoute.poolInfoList.map((p) => `${p.version === 4 ? 'AMM' : 'CLMM'} ${p.id} }`).join(` -> `),
+    routes: targetRoute.poolInfoList.map((p) => `${poolType[p.version]} ${p.id} ${(p as any).status}`).join(` -> `),
   })
 
   console.log('fetching swap route pool keys..')
@@ -100,7 +121,7 @@ async function routeSwap() {
   })
 
   console.log('build swap tx..')
-  const { execute } = await raydium.tradeV2.swap({
+  const { execute, transactions } = await raydium.tradeV2.swap({
     routeProgram: Router,
     txVersion,
     swapInfo: targetRoute,
@@ -111,13 +132,15 @@ async function routeSwap() {
     },
     computeBudgetConfig: {
       units: 600000,
-      microLamports: 100000,
+      microLamports: 1000000,
     },
   })
+
+  // printSimulate(transactions)
 
   console.log('execute tx..')
   const { txIds } = await execute({ sequentially: true })
   console.log('txIds:', txIds)
 }
 /** uncomment code below to execute */
-// routeSwap()
+routeSwap()
