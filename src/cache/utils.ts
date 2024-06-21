@@ -1,8 +1,10 @@
 import { BasicPoolInfo } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
 import jsonfile from 'jsonfile'
+import fs from 'fs'
+import path from 'path'
 
-const filePath = './src/data/pool_data.json'
+const filePath = path.join(__dirname, '../data/pool_data.json')
 
 export const readCachePoolData = (cacheTime?: number) => {
   let cacheData: { time: number; ammPools: BasicPoolInfo[]; clmmPools: BasicPoolInfo[]; cpmmPools: BasicPoolInfo[] } = {
@@ -60,6 +62,11 @@ export const writeCachePoolData = (data: {
   cpmmPools: BasicPoolInfo[]
 }) => {
   console.log('caching all pool basic info..')
+  fs.mkdir(path.join(__dirname, '../data'), (err) => {
+    if (err) {
+      return console.error(err)
+    }
+  })
   jsonfile
     .writeFile(filePath, {
       time: Date.now(),
