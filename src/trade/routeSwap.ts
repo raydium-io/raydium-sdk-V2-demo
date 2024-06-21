@@ -7,6 +7,7 @@ import {
   Router,
   TokenAmount,
   Token,
+  DEVNET_PROGRAM_ID,
   printSimulate,
 } from '@raydium-io/raydium-sdk-v2'
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
@@ -38,6 +39,14 @@ async function routeSwap() {
   if (poolData.ammPools.length === 0) {
     console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
+    /*
+     default to mainnet
+     fetchRoutePoolBasicInfo({
+      amm: DEVNET_PROGRAM_ID.AmmV4,
+      clmm: DEVNET_PROGRAM_ID.CLMM,
+      cpmm: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
+    })
+     */
     writeCachePoolData(poolData)
   }
 
