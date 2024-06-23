@@ -12,7 +12,7 @@ const cluster = 'mainnet' // 'mainnet' | 'devnet'
 let raydium: Raydium | undefined
 export const initSdk = async (params?: { loadToken?: boolean }) => {
   if (raydium) return raydium
-  consol.log(`connect to rpc ${connection.rpcEndpoint} in ${cluster}`)
+  console.log(`connect to rpc ${connection.rpcEndpoint} in ${cluster}`)
   raydium = await Raydium.load({
     owner,
     connection,
