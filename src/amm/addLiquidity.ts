@@ -1,14 +1,35 @@
-import { ApiV3PoolInfoStandardItem, TokenAmount, toToken, Percent } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoStandardItem,
+  TokenAmount,
+  toToken,
+  Percent,
+  AmmV4Keys,
+  AmmV5Keys,
+  printSimulate,
+} from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 
 export const addLiquidity = async () => {
   const raydium = await initSdk()
+
   // RAY-USDC pool
-  // note: api doesn't support get devnet pool info
-  const data = await raydium.api.fetchPoolById({ ids: '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg' })
-  const poolInfo = data[0] as ApiV3PoolInfoStandardItem
+  const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
+  let poolKeys: AmmV4Keys | AmmV5Keys | undefined
+  let poolInfo: ApiV3PoolInfoStandardItem
+
+  if (raydium.cluster === 'mainnet') {
+    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
+    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
+    const data = await raydium.api.fetchPoolById({ ids: poolId })
+    poolInfo = data[0] as ApiV3PoolInfoStandardItem
+  } else {
+    // note: getPoolInfoFromRpc method only return required pool data for computing not all detail pool info
+    const data = await raydium.liquidity.getPoolInfoFromRpc({ poolId })
+    poolInfo = data.poolInfo
+    poolKeys = data.poolKeys
+  }
 
   if (!isValidAmm(poolInfo.programId)) throw new Error('target pool is not AMM pool')
 
@@ -21,14 +42,15 @@ export const addLiquidity = async () => {
     slippage: new Percent(1, 100), // 1%
   })
 
-  const { execute } = await raydium.liquidity.addLiquidity({
+  const { execute, transaction } = await raydium.liquidity.addLiquidity({
     poolInfo,
+    poolKeys,
     amountInA: new TokenAmount(
       toToken(poolInfo.mintA),
       new Decimal(inputAmount).mul(10 ** poolInfo.mintA.decimals).toFixed(0)
     ),
     amountInB: new TokenAmount(
-      toToken(poolInfo.mintA),
+      toToken(poolInfo.mintB),
       new Decimal(r.maxAnotherAmount.toExact()).mul(10 ** poolInfo.mintA.decimals).toFixed(0)
     ),
     fixedSide: 'a',
@@ -45,4 +67,4 @@ export const addLiquidity = async () => {
 }
 
 /** uncomment code below to execute */
-// addLiquidity()
+addLiquidity()
