@@ -67,4 +67,4 @@ export const addLiquidity = async () => {
 }
 
 /** uncomment code below to execute */
-addLiquidity()
+// addLiquidity()

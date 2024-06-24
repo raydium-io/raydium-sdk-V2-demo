@@ -3,6 +3,7 @@ import { PublicKey } from '@solana/web3.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 import BN from 'bn.js'
+import { devConfigs } from './utils'
 
 export const createPool = async () => {
   const raydium = await initSdk({ loadToken: true })
@@ -13,9 +14,11 @@ export const createPool = async () => {
   // USDT
   const mint2 = await raydium.token.getTokenInfo('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')
   const clmmConfigs = await raydium.api.getClmmConfigs()
+  // const clmmConfigs = devConfigs // devnet configs
 
   const { execute } = await raydium.clmm.createPool({
-    programId: CLMM_PROGRAM_ID, // devnet: DEVNET_PROGRAM_ID.CLMM
+    programId: CLMM_PROGRAM_ID,
+    // programId: DEVNET_PROGRAM_ID.CLMM,
     mint1,
     mint2,
     ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '' },

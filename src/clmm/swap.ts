@@ -1,26 +1,47 @@
-import { ApiV3PoolInfoConcentratedItem, PoolUtils } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoConcentratedItem,
+  ClmmKeys,
+  ComputeClmmPoolInfo,
+  PoolUtils,
+  ReturnTypeFetchMultiplePoolTickArrays,
+} from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import { isValidClmm } from './utils'
 
 export const swap = async () => {
   const raydium = await initSdk()
-  const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
-  const inputAmount = new BN(100)
+  let poolInfo: ApiV3PoolInfoConcentratedItem
   // RAY-USDC pool
-  // note: api doesn't support get devnet pool info
-  const data = await raydium.api.fetchPoolById({ ids: poolId })
-  const poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
-  if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
-  const clmmPoolInfo = await PoolUtils.fetchComputeClmmInfo({
-    connection: raydium.connection,
-    poolInfo,
-  })
+  const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
+  let poolKeys: ClmmKeys | undefined
+  let clmmPoolInfo: ComputeClmmPoolInfo
+  let tickCache: ReturnTypeFetchMultiplePoolTickArrays
 
-  const tickCache = await PoolUtils.fetchMultiplePoolTickArrays({
-    connection: raydium.connection,
-    poolKeys: [clmmPoolInfo],
-  })
+  const inputAmount = new BN(100)
+
+  if (raydium.cluster === 'mainnet') {
+    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
+    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
+    const data = await raydium.api.fetchPoolById({ ids: poolId })
+    poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
+    if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
+
+    clmmPoolInfo = await PoolUtils.fetchComputeClmmInfo({
+      connection: raydium.connection,
+      poolInfo,
+    })
+    tickCache = await PoolUtils.fetchMultiplePoolTickArrays({
+      connection: raydium.connection,
+      poolKeys: [clmmPoolInfo],
+    })
+  } else {
+    const data = await raydium.clmm.getPoolInfoFromRpc(poolId)
+    poolInfo = data.poolInfo
+    poolKeys = data.poolKeys
+    clmmPoolInfo = data.computePoolInfo
+    tickCache = data.tickData
+  }
 
   const { minAmountOut, remainingAccounts } = await PoolUtils.computeAmountOutFormat({
     poolInfo: clmmPoolInfo,
@@ -33,6 +54,7 @@ export const swap = async () => {
 
   const { execute } = await raydium.clmm.swap({
     poolInfo,
+    poolKeys,
     inputMint: poolInfo.mintA.address,
     amountIn: inputAmount,
     amountOutMin: minAmountOut.amount.raw,

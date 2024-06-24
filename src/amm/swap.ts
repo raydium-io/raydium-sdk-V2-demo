@@ -79,8 +79,8 @@ export const swap = async () => {
     // },
   })
 
-  // const { txId } = await execute()
-  // console.log(`swap successfully in amm pool:`, { txId })
+  const { txId } = await execute()
+  console.log(`swap successfully in amm pool:`, { txId })
 }
 
 /** uncomment code below to execute */

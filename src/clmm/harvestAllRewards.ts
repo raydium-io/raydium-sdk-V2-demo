@@ -1,10 +1,15 @@
-import { ApiV3PoolInfoConcentratedItem, CLMM_PROGRAM_ID, ClmmPositionLayout } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoConcentratedItem,
+  CLMM_PROGRAM_ID,
+  DEVNET_PROGRAM_ID,
+  ClmmPositionLayout,
+} from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 
 export const harvestAllRewards = async () => {
   const raydium = await initSdk()
 
-  const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: CLMM_PROGRAM_ID })
+  const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: CLMM_PROGRAM_ID }) // devnet: DEVNET_PROGRAM_ID.CLMM
   const nonZeroPosition = allPosition.filter((p) => !p.liquidity.isZero())
   if (!nonZeroPosition.length) throw new Error('use do not have position')
 
@@ -34,7 +39,7 @@ export const harvestAllRewards = async () => {
     ownerInfo: {
       useSOLBalance: true,
     },
-    programId: CLMM_PROGRAM_ID,
+    programId: CLMM_PROGRAM_ID, // devnet: DEVNET_PROGRAM_ID.CLMM
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {
