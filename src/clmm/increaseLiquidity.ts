@@ -34,7 +34,7 @@ export const increaseLiquidity = async () => {
   if (!position) throw new Error(`use do not have position in pool: ${poolInfo.id}`)
 
   const inputAmount = 0.0001 // SOL UI amount
-  const slippage = 0.005
+  const slippage = 0.05
 
   const epochInfo = await raydium.fetchEpochInfo()
   const res = await PoolUtils.getLiquidityAmountOutFromAmountIn({
@@ -68,7 +68,8 @@ export const increaseLiquidity = async () => {
     // },
   })
 
-  const { txId } = await execute()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await execute({ sendAndConfirm: true })
   console.log('clmm position liquidity increased:', { txId })
 }
 

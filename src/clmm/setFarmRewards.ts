@@ -55,7 +55,8 @@ export const setFarmRewards = async () => {
     // },
   })
 
-  const { txId } = await setRewardBuildData.execute()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await setRewardBuildData.execute({ sendAndConfirm: true })
   console.log('clmm farm created:', { txId })
 
   /** example below: if you want to combine edit reward and add new rewards in one tx  */
@@ -78,8 +79,9 @@ export const setFarmRewards = async () => {
     txVersion
   })
 
-  const {execute} = await setRewardBuildData.builder.addInstruction(initRewardBuildData.builder.AllTxData).build()
-  const txId = await execute()
+  const { execute } = await setRewardBuildData.builder.addInstruction(initRewardBuildData.builder.AllTxData).build()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await execute({ sendAndConfirm: true })
   console.log('edit and add more rewards to clmm farm', { txId })
   */
 }

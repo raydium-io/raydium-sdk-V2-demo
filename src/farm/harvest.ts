@@ -19,7 +19,8 @@ export const harvest = async () => {
     // },
   })
 
-  const { txId } = await execute()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await execute({ sendAndConfirm: true })
   console.log('farm harvested:', { txId })
 }
 

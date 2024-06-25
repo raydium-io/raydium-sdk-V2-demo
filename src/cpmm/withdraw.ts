@@ -38,7 +38,8 @@ export const withdraw = async () => {
     // },
   })
 
-  const { txId } = await execute()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await execute({ sendAndConfirm: true })
   console.log('pool withdraw:', { txId })
 }
 

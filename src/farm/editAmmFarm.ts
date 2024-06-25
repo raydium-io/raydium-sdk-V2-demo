@@ -6,8 +6,9 @@ export const editAmmFarm = async () => {
   const raydium = await initSdk()
 
   // RAY-USDC farm
+  const farmId = '3f7UP66ZtrRgpd3z39WfM9oiRVKV9uiZWABTsWG76Zqy'
   // note: please ensure you this is owned by yourself, not support devnet
-  const farmInfo = (await raydium.api.fetchFarmInfoById({ ids: '3f7UP66ZtrRgpd3z39WfM9oiRVKV9uiZWABTsWG76Zqy' }))[0]
+  const farmInfo = (await raydium.api.fetchFarmInfoById({ ids: farmId }))[0]
   if (!farmInfo) throw new Error('farm not found')
 
   // existing reward mint
@@ -32,7 +33,8 @@ export const editAmmFarm = async () => {
     txVersion,
   })
 
-  const { txId } = await editFarmBuilder.execute()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await editFarmBuilder.execute({ sendAndConfirm: true })
   console.log('amm farm reward edited:', { txId })
 
   /** example below: if you want to edit reward and add new rewards in one tx  */
@@ -55,10 +57,11 @@ export const editAmmFarm = async () => {
 
   editFarmBuilder.builder.addInstruction(addNewRewardBuildData.builder.AllTxData)
   const { execute } = await editFarmBuilder.builder.versionBuild({ txVersion })
-  const { txId } = await editFarmBuilder.execute()
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await editFarmBuilder.execute({ sendAndConfirm: true })
   console.log('amm farm reward edited and added:', { txId })
   */
 }
 
 /** uncomment code below to execute */
-// editAmmFarm()
+editAmmFarm()
