@@ -1,4 +1,10 @@
-import { ApiV3PoolInfoStandardItemCpmm, CurveCalculator } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoStandardItemCpmm,
+  CpmmKeys,
+  CpmmRpcData,
+  CurveCalculator,
+  getPdaPoolAuthority,
+} from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
 import { isValidCpmm } from './utils'
@@ -7,11 +13,24 @@ export const swap = async () => {
   const raydium = await initSdk()
 
   // SOL - USDC pool
-  // note: api doesn't support get devnet pool info
-  const data = await raydium.api.fetchPoolById({ ids: 'CnoKYnj3GNdTxQfKKBxmq33rJMShyt3eC1zWGgfptzkT' })
-  const poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
-  if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
-  const rpcData = await raydium.cpmm.getRpcPoolInfo(poolInfo.id, true)
+  const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
+  let poolInfo: ApiV3PoolInfoStandardItemCpmm
+  let poolKeys: CpmmKeys | undefined
+  let rpcData: CpmmRpcData
+
+  if (raydium.cluster === 'mainnet') {
+    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
+    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
+    const data = await raydium.api.fetchPoolById({ ids: poolId })
+    poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
+    if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
+    rpcData = await raydium.cpmm.getRpcPoolInfo(poolInfo.id, true)
+  } else {
+    const data = await raydium.cpmm.getPoolInfoFromRpc(poolId)
+    poolInfo = data.poolInfo
+    poolKeys = data.poolKeys
+    rpcData = data.rpcData
+  }
 
   const inputAmount = new BN(100)
   const inputMint = poolInfo.mintA.address
@@ -33,6 +52,7 @@ export const swap = async () => {
 
   const { execute } = await raydium.cpmm.swap({
     poolInfo,
+    poolKeys,
     swapResult,
     slippage: 0.1, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn,

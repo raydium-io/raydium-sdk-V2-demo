@@ -1,4 +1,4 @@
-import { ApiV3PoolInfoStandardItemCpmm, Percent } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoStandardItemCpmm, CpmmKeys, Percent, getPdaPoolAuthority } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
@@ -8,11 +8,21 @@ export const deposit = async () => {
   const raydium = await initSdk()
 
   // SOL - USDC pool
-  // note: api doesn't support get devnet pool info
-  const data = await raydium.api.fetchPoolById({ ids: '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny' })
+  const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
+  let poolInfo: ApiV3PoolInfoStandardItemCpmm
+  let poolKeys: CpmmKeys | undefined
 
-  const poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
-  if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
+  if (raydium.cluster === 'mainnet') {
+    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
+    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
+    const data = await raydium.api.fetchPoolById({ ids: poolId })
+    poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
+    if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
+  } else {
+    const data = await raydium.cpmm.getPoolInfoFromRpc(poolId)
+    poolInfo = data.poolInfo
+    poolKeys = data.poolKeys
+  }
 
   const uiInputAmount = '0.0001'
   const inputAmount = new BN(new Decimal(uiInputAmount).mul(10 ** poolInfo.mintA.decimals).toFixed(0))
@@ -36,6 +46,7 @@ export const deposit = async () => {
 
   const { execute } = await raydium.cpmm.addLiquidity({
     poolInfo,
+    poolKeys,
     inputAmount,
     slippage,
     baseIn,

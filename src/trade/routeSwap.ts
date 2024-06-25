@@ -28,8 +28,7 @@ async function routeSwap() {
 
   const inputAmount = '100'
   const SOL = NATIVE_MINT // or WSOLMint
-  const [inputMint, outputMint] = [SOL, USDCMint]
-  // const [inputMint, outputMint] = [USDCMint, SOL]
+  const [inputMint, outputMint] = [USDCMint, SOL]
   const [inputMintStr, outputMintStr] = [inputMint.toBase58(), outputMint.toBase58()]
 
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
@@ -39,14 +38,6 @@ async function routeSwap() {
   if (poolData.ammPools.length === 0) {
     console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
-    /*
-     default to mainnet
-     fetchRoutePoolBasicInfo({
-      amm: DEVNET_PROGRAM_ID.AmmV4,
-      clmm: DEVNET_PROGRAM_ID.CLMM,
-      cpmm: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
-    })
-     */
     writeCachePoolData(poolData)
   }
 
@@ -146,9 +137,9 @@ async function routeSwap() {
 
   // printSimulate(transactions)
 
-  console.log('execute tx..')
-  const { txIds } = await execute({ sequentially: true })
-  console.log('txIds:', txIds)
+  // console.log('execute tx..')
+  // const { txIds } = await execute({ sequentially: true })
+  // console.log('txIds:', txIds)
 }
 /** uncomment code below to execute */
-// routeSwap()
+routeSwap()
