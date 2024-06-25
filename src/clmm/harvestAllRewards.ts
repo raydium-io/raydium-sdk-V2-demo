@@ -48,7 +48,7 @@ export const harvestAllRewards = async () => {
     // },
   })
 
-  const { txIds } = await execute()
+  const { txIds } = await execute({ sequentially: true })
   console.log('harvested all clmm rewards:', { txIds })
 }
 

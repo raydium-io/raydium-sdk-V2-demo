@@ -137,9 +137,9 @@ async function routeSwap() {
 
   // printSimulate(transactions)
 
-  // console.log('execute tx..')
-  // const { txIds } = await execute({ sequentially: true })
-  // console.log('txIds:', txIds)
+  console.log('execute tx..')
+  const { txIds } = await execute({ sequentially: true })
+  console.log('txIds:', txIds)
 }
 /** uncomment code below to execute */
-routeSwap()
+// routeSwap()
