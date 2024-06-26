@@ -1,14 +1,15 @@
-import { ApiV3PoolInfoStandardItem, AmmV4Keys, AmmRpcData } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoStandardItem, AmmV4Keys, AmmRpcData, USDCMint } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import BN from 'bn.js'
 import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
+import { NATIVE_MINT } from '@solana/spl-token'
 
 export const swap = async () => {
   const raydium = await initSdk()
-  const amountIn = 100
-  const inputMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R' // RAY
-  const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg' // RAY-USDC pool
+  const amountIn = 500
+  const inputMint = NATIVE_MINT.toBase58()
+  const poolId = '58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2' // SOL-USDC pool
 
   let poolInfo: ApiV3PoolInfoStandardItem | undefined
   let poolKeys: AmmV4Keys | undefined
@@ -70,8 +71,15 @@ export const swap = async () => {
     amountOut: out.minAmountOut, // out.amountOut means amount 'without' slippage
     fixedSide: 'in',
     inputMint: mintIn.address,
-    associatedOnly: false,
     txVersion,
+
+    // optional: set up token account
+    // config: {
+    //   inputUseSolBalance: false, // default: true, if you want to use existed wsol token account to pay token in, pass false
+    //   outputUseSolBalance: false, // default: true, if you want to use existed wsol token account to receive token out, pass false
+    //   associatedOnly: false, // default: false, if you want to use ata only, pass true
+    // },
+
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
