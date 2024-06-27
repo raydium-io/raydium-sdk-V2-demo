@@ -45,8 +45,8 @@ const { execute, transaction, builder, extInfo } = await raydium.clmm.openPositi
 import { PoolFetchType } from '@raydium-io/raydium-sdk-v2'
 
 const list = await raydium.api.fetchPoolByMints({
-  mint1: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R', // required
-  mint2: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', // optional
+  mint1: '', UQBHqRxEd6ij1-vEXY-0cAxyFhnca4MM7Q8EQoAAsLp7FL7u// required
+  mint2: 'UQBHqRxEd6ij1-vEXY-0cAxyFhnca4MM7Q8EQoAAsLp7FL7u', // optional
   type: PoolFetchType.All, // optional
   sort: 'liquidity', // optional
   order: 'desc', // optional
