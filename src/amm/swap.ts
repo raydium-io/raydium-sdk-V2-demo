@@ -75,9 +75,9 @@ export const swap = async () => {
 
     // optional: set up token account
     // config: {
-    //   inputUseSolBalance: false, // default: true, if you want to use existed wsol token account to pay token in, pass false
-    //   outputUseSolBalance: false, // default: true, if you want to use existed wsol token account to receive token out, pass false
-    //   associatedOnly: false, // default: false, if you want to use ata only, pass true
+    //   inputUseSolBalance: true, // default: true, if you want to use existed wsol token account to pay token in, pass false
+    //   outputUseSolBalance: true, // default: true, if you want to use existed wsol token account to receive token out, pass false
+    //   associatedOnly: true, // default: true, if you want to use ata only, pass true
     // },
 
     // optional: set up priority fee here

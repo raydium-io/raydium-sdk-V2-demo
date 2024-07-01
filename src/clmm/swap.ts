@@ -60,7 +60,7 @@ export const swap = async () => {
     amountOutMin: minAmountOut.amount.raw,
     observationId: clmmPoolInfo.observationId,
     ownerInfo: {
-      useSOLBalance: true,
+      useSOLBalance: true, // if wish to use existed wsol token account, pass false
     },
     remainingAccounts,
     txVersion,
