@@ -140,6 +140,7 @@ async function routeSwap() {
   console.log('execute tx..')
   const { txIds } = await execute({ sequentially: true })
   console.log('txIds:', txIds)
+  txIds.forEach((txId) => console.log(`https://explorer.solana.com/tx/${txId}`))
 }
 /** uncomment code below to execute */
 // routeSwap()
