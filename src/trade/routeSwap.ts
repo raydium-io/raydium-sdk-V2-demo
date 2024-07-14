@@ -9,6 +9,8 @@ import {
   Token,
   DEVNET_PROGRAM_ID,
   printSimulate,
+  setLoggerLevel,
+  LogLevel,
 } from '@raydium-io/raydium-sdk-v2'
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { initSdk, txVersion } from '../config'
@@ -21,6 +23,8 @@ const poolType: Record<number, string> = {
   6: 'CLMM',
   7: 'CPMM',
 }
+
+setLoggerLevel('Raydium_tradeV2', LogLevel.Debug)
 
 async function routeSwap() {
   const raydium = await initSdk()
