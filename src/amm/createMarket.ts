@@ -20,6 +20,11 @@ export const createMarket = async () => {
     tickSize: 0.01,
     dexProgramId: OPEN_BOOK_PROGRAM,
     // dexProgramId: DEVNET_PROGRAM_ID.OPENBOOK_MARKET, // devnet
+
+    // requestQueueSpace: 5120 + 12, // optional
+    // eventQueueSpace: 262144 + 12, // optional
+    // orderbookQueueSpace: 65536 + 12, // optional
+
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {
