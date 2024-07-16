@@ -1,6 +1,4 @@
 import {
-  WSOLMint,
-  RAYMint,
   USDCMint,
   toFeeConfig,
   toApiV3Token,
@@ -15,7 +13,6 @@ import {
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { initSdk, txVersion } from '../config'
 import { readCachePoolData, writeCachePoolData } from '../cache/utils'
-import { PublicKey } from '@solana/web3.js'
 
 const poolType: Record<number, string> = {
   4: 'AMM',
@@ -42,6 +39,12 @@ async function routeSwap() {
   if (poolData.ammPools.length === 0) {
     console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
+    // devent pool info
+    // fetchRoutePoolBasicInfo({
+    //   amm: DEVNET_PROGRAM_ID.AmmV4,
+    //   clmm: DEVNET_PROGRAM_ID.CLMM,
+    //   cpmm: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
+    // })
     writeCachePoolData(poolData)
   }
 
@@ -100,7 +103,7 @@ async function routeSwap() {
       },
     }),
     chainTime: Math.floor(raydium.chainTimeData?.chainTime ?? Date.now() / 1000),
-    slippage: 0.005,
+    slippage: 0.005, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     epochInfo: await raydium.connection.getEpochInfo(),
   })
 

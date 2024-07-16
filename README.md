@@ -66,6 +66,8 @@ await raydium.token.getTokenInfo('<Mint address>')
 await raydium.account.fetchWalletTokenAccounts() // if need to force fetching token account, pass param { forceUpdate: true }
 ```
 
+### More api methods [check here](https://github.com/raydium-io/raydium-sdk-V2?tab=readme-ov-file#api-methods-httpsgithubcomraydium-ioraydium-sdk-v2blobmastersrcapiapits)
+
 ### FAQ
 
 #### Error: block height exceeded

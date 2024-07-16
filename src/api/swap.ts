@@ -2,8 +2,7 @@ import { Transaction, VersionedTransaction, sendAndConfirmTransaction } from '@s
 import { NATIVE_MINT } from '@solana/spl-token'
 import axios from 'axios'
 import { connection, owner, fetchTokenAccountData } from '../config'
-
-const SWAP_API_HOST = 'https://transaction-v1.raydium.io'
+import { API_URLS } from '@raydium-io/raydium-sdk-v2'
 
 interface SwapCompute {
   id: string
@@ -60,10 +59,12 @@ export const apiSwap = async () => {
     id: string
     success: boolean
     data: { default: { vh: number; h: number; m: number } }
-  }>('https://api-v3.raydium.io/main/auto-fee')
+  }>(`${API_URLS.BASE_HOST}${API_URLS.PRIORITY_FEE}`)
 
   const { data: swapResponse } = await axios.get<SwapCompute>(
-    `${SWAP_API_HOST}/compute/swap-base-in?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${
+    `${
+      API_URLS.SWAP_HOST
+    }/compute/swap-base-in?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${
       slippage * 100
     }&txVersion=${txVersion}`
   )
@@ -73,7 +74,7 @@ export const apiSwap = async () => {
     version: string
     success: boolean
     data: { transaction: string }[]
-  }>(`${SWAP_API_HOST}/transaction/swap-base-in`, {
+  }>(`${API_URLS.SWAP_HOST}/transaction/swap-base-in`, {
     computeUnitPriceMicroLamports: String(data.data.default.h),
     swapResponse,
     txVersion,

@@ -4,6 +4,7 @@ import {
   ComputeClmmPoolInfo,
   PoolUtils,
   ReturnTypeFetchMultiplePoolTickArrays,
+  RAYMint,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
@@ -14,6 +15,7 @@ export const swap = async () => {
   let poolInfo: ApiV3PoolInfoConcentratedItem
   // RAY-USDC pool
   const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
+  const inputMint = RAYMint.toBase58()
   let poolKeys: ClmmKeys | undefined
   let clmmPoolInfo: ComputeClmmPoolInfo
   let tickCache: ReturnTypeFetchMultiplePoolTickArrays
@@ -43,11 +45,16 @@ export const swap = async () => {
     tickCache = data.tickData
   }
 
+  if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
+    throw new Error('input mint does not match pool')
+
+  const baseIn = inputMint === poolInfo.mintA.address
+
   const { minAmountOut, remainingAccounts } = await PoolUtils.computeAmountOutFormat({
     poolInfo: clmmPoolInfo,
     tickArrayCache: tickCache[poolId],
     amountIn: inputAmount,
-    tokenOut: poolInfo.mintB,
+    tokenOut: poolInfo[baseIn ? 'mintB' : 'mintA'],
     slippage: 0.01,
     epochInfo: await raydium.fetchEpochInfo(),
   })
@@ -55,7 +62,7 @@ export const swap = async () => {
   const { execute } = await raydium.clmm.swap({
     poolInfo,
     poolKeys,
-    inputMint: poolInfo.mintA.address,
+    inputMint: poolInfo[baseIn ? 'mintA' : 'mintB'].address,
     amountIn: inputAmount,
     amountOutMin: minAmountOut.amount.raw,
     observationId: clmmPoolInfo.observationId,

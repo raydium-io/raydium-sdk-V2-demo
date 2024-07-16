@@ -1,13 +1,8 @@
-import {
-  ApiV3PoolInfoStandardItemCpmm,
-  CpmmKeys,
-  CpmmRpcData,
-  CurveCalculator,
-  getPdaPoolAuthority,
-} from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoStandardItemCpmm, CpmmKeys, CpmmRpcData, CurveCalculator } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
 import { isValidCpmm } from './utils'
+import { NATIVE_MINT } from '@solana/spl-token'
 
 export const swap = async () => {
   const raydium = await initSdk()
@@ -33,7 +28,10 @@ export const swap = async () => {
   }
 
   const inputAmount = new BN(100)
-  const inputMint = poolInfo.mintA.address
+  const inputMint = NATIVE_MINT.toBase58()
+  if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
+    throw new Error('input mint does not match pool')
+
   const baseIn = inputMint === poolInfo.mintA.address
 
   // swap pool mintA for mintB
@@ -54,7 +52,7 @@ export const swap = async () => {
     poolInfo,
     poolKeys,
     swapResult,
-    slippage: 0.1, // range: 1 ~ 0.0001, means 100% ~ 0.01%
+    slippage: 0.01, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn,
     // optional: set up priority fee here
     // computeBudgetConfig: {
