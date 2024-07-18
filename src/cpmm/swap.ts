@@ -9,6 +9,9 @@ export const swap = async () => {
 
   // SOL - USDC pool
   const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
+  const inputAmount = new BN(100)
+  const inputMint = NATIVE_MINT.toBase58()
+
   let poolInfo: ApiV3PoolInfoStandardItemCpmm
   let poolKeys: CpmmKeys | undefined
   let rpcData: CpmmRpcData
@@ -27,8 +30,6 @@ export const swap = async () => {
     rpcData = data.rpcData
   }
 
-  const inputAmount = new BN(100)
-  const inputMint = NATIVE_MINT.toBase58()
   if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
     throw new Error('input mint does not match pool')
 
@@ -51,13 +52,14 @@ export const swap = async () => {
   const { execute } = await raydium.cpmm.swap({
     poolInfo,
     poolKeys,
+    inputAmount,
     swapResult,
-    slippage: 0.01, // range: 1 ~ 0.0001, means 100% ~ 0.01%
+    slippage: 0.001, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn,
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
-    //   microLamports: 100000000,
+    //   microLamports: 10000000,
     // },
   })
 
