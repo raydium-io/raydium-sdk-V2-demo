@@ -1,4 +1,9 @@
-import { CREATE_CPMM_POOL_PROGRAM, CREATE_CPMM_POOL_FEE_ACC, DEVNET_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
+import {
+  CREATE_CPMM_POOL_PROGRAM,
+  CREATE_CPMM_POOL_FEE_ACC,
+  DEVNET_PROGRAM_ID,
+  getCpmmPdaAmmConfigId,
+} from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 
@@ -20,6 +25,14 @@ export const createPool = async () => {
     } 
    */
 
+  const feeConfigs = await raydium.api.getCpmmConfigs()
+
+  if (raydium.cluster === 'devnet') {
+    feeConfigs.forEach((config) => {
+      config.id = getCpmmPdaAmmConfigId(DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM, config.index).publicKey.toBase58()
+    })
+  }
+
   const { execute, extInfo } = await raydium.cpmm.createPool({
     programId: CREATE_CPMM_POOL_PROGRAM, // devnet: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM
     poolFeeAccount: CREATE_CPMM_POOL_FEE_ACC, // devnet: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM
@@ -28,6 +41,7 @@ export const createPool = async () => {
     mintAAmount: new BN(100),
     mintBAmount: new BN(100),
     startTime: new BN(0),
+    feeConfig: feeConfigs[0],
     associatedOnly: false,
     ownerInfo: {
       useSOLBalance: true,

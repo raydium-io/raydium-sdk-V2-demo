@@ -21,7 +21,7 @@ export const createPool = async () => {
     // programId: DEVNET_PROGRAM_ID.CLMM,
     mint1,
     mint2,
-    ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '' },
+    ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '', description: '' },
     initialPrice: new Decimal(1),
     startTime: new BN(0),
     txVersion,

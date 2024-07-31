@@ -28,8 +28,8 @@ export const createPosition = async () => {
   // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
   // poolInfo.price = rpcData.currentPrice
 
-  const inputAmount = 1 // RAY amount
-  const [startPrice, endPrice] = [0.00000001, 10000000]
+  const inputAmount = 0.000001 // RAY amount
+  const [startPrice, endPrice] = [0.000001, 100000]
 
   const { tick: lowerTick } = TickUtils.getPriceAndTick({
     poolInfo,
@@ -69,10 +69,10 @@ export const createPosition = async () => {
     otherAmountMax: res.amountSlippageB.amount,
     txVersion,
     // optional: set up priority fee here
-    // computeBudgetConfig: {
-    //   units: 600000,
-    //   microLamports: 100000000,
-    // },
+    computeBudgetConfig: {
+      units: 600000,
+      microLamports: 100000,
+    },
   })
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
