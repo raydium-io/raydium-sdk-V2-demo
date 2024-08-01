@@ -229,10 +229,10 @@
     bn.js "^5.1.2"
     buffer-layout "^1.2.0"
 
-"@raydium-io/raydium-sdk-v2@0.1.48-alpha":
-  version "0.1.48-alpha"
-  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.1.48-alpha.tgz#c740aa35c829bbe54195906c39e728d68dfe3176"
-  integrity sha512-itusZAKzhSsISU5MwX2osFnlRXEizuvCnb7vzA9LPhaHjz9tmQeQiUVNtCQtemLQHKLhGp4Vv10Uza9rSexJHA==
+"@raydium-io/raydium-sdk-v2@0.1.51-alpha":
+  version "0.1.51-alpha"
+  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.1.51-alpha.tgz#46b37c23d2067d2a53ae6e09429f4be4508ce86c"
+  integrity sha512-Nr8wTGFTrVVNnY7V7Erc68npBpCIVwcJB4u3ajrS5zdaqWzal76NuwfU/bbCeVT3ADJHM6Gi07fGXdFRL0IfdA==
   dependencies:
     "@project-serum/serum" "^0.13.65"
     "@solana/buffer-layout" "^4.0.1"
