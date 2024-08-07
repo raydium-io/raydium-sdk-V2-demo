@@ -4,23 +4,26 @@ import {
   ComputeClmmPoolInfo,
   PoolUtils,
   ReturnTypeFetchMultiplePoolTickArrays,
-  RAYMint,
+  USDCMint,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import { isValidClmm } from './utils'
+import { NATIVE_MINT } from '@solana/spl-token'
+import Decimal from 'decimal.js'
 
-export const swap = async () => {
+// swapBaseOut means fixed output token amount, calculate needed input token amount
+export const swapBaseOut = async () => {
   const raydium = await initSdk()
   let poolInfo: ApiV3PoolInfoConcentratedItem
-  // RAY-USDC pool
-  const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
-  const inputMint = RAYMint.toBase58()
+  // SOL-USDC pool
+  const poolId = '2QdhepnKRTLjjSqPL1PtKNwqrUkoLee5Gqs8bvZhRdMv'
   let poolKeys: ClmmKeys | undefined
   let clmmPoolInfo: ComputeClmmPoolInfo
   let tickCache: ReturnTypeFetchMultiplePoolTickArrays
 
-  const inputAmount = new BN(100)
+  const outputMint = NATIVE_MINT
+  const amountOut = new BN(1000000)
 
   if (raydium.cluster === 'mainnet') {
     // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
@@ -45,26 +48,39 @@ export const swap = async () => {
     tickCache = data.tickData
   }
 
-  if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
+  if (outputMint.toBase58() !== poolInfo.mintA.address && outputMint.toBase58() !== poolInfo.mintB.address)
     throw new Error('input mint does not match pool')
 
-  const baseIn = inputMint === poolInfo.mintA.address
-
-  const { minAmountOut, remainingAccounts } = await PoolUtils.computeAmountOutFormat({
+  const { remainingAccounts, ...res } = await PoolUtils.computeAmountIn({
     poolInfo: clmmPoolInfo,
     tickArrayCache: tickCache[poolId],
-    amountIn: inputAmount,
-    tokenOut: poolInfo[baseIn ? 'mintB' : 'mintA'],
+    amountOut,
+    baseMint: outputMint,
     slippage: 0.01,
     epochInfo: await raydium.fetchEpochInfo(),
   })
 
-  const { execute } = await raydium.clmm.swap({
+  const [mintIn, mintOut] =
+    outputMint.toBase58() === poolInfo.mintB.address
+      ? [poolInfo.mintA, poolInfo.mintB]
+      : [poolInfo.mintB, poolInfo.mintA]
+
+  console.log({
+    amountIn: `${new Decimal(res.amountIn.amount.toString()).div(10 ** mintIn.decimals).toString()} ${mintIn.symbol}`,
+    maxAmountIn: `${new Decimal(res.maxAmountIn.amount.toString()).div(10 ** mintIn.decimals).toString()} ${
+      mintIn.symbol
+    }`,
+    realAmountOut: `${new Decimal(res.realAmountOut.amount.toString()).div(10 ** mintOut.decimals).toString()} ${
+      mintOut.symbol
+    }`,
+  })
+
+  const { execute } = await raydium.clmm.swapBaseOut({
     poolInfo,
     poolKeys,
-    inputMint: poolInfo[baseIn ? 'mintA' : 'mintB'].address,
-    amountIn: inputAmount,
-    amountOutMin: minAmountOut.amount.raw,
+    outputMint,
+    amountInMax: res.maxAmountIn.amount,
+    amountOut: res.realAmountOut.amount,
     observationId: clmmPoolInfo.observationId,
     ownerInfo: {
       useSOLBalance: true, // if wish to use existed wsol token account, pass false
@@ -73,15 +89,15 @@ export const swap = async () => {
     txVersion,
 
     // optional: set up priority fee here
-    // computeBudgetConfig: {
-    //   units: 600000,
-    //   microLamports: 1000000,
-    // },
+    computeBudgetConfig: {
+      units: 600000,
+      microLamports: 1000000,
+    },
   })
 
-  const { txId } = await execute()
-  console.log('swapped in clmm pool:', { txId })
+  const { txId } = await execute({ sendAndConfirm: true })
+  console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
 }
 
 /** uncomment code below to execute */
-// swap()
+// swapBaseOut()
