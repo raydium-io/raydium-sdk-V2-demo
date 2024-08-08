@@ -64,11 +64,11 @@ export const swapBaseOut = async () => {
   const { execute, transaction } = await raydium.cpmm.swap({
     poolInfo,
     poolKeys,
-    inputAmount: new BN(0),
+    inputAmount: new BN(0), // if set fixedOut to true, this arguments won't be used
     fixedOut: true,
     swapResult: {
       sourceAmountSwapped: swapResult.amountIn,
-      destinationAmountSwapped: swapResult.amountRealOut,
+      destinationAmountSwapped: outputAmount,
     },
     slippage: 0.001, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn,
