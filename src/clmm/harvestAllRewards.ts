@@ -11,7 +11,8 @@ export const harvestAllRewards = async () => {
 
   const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: CLMM_PROGRAM_ID }) // devnet: DEVNET_PROGRAM_ID.CLMM
   const nonZeroPosition = allPosition.filter((p) => !p.liquidity.isZero())
-  if (!nonZeroPosition.length) throw new Error('use do not have position')
+  if (!nonZeroPosition.length)
+    throw new Error(`use do not have any non zero positions, total positions: ${allPosition.length}`)
 
   // RAY-USDC pool
   // note: api doesn't support get devnet pool info

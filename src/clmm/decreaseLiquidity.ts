@@ -24,10 +24,10 @@ export const decreaseLiquidity = async () => {
   }
 
   const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: poolInfo.programId })
-  if (!allPosition.length) throw new Error('use do not have position')
+  if (!allPosition.length) throw new Error('user do not have any positions')
 
   const position = allPosition.find((p) => p.poolId.toBase58() === poolInfo.id)
-  if (!position) throw new Error(`use do not have position in pool: ${poolInfo.id}`)
+  if (!position) throw new Error(`user do not have position in pool: ${poolInfo.id}`)
 
   /** code below will get on chain realtime price to avoid slippage error, uncomment it if necessary */
   // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })

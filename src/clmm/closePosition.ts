@@ -26,10 +26,10 @@ export const closePosition = async () => {
   // poolInfo.price = rpcData.currentPrice
 
   const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: poolInfo.programId })
-  if (!allPosition.length) throw new Error('use do not have position')
+  if (!allPosition.length) throw new Error('user do not have any positions')
 
   const position = allPosition.find((p) => p.poolId.toBase58() === poolInfo.id)
-  if (!position) throw new Error(`use do not have position in pool: ${poolInfo.id}`)
+  if (!position) throw new Error(`user do not have position in pool: ${poolInfo.id}`)
 
   const { execute } = await raydium.clmm.closePosition({
     poolInfo,
