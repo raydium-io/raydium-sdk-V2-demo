@@ -35,7 +35,7 @@ export const editAmmFarm = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await editFarmBuilder.execute({ sendAndConfirm: true })
-  console.log('amm farm reward edited:', { txId })
+  console.log('amm farm reward edited:', { txId: `https://explorer.solana.com/tx/${txId}` })
 
   /** example below: if you want to edit reward and add new rewards in one tx  */
   /*

@@ -64,7 +64,7 @@ export const addLiquidity = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log('liquidity added:', { txId })
+  console.log('liquidity added:', { txId: `https://explorer.solana.com/tx/${txId}` })
 }
 
 /** uncomment code below to execute */

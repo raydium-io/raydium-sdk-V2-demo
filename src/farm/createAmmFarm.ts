@@ -35,7 +35,12 @@ export const createAmmFarm = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log('amm farm created:', { txId }, 'farm id:', extInfo.farmId.toBase58())
+  console.log(
+    'amm farm created:',
+    { txId: `https://explorer.solana.com/tx/${txId}` },
+    'farm id:',
+    extInfo.farmId.toBase58()
+  )
 }
 
 /** uncomment code below to execute */

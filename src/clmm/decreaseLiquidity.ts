@@ -54,7 +54,7 @@ export const decreaseLiquidity = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log('withdraw liquidity from clmm position:', { txId })
+  console.log('withdraw liquidity from clmm position:', { txId: `https://explorer.solana.com/tx/${txId}` })
 }
 
 /** uncomment code below to execute */

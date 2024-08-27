@@ -56,7 +56,7 @@ export const createFarm = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log('clmm farm created:', { txId })
+  console.log('clmm farm created:', { txId: `https://explorer.solana.com/tx/${txId}` })
 }
 
 /** uncomment code below to execute */

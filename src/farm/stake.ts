@@ -26,7 +26,7 @@ export const stake = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log('farm deposited:', { txId })
+  console.log('farm deposited:', { txId: `https://explorer.solana.com/tx/${txId}` })
 }
 
 /** uncomment code below to execute */

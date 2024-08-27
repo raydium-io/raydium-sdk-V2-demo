@@ -80,7 +80,7 @@ export const swap = async () => {
   })
 
   const { txId } = await execute()
-  console.log('swapped in clmm pool:', { txId })
+  console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
 }
 
 /** uncomment code below to execute */

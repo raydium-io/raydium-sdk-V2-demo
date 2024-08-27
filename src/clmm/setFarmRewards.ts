@@ -57,7 +57,7 @@ export const setFarmRewards = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await setRewardBuildData.execute({ sendAndConfirm: true })
-  console.log('clmm farm created:', { txId })
+  console.log('clmm farm created:', { txId: `https://explorer.solana.com/tx/${txId}` })
 
   /** example below: if you want to combine edit reward and add new rewards in one tx  */
   /*

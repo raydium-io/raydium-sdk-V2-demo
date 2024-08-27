@@ -65,7 +65,9 @@ export const swap = async () => {
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, { txId })
+  console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, {
+    txId: `https://explorer.solana.com/tx/${txId}`,
+  })
 }
 
 /** uncomment code below to execute */
