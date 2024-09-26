@@ -29,7 +29,7 @@ async function routeSwap() {
 
   const inputAmount = '100'
   const SOL = NATIVE_MINT // or WSOLMint
-  const [inputMint, outputMint] = [USDCMint, SOL]
+  const [inputMint, outputMint] = [SOL, USDCMint]
   const [inputMintStr, outputMintStr] = [inputMint.toBase58(), outputMint.toBase58()]
 
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
@@ -98,6 +98,8 @@ async function routeSwap() {
       ...mintInfos[outputMintStr],
       programId: mintInfos[outputMintStr].programId.toBase58(),
       address: outputMintStr,
+      freezeAuthority: undefined,
+      mintAuthority: undefined,
       extensions: {
         feeConfig: toFeeConfig(mintInfos[outputMintStr].feeConfig),
       },
