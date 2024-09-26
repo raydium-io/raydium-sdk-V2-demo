@@ -26,7 +26,7 @@ export const createAmmPool = async () => {
 
   if (
     baseMintInfo.programId !== TOKEN_PROGRAM_ID.toBase58() ||
-    quoteMintInfo.programId! == TOKEN_PROGRAM_ID.toBase58()
+    quoteMintInfo.programId !== TOKEN_PROGRAM_ID.toBase58()
   ) {
     throw new Error(
       'amm pools with openbook market only support TOKEN_PROGRAM_ID mints, if you want to create pool with token-2022, please create cpmm pool instead'
