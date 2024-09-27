@@ -79,6 +79,7 @@ await raydium.account.fetchWalletTokenAccounts() // if need to force fetching to
 
 - currently api doesn't support devnet pool/farm data, please test on mainnet.
 - only raydium.xxxx.getRpcPoolInfos support get devnet `rpc` pool info.
+- new created pool needs couple minutes to sync data to api, if you want to get info immediately, use raydium.xxxx.getRpcPoolInfos instead.
 
 #### create amm pool error
 
