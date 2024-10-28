@@ -37,7 +37,10 @@ async function routeSwap() {
   let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
   // let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
   if (poolData.ammPools.length === 0) {
-    console.log('fetching all pool basic info, this might take a while (more than 30 seconds)..')
+    console.log(
+      '**Please ensure you are using "paid" rpc node or you might encounter fetch data error due to pretty large pool data**'
+    )
+    console.log('fetching all pool basic info, this might take a while (more than 1 minutes)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
     // devent pool info
     // fetchRoutePoolBasicInfo({
