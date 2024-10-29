@@ -91,7 +91,7 @@ export const swapBaseOut = async () => {
 
     // optional: set up priority fee here
     computeBudgetConfig: {
-      units: 600000,
+      units: 60000,
       microLamports: 1000000,
     },
   })

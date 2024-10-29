@@ -44,7 +44,7 @@ export const harvestAllRewards = async () => {
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {
-    //   units: 600000,
+    //   units: 60000,
     //   microLamports: 100000000,
     // },
   })

@@ -66,7 +66,7 @@ export const createAmmPool = async () => {
     // feeDestinationId: DEVNET_PROGRAM_ID.FEE_DESTINATION_ID, // devnet
     // optional: set up priority fee here
     // computeBudgetConfig: {
-    //   units: 600000,
+    //   units: 60000,
     //   microLamports: 10000000,
     // },
   })

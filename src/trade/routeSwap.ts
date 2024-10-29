@@ -143,7 +143,7 @@ async function routeSwap() {
       checkCreateATAOwner: true,
     },
     computeBudgetConfig: {
-      units: 600000,
+      units: 60000,
       microLamports: 1000000,
     },
   })
