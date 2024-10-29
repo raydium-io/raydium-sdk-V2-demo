@@ -53,8 +53,9 @@ export const harvestLockedPosition = async () => {
     //   },
   })
 
-  //   const { txId } = await execute({})
-  //   console.log('harvested locked position :', { txId: `https://explorer.solana.com/tx/${txId}` })
+  const { txId } = await execute({})
+  console.log('harvested locked position :', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

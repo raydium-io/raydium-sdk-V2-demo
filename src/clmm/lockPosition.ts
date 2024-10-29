@@ -43,6 +43,7 @@ export const lockPosition = async () => {
 
   const { txId } = await execute({})
   console.log('position locked:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

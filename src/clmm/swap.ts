@@ -9,6 +9,7 @@ import {
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import { isValidClmm } from './utils'
+import { printSimulateInfo } from '../util'
 
 export const swap = async () => {
   const raydium = await initSdk()
@@ -79,8 +80,10 @@ export const swap = async () => {
     // },
   })
 
+  printSimulateInfo()
   const { txId } = await execute()
   console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

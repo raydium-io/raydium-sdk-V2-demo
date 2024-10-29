@@ -41,6 +41,7 @@ export const createAmmFarm = async () => {
     'farm id:',
     extInfo.farmId.toBase58()
   )
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

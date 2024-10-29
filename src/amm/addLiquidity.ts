@@ -10,6 +10,7 @@ import {
 import { initSdk, txVersion } from '../config'
 import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
+import BN from 'bn.js'
 
 export const addLiquidity = async () => {
   const raydium = await initSdk()
@@ -53,6 +54,7 @@ export const addLiquidity = async () => {
       toToken(poolInfo.mintB),
       new Decimal(r.maxAnotherAmount.toExact()).mul(10 ** poolInfo.mintA.decimals).toFixed(0)
     ),
+    otherAmountMin: r.minAnotherAmount,
     fixedSide: 'a',
     txVersion,
     // optional: set up priority fee here
@@ -65,6 +67,7 @@ export const addLiquidity = async () => {
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
   console.log('liquidity added:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

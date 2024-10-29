@@ -13,6 +13,7 @@ import {
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { initSdk, txVersion } from '../config'
 import { readCachePoolData, writeCachePoolData } from '../cache/utils'
+import { printSimulateInfo } from '../util'
 
 const poolType: Record<number, string> = {
   4: 'AMM',
@@ -149,10 +150,14 @@ async function routeSwap() {
 
   // printSimulate(transactions)
 
+  printSimulateInfo()
   console.log('execute tx..')
+  // sequentially should always to be true because first tx does initialize token accounts needed for swap
   const { txIds } = await execute({ sequentially: true })
   console.log('txIds:', txIds)
   txIds.forEach((txId) => console.log(`https://explorer.solana.com/tx/${txId}`))
+
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 /** uncomment code below to execute */
 // routeSwap()

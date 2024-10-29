@@ -34,6 +34,7 @@ export const createPool = async () => {
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
   console.log('clmm pool created:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

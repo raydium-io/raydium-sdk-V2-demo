@@ -11,6 +11,7 @@ import BN from 'bn.js'
 import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 import { NATIVE_MINT } from '@solana/spl-token'
+import { printSimulateInfo } from '../util'
 
 // setLoggerLevel('Raydium_LiquidityV2', LogLevel.Debug) // uncomment to show debug log
 
@@ -95,9 +96,12 @@ export const swapBaseOut = async () => {
     },
   })
 
+  printSimulateInfo()
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
   console.log(`swap successfully in amm pool:`, { txId: `https://explorer.solana.com/tx/${txId}` })
+
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

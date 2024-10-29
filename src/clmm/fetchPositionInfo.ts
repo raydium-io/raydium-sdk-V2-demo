@@ -152,6 +152,7 @@ export const fetchPositionInfo = async () => {
       amount: r.amount.toString(),
     })),
   })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

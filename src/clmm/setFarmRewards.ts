@@ -84,6 +84,8 @@ export const setFarmRewards = async () => {
   const { txId } = await execute({ sendAndConfirm: true })
   console.log('edit and add more rewards to clmm farm', { txId })
   */
+
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

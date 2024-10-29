@@ -50,6 +50,7 @@ export const createMarket = async () => {
   })
 
   console.log('create market txIds:', txIds)
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

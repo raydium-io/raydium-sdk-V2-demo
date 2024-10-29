@@ -4,6 +4,7 @@ import BN from 'bn.js'
 import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 import { NATIVE_MINT } from '@solana/spl-token'
+import { printSimulateInfo } from '../util'
 
 export const swap = async () => {
   const raydium = await initSdk()
@@ -81,15 +82,18 @@ export const swap = async () => {
     // },
 
     // optional: set up priority fee here
-    // computeBudgetConfig: {
-    //   units: 600000,
-    //   microLamports: 100000000,
-    // },
+    computeBudgetConfig: {
+      units: 600000,
+      microLamports: 100000000,
+    },
   })
 
+  printSimulateInfo()
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
   console.log(`swap successfully in amm pool:`, { txId: `https://explorer.solana.com/tx/${txId}` })
+
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

@@ -51,6 +51,7 @@ export const harvestAllRewards = async () => {
 
   const { txIds } = await execute({ sequentially: true })
   console.log('harvested all clmm rewards:', { txIds })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

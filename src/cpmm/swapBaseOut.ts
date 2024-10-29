@@ -9,6 +9,7 @@ import { initSdk, txVersion } from '../config'
 import BN from 'bn.js'
 import { isValidCpmm } from './utils'
 import { NATIVE_MINT } from '@solana/spl-token'
+import { printSimulateInfo } from '../util'
 
 // swapBaseOut means fixed output token amount, calculate needed input token amount
 export const swapBaseOut = async () => {
@@ -80,11 +81,13 @@ export const swapBaseOut = async () => {
     },
   })
 
+  printSimulateInfo()
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
   console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, {
     txId: `https://explorer.solana.com/tx/${txId}`,
   })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

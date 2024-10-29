@@ -67,6 +67,7 @@ export const createPool = async () => {
       {}
     ),
   })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

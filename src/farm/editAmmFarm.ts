@@ -61,6 +61,7 @@ export const editAmmFarm = async () => {
   const { txId } = await editFarmBuilder.execute({ sendAndConfirm: true })
   console.log('amm farm reward edited and added:', { txId })
   */
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */

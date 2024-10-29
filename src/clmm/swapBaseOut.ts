@@ -97,6 +97,7 @@ export const swapBaseOut = async () => {
 
   const { txId } = await execute({ sendAndConfirm: true })
   console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */
