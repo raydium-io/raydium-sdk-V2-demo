@@ -23,6 +23,8 @@ export const createAmmPool = async () => {
 
   const baseMintInfo = await raydium.token.getTokenInfo(baseMint)
   const quoteMintInfo = await raydium.token.getTokenInfo(quoteMint)
+  const baseAmount = new BN(1000)
+  const quoteAmount = new BN(1000)
 
   if (
     baseMintInfo.programId !== TOKEN_PROGRAM_ID.toBase58() ||
@@ -31,6 +33,10 @@ export const createAmmPool = async () => {
     throw new Error(
       'amm pools with openbook market only support TOKEN_PROGRAM_ID mints, if you want to create pool with token-2022, please create cpmm pool instead'
     )
+  }
+
+  if (baseAmount.mul(quoteAmount).lte(new BN(1).mul(new BN(10 ** baseMintInfo.decimals)).pow(new BN(2)))) {
+    throw new Error('initial liquidity too low, try adding more baseAmount/quoteAmount')
   }
 
   const { execute, extInfo } = await raydium.liquidity.createPoolV4({
