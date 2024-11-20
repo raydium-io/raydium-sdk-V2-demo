@@ -33,8 +33,9 @@ interface SwapCompute {
 export const apiSwap = async () => {
   const inputMint = NATIVE_MINT.toBase58()
   const outputMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R' // RAY
-  const amount = 100
-  const slippage = 0.5 // in percent, for this example, 0.5 means 0.5%
+  const price = 42
+  const amount = 10000000
+  const slippage = 1 // in percent, for this example, 0.5 means 0.5%
   const txVersion: string = 'V0' // or LEGACY
   const isV0Tx = txVersion === 'V0'
 
@@ -89,6 +90,7 @@ export const apiSwap = async () => {
   const allTransactions = allTxBuf.map((txBuf) =>
     isV0Tx ? VersionedTransaction.deserialize(txBuf) : Transaction.from(txBuf)
   )
+  console.log('Котировка получена:', swapResponse);
 
   console.log(`total ${allTransactions.length} transactions`, swapTransactions)
 
@@ -123,4 +125,4 @@ export const apiSwap = async () => {
     }
   }
 }
-// apiSwap()
+apiSwap()
