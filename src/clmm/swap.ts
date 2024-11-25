@@ -15,7 +15,7 @@ export const swap = async () => {
   const raydium = await initSdk()
   let poolInfo: ApiV3PoolInfoConcentratedItem
   // RAY-USDC pool
-  const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
+  const poolId = 'DiwsGxJYoRZURvyCtMsJVyxR86yZBBbSYeeWNm7YCmT6'
   const inputMint = RAYMint.toBase58()
   let poolKeys: ClmmKeys | undefined
   let clmmPoolInfo: ComputeClmmPoolInfo
@@ -45,6 +45,8 @@ export const swap = async () => {
     clmmPoolInfo = data.computePoolInfo
     tickCache = data.tickData
   }
+
+  console.log(123123444, clmmPoolInfo.observationId)
 
   if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
     throw new Error('input mint does not match pool')
@@ -81,10 +83,10 @@ export const swap = async () => {
   })
 
   printSimulateInfo()
-  const { txId } = await execute()
-  console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
-  process.exit() // if you don't want to end up node execution, comment this line
+  // const { txId } = await execute()
+  // console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  // process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */
-// swap()
+swap()

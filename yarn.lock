@@ -202,10 +202,10 @@
     "@pnpm/network.ca-file" "^1.0.1"
     config-chain "^1.1.11"
 
-"@raydium-io/raydium-sdk-v2@0.1.73-alpha":
-  version "0.1.73-alpha"
-  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.1.73-alpha.tgz#1501e5c216f8f6ae7afe19880cf7ac751e528939"
-  integrity sha512-qUhsEV/phGW6fwzHkdWcKa+qdomTouheo0xZTcoIZQNF0xAHQ4bNgnhi+Q28oD37+wuL+SzreKnbIRgE3r629Q==
+"@raydium-io/raydium-sdk-v2@0.1.92-alpha":
+  version "0.1.92-alpha"
+  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.1.92-alpha.tgz#06b782725b3a7c5188d6fb0f0292cec6f0af12ed"
+  integrity sha512-oCI2a+eN0JafnBa4zcEYBd9PUzqIVFjDnonXqUQF2WKcSiYRAdZq2zRx8QgVh7bZTK1Q4Jetjvw3wT2s4bZoig==
   dependencies:
     "@solana/buffer-layout" "^4.0.1"
     "@solana/spl-token" "^0.4.8"
@@ -215,6 +215,7 @@
     bn.js "^5.2.1"
     dayjs "^1.11.5"
     decimal.js-light "^2.5.1"
+    jsonfile "^6.1.0"
     lodash "^4.17.21"
     toformat "^2.0.0"
     tsconfig-paths "^4.2.0"

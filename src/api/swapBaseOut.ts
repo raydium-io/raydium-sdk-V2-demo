@@ -43,6 +43,7 @@ export const apiSwapBaseOut = async () => {
   const [isInputSol, isOutputSol] = [inputMint === NATIVE_MINT.toBase58(), outputMint === NATIVE_MINT.toBase58()]
 
   const { tokenAccounts } = await fetchTokenAccountData()
+
   const inputTokenAcc = tokenAccounts.find((a) => a.mint.toBase58() === inputMint)?.publicKey
   const outputTokenAcc = tokenAccounts.find((a) => a.mint.toBase58() === outputMint)?.publicKey
 
