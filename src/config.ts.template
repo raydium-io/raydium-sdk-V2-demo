@@ -58,3 +58,6 @@ export const fetchTokenAccountData = async () => {
   })
   return tokenAccountData
 }
+
+export const grpcUrl = '<YOUR_GRPC_URL>'
+export const grpcToken = '<YOUR_GRPC_TOKEN>'
