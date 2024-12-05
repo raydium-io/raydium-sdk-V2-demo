@@ -33,7 +33,7 @@ interface SwapCompute {
 export const apiSwap = async () => {
   const inputMint = NATIVE_MINT.toBase58()
   const outputMint = '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R' // RAY
-  const amount = 100
+  const amount = 10000
   const slippage = 0.5 // in percent, for this example, 0.5 means 0.5%
   const txVersion: string = 'V0' // or LEGACY
   const isV0Tx = txVersion === 'V0'

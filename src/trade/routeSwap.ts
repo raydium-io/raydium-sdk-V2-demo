@@ -10,6 +10,7 @@ import {
   setLoggerLevel,
   LogLevel,
 } from '@raydium-io/raydium-sdk-v2'
+import { PublicKey } from '@solana/web3.js'
 import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
 import { initSdk, txVersion } from '../config'
 import { readCachePoolData, writeCachePoolData } from '../cache/utils'
@@ -28,15 +29,15 @@ async function routeSwap() {
   const raydium = await initSdk()
   await raydium.fetchChainTime()
 
-  const inputAmount = '100'
+  const inputAmount = '8000000'
   const SOL = NATIVE_MINT // or WSOLMint
-  const [inputMint, outputMint] = [SOL, USDCMint]
+  const [inputMint, outputMint] = [SOL, new PublicKey('7i5XE77hnx1a6hjWgSuYwmqdmLoDJNTU1rYA6Gqx7QiE')]
   const [inputMintStr, outputMintStr] = [inputMint.toBase58(), outputMint.toBase58()]
 
   // strongly recommend cache all pool data, it will reduce lots of data fetching time
   // code below is a simple way to cache it, you can implement it with any other ways
-  let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
-  // let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
+  // let poolData = readCachePoolData() // initial cache time is 10 mins(1000 * 60 * 10), if wants to cache longer, set bigger number in milliseconds
+  let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
   if (poolData.ammPools.length === 0) {
     console.log(
       '**Please ensure you are using "paid" rpc node or you might encounter fetch data error due to pretty large pool data**'
@@ -115,6 +116,7 @@ async function routeSwap() {
 
   // swapRoutes are sorted by out amount, so first one should be the best route
   const targetRoute = swapRoutes[0]
+  console.log(123213555, swapRoutes)
   if (!targetRoute) throw new Error('no swap routes were found')
 
   console.log('best swap route:', {
@@ -153,11 +155,11 @@ async function routeSwap() {
   printSimulateInfo()
   console.log('execute tx..')
   // sequentially should always to be true because first tx does initialize token accounts needed for swap
-  const { txIds } = await execute({ sequentially: true })
-  console.log('txIds:', txIds)
-  txIds.forEach((txId) => console.log(`https://explorer.solana.com/tx/${txId}`))
+  // const { txIds } = await execute({ sequentially: true })
+  // console.log('txIds:', txIds)
+  // txIds.forEach((txId) => console.log(`https://explorer.solana.com/tx/${txId}`))
 
   process.exit() // if you don't want to end up node execution, comment this line
 }
 /** uncomment code below to execute */
-// routeSwap()
+routeSwap()

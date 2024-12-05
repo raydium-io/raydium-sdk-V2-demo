@@ -8,11 +8,12 @@ export const deposit = async () => {
   const raydium = await initSdk()
 
   // SOL - USDC pool
-  const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
+  // const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
+  const poolId = '6rXSohG2esLJMzKZzpFr1BXUeXg8Cr5Gv3TwbuXbrwQq'
   let poolInfo: ApiV3PoolInfoStandardItemCpmm
   let poolKeys: CpmmKeys | undefined
 
-  if (raydium.cluster === 'mainnet') {
+  if (raydium.cluster === 'devnet') {
     // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
     // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
     const data = await raydium.api.fetchPoolById({ ids: poolId })
@@ -23,6 +24,8 @@ export const deposit = async () => {
     poolInfo = data.poolInfo
     poolKeys = data.poolKeys
   }
+
+  console.log(123123444, poolInfo)
 
   const uiInputAmount = '0.0001'
   const inputAmount = new BN(new Decimal(uiInputAmount).mul(10 ** poolInfo.mintA.decimals).toFixed(0))
@@ -63,10 +66,10 @@ export const deposit = async () => {
     // },
   })
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
-  const { txId } = await execute({ sendAndConfirm: true })
-  console.log('pool deposited', { txId: `https://explorer.solana.com/tx/${txId}` })
-  process.exit() // if you don't want to end up node execution, comment this line
+  // const { txId } = await execute({ sendAndConfirm: true })
+  // console.log('pool deposited', { txId: `https://explorer.solana.com/tx/${txId}` })
+  // process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */
-// deposit()
+deposit()
