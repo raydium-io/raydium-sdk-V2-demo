@@ -20,7 +20,7 @@ export const swapBaseOutInstruction = async () => {
   const outputMint = NATIVE_MINT.toBase58()
   const amount = 1000000
   const slippage = 0.5 // in percent, for this example, 0.5 means 0.5%
-  const txVersion: 'LEGACY' | 'VO' = 'LEGACY'
+  const txVersion: 'LEGACY' | 'V0' = 'LEGACY'
 
   const { data: swapResponse } = await axios.get<ApiSwapV1Out>(
     `${
