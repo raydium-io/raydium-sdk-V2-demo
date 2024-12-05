@@ -28,7 +28,7 @@ export const apiSwap = async () => {
   const { data: swapResponse } = await axios.get<ApiSwapV1Out>(
     `${
       API_URLS.SWAP_HOST
-    }/compute/swap-base-out?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${
+    }/compute/swap-base-in?inputMint=${inputMint}&outputMint=${outputMint}&amount=${amount}&slippageBps=${
       slippage * 100
     }&txVersion=${txVersion}`
   )
