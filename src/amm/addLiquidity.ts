@@ -52,7 +52,7 @@ export const addLiquidity = async () => {
     ),
     amountInB: new TokenAmount(
       toToken(poolInfo.mintB),
-      new Decimal(r.maxAnotherAmount.toExact()).mul(10 ** poolInfo.mintA.decimals).toFixed(0)
+      new Decimal(r.maxAnotherAmount.toExact()).mul(10 ** poolInfo.mintB.decimals).toFixed(0)
     ),
     otherAmountMin: r.minAnotherAmount,
     fixedSide: 'a',
