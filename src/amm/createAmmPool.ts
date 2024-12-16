@@ -21,6 +21,7 @@ export const createAmmPool = async () => {
   // check mint info here: https://api-v3.raydium.io/mint/list
   // or get mint info by api: await raydium.token.getTokenInfo('mint address')
 
+  // amm pool doesn't support token 2022
   const baseMintInfo = await raydium.token.getTokenInfo(baseMint)
   const quoteMintInfo = await raydium.token.getTokenInfo(quoteMint)
   const baseAmount = new BN(1000)
