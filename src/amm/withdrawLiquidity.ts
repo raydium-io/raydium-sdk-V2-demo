@@ -10,7 +10,7 @@ export const withdrawLiquidity = async () => {
   const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
   let poolKeys: AmmV4Keys | AmmV5Keys | undefined
   let poolInfo: ApiV3PoolInfoStandardItem
-  const withdrawLpAmount = new BN(1)
+  const withdrawLpAmount = new BN(1000) // please check your token account lpMint balance
 
   if (raydium.cluster === 'mainnet') {
     // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
@@ -25,19 +25,18 @@ export const withdrawLiquidity = async () => {
   }
 
   if (!isValidAmm(poolInfo.programId)) throw new Error('target pool is not AMM pool')
-
   const [baseRatio, quoteRatio] = [
     new Decimal(poolInfo.mintAmountA).div(poolInfo.lpAmount || 1),
     new Decimal(poolInfo.mintAmountB).div(poolInfo.lpAmount || 1),
   ]
 
-  const withdrawAmountDe = new Decimal(withdrawLpAmount.toString())
+  const withdrawAmountDe = new Decimal(withdrawLpAmount.toString()).div(10 ** poolInfo.lpMint.decimals)
   const [withdrawAmountA, withdrawAmountB] = [
     withdrawAmountDe.mul(baseRatio).mul(10 ** (poolInfo?.mintA.decimals || 0)),
     withdrawAmountDe.mul(quoteRatio).mul(10 ** (poolInfo?.mintB.decimals || 0)),
   ]
 
-  const lpSlippage = 0.001 // means 0.1%
+  const lpSlippage = 0.003 // means 1%
 
   const { execute } = await raydium.liquidity.removeLiquidity({
     poolInfo,
