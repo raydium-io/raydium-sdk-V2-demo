@@ -7,7 +7,7 @@ import { isValidAmm } from './utils'
 export const withdrawLiquidity = async () => {
   const raydium = await initSdk()
   // RAY-USDC pool
-  const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
+  const poolId = 'FcZNWMNEyUrPY7GMqC92xiWV5otqjCHisUznFJApj8FH'
   let poolKeys: AmmV4Keys | AmmV5Keys | undefined
   let poolInfo: ApiV3PoolInfoStandardItem
   const withdrawLpAmount = new BN(1000) // please check your token account lpMint balance
@@ -36,7 +36,7 @@ export const withdrawLiquidity = async () => {
     withdrawAmountDe.mul(quoteRatio).mul(10 ** (poolInfo?.mintB.decimals || 0)),
   ]
 
-  const lpSlippage = 0.003 // means 1%
+  const lpSlippage = 0.1 // means 1%
 
   const { execute } = await raydium.liquidity.removeLiquidity({
     poolInfo,
