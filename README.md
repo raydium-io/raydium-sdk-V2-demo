@@ -39,7 +39,7 @@ const { execute, transaction, builder, extInfo } = await raydium.clmm.openPositi
 - `builder`: all instructions in transaction. e.g. builder.allInstructions, builder.AllTxData
 - `extInfo`: transaction related publicKeys. (e.g: extInfo from raydium.cpmm.createPool includes poolId, programId...etc)
 
-#### Fetch pool list by mints
+#### Fetch pool list by mints (mainnet only)
 
 ```
 import { PoolFetchType } from '@raydium-io/raydium-sdk-v2'
@@ -70,7 +70,7 @@ await raydium.account.fetchWalletTokenAccounts() // if need to force fetching to
 
 ### FAQ
 
-#### Error: block height exceeded
+#### Error: block height exceeded / exceeded CUs meter at BPF instruction
 
 - transactions were expired, set higher priority fees (computeBudgetConfig) to make it go through smoothly
 - if you are testing in devnet, remember to replace programId to devnet one.

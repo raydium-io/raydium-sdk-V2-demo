@@ -51,7 +51,9 @@ export const createMarket = async () => {
     sequentially: true,
   })
 
-  console.log('note: create market does not support token 2022')
+  console.log(
+    'note: create market does not support token 2022, if you need more detail error info, set txVersion to TxVersion.LEGACY'
+  )
   console.log('create market txIds:', txIds)
   process.exit() // if you don't want to end up node execution, comment this line
 }
