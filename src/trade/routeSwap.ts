@@ -116,7 +116,6 @@ async function routeSwap() {
 
   // swapRoutes are sorted by out amount, so first one should be the best route
   const targetRoute = swapRoutes[0]
-  console.log(123213555, swapRoutes)
   if (!targetRoute) throw new Error('no swap routes were found')
 
   console.log('best swap route:', {
@@ -155,11 +154,11 @@ async function routeSwap() {
   printSimulateInfo()
   console.log('execute tx..')
   // sequentially should always to be true because first tx does initialize token accounts needed for swap
-  // const { txIds } = await execute({ sequentially: true })
-  // console.log('txIds:', txIds)
-  // txIds.forEach((txId) => console.log(`https://explorer.solana.com/tx/${txId}`))
+  const { txIds } = await execute({ sequentially: true })
+  console.log('txIds:', txIds)
+  txIds.forEach((txId) => console.log(`https://explorer.solana.com/tx/${txId}`))
 
   process.exit() // if you don't want to end up node execution, comment this line
 }
 /** uncomment code below to execute */
-routeSwap()
+// routeSwap()
