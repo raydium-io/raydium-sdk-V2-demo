@@ -25,8 +25,6 @@ export const deposit = async () => {
     poolKeys = data.poolKeys
   }
 
-  console.log(123123444, poolInfo)
-
   const uiInputAmount = '0.0001'
   const inputAmount = new BN(new Decimal(uiInputAmount).mul(10 ** poolInfo.mintA.decimals).toFixed(0))
   const slippage = new Percent(1, 100) // 1%

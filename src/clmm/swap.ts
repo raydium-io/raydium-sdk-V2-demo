@@ -46,8 +46,6 @@ export const swap = async () => {
     tickCache = data.tickData
   }
 
-  console.log(123123444, clmmPoolInfo.observationId)
-
   if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
     throw new Error('input mint does not match pool')
 
