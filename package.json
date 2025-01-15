@@ -9,9 +9,11 @@
     "@solana/web3.js": "^1.95.3",
     "@triton-one/yellowstone-grpc": "^1.2.0",
     "@types/jsonfile": "^6.1.4",
+    "@types/node-cron": "^3.0.11",
     "bs58": "^5.0.0",
     "decimal.js": "^10.4.3",
     "jsonfile": "^6.1.0",
+    "node-cron": "^3.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.3.3"
   },
@@ -23,6 +25,7 @@
     "start": "node",
     "build": "tsc",
     "clean": "tsc --build --clean",
-    "dev": "ts-node"
+    "dev": "ts-node",
+    "clmm-market": "ts-node src/clmm/marketMaker.ts"
   }
 }
