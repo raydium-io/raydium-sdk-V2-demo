@@ -36,6 +36,11 @@ export const closePosition = async () => {
     poolKeys,
     ownerPosition: position,
     txVersion,
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
+    // },
   })
 
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute

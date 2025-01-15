@@ -5,6 +5,7 @@ import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 import { NATIVE_MINT } from '@solana/spl-token'
 import { printSimulateInfo } from '../util'
+import { PublicKey } from '@solana/web3.js'
 
 export const swap = async () => {
   const raydium = await initSdk()
@@ -82,10 +83,16 @@ export const swap = async () => {
     // },
 
     // optional: set up priority fee here
-    computeBudgetConfig: {
-      units: 600000,
-      microLamports: 46591500,
-    },
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 46591500,
+    // },
+
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
+    // },
   })
 
   printSimulateInfo()
@@ -97,4 +104,4 @@ export const swap = async () => {
 }
 
 /** uncomment code below to execute */
-swap()
+// swap()

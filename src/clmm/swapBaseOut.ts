@@ -11,6 +11,7 @@ import { initSdk, txVersion } from '../config'
 import { isValidClmm } from './utils'
 import { NATIVE_MINT } from '@solana/spl-token'
 import Decimal from 'decimal.js'
+import { PublicKey } from '@solana/web3.js'
 
 // swapBaseOut means fixed output token amount, calculate needed input token amount
 export const swapBaseOut = async () => {
@@ -93,6 +94,12 @@ export const swapBaseOut = async () => {
       units: 600000,
       microLamports: 465915,
     },
+
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
+    // },
   })
 
   const { txId } = await execute({ sendAndConfirm: true })

@@ -4,6 +4,7 @@ import BN from 'bn.js'
 import { isValidCpmm } from './utils'
 import { NATIVE_MINT } from '@solana/spl-token'
 import { printSimulateInfo } from '../util'
+import { PublicKey } from '@solana/web3.js'
 
 export const swap = async () => {
   const raydium = await initSdk()
@@ -61,6 +62,12 @@ export const swap = async () => {
     // computeBudgetConfig: {
     //   units: 600000,
     //   microLamports: 4659150,
+    // },
+
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
     // },
   })
 

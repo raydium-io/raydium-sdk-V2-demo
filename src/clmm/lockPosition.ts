@@ -44,6 +44,12 @@ export const lockPosition = async () => {
     //   units: 600000,
     //   microLamports: 46591500,
     // },
+
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
+    // },
   })
 
   const { txId } = await execute({})

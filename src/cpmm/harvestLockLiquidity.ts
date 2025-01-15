@@ -25,6 +25,11 @@ export const harvestLockLiquidity = async () => {
     nftMint: new PublicKey('CgkdQL6eRN1nxG2AmC8NFG5iboXuKtSjT4pShnspomZy'), // locked nft mint
     lpFeeAmount: new BN(99999999),
     txVersion,
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
+    // },
   })
 
   const { txId } = await execute({ sendAndConfirm: true })

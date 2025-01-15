@@ -12,6 +12,7 @@ import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 import { NATIVE_MINT } from '@solana/spl-token'
 import { printSimulateInfo } from '../util'
+import { PublicKey } from '@solana/web3.js'
 
 // setLoggerLevel('Raydium_LiquidityV2', LogLevel.Debug) // uncomment to show debug log
 
@@ -94,6 +95,12 @@ export const swapBaseOut = async () => {
       units: 600000,
       microLamports: 465915,
     },
+
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
+    // },
   })
 
   printSimulateInfo()

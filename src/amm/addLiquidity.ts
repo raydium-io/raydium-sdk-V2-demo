@@ -11,6 +11,7 @@ import { initSdk, txVersion } from '../config'
 import { isValidAmm } from './utils'
 import Decimal from 'decimal.js'
 import BN from 'bn.js'
+import { PublicKey } from '@solana/web3.js'
 
 export const addLiquidity = async () => {
   const raydium = await initSdk()
@@ -61,6 +62,12 @@ export const addLiquidity = async () => {
     // computeBudgetConfig: {
     //   units: 600000,
     //   microLamports: 46591500,
+    // },
+
+    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
+    // txTipConfig: {
+    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
+    //   amount: new BN(10000000), // 0.01 sol
     // },
   })
 
