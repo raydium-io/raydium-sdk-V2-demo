@@ -4,7 +4,7 @@
   "description": "Raydium SDK V2 demo.",
   "license": "GPL-3.0",
   "dependencies": {
-    "@raydium-io/raydium-sdk-v2": "0.1.103-alpha",
+    "@raydium-io/raydium-sdk-v2": "0.1.105-alpha",
     "@solana/spl-token": "^0.4.6",
     "@solana/web3.js": "^1.95.3",
     "@triton-one/yellowstone-grpc": "^1.2.0",
