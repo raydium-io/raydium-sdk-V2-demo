@@ -31,6 +31,9 @@ export const withdraw = async () => {
     lpAmount,
     txVersion,
     slippage,
+
+    // closeWsol: false, // default if true, if you want use wsol, you need set false
+
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
