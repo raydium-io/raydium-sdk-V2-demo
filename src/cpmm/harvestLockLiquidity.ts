@@ -1,4 +1,10 @@
-import { ApiV3PoolInfoStandardItemCpmm, printSimulate } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoStandardItemCpmm,
+  printSimulate,
+  DEV_LOCK_CPMM_PROGRAM,
+  DEV_LOCK_CPMM_AUTH,
+  CpmmKeys,
+} from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import { isValidCpmm } from './utils'
 import { PublicKey } from '@solana/web3.js'
@@ -9,6 +15,7 @@ export const harvestLockLiquidity = async () => {
   const poolId = '2umXxGh6jY63wDHHQ4yDv8BJbjzLNnKgYDwRqas75nnt'
 
   let poolInfo: ApiV3PoolInfoStandardItemCpmm
+  let poolKeys: CpmmKeys | undefined
   if (raydium.cluster === 'mainnet') {
     // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
     // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
@@ -18,9 +25,13 @@ export const harvestLockLiquidity = async () => {
   } else {
     const data = await raydium.cpmm.getPoolInfoFromRpc(poolId)
     poolInfo = data.poolInfo
+    poolKeys = data.poolKeys
   }
 
   const { execute, transaction } = await raydium.cpmm.harvestLockLp({
+    // programId: DEV_LOCK_CPMM_PROGRAM, // devent
+    // authProgram: DEV_LOCK_CPMM_AUTH, // devent
+    // poolKeys, // devent
     poolInfo,
     nftMint: new PublicKey('CgkdQL6eRN1nxG2AmC8NFG5iboXuKtSjT4pShnspomZy'), // locked nft mint
     lpFeeAmount: new BN(99999999),
