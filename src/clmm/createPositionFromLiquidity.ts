@@ -101,10 +101,10 @@ export const createPositionFromLiquidity = async () => {
 
   printSimulate([transaction])
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
-  // const { txId } = await execute({ sendAndConfirm: true })
-  // console.log('clmm position opened:', { txId, nft: extInfo.nftMint.toBase58() })
+  const { txId } = await execute({ sendAndConfirm: true })
+  console.log('clmm position opened:', { txId, nft: extInfo.address.nftMint.toBase58() })
   process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */
-createPositionFromLiquidity()
+// createPositionFromLiquidity()
