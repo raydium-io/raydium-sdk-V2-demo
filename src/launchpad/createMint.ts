@@ -7,7 +7,7 @@ import {
 } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
-import { Keypair } from '@solana/web3.js'
+import { Keypair, PublicKey } from '@solana/web3.js'
 import { NATIVE_MINT } from '@solana/spl-token'
 
 export const createMint = async () => {
@@ -28,8 +28,8 @@ export const createMint = async () => {
   const configInfo = LaunchpadConfig.decode(configData.data)
   const mintBInfo = await raydium.token.getTokenInfo(configInfo.mintB)
 
-  const inAmount = new BN(10000)
-  const { builder, extInfo } = await raydium.launchpad.createLaunchpad({
+  const inAmount = new BN(1000)
+  const { execute, transactions, extInfo } = await raydium.launchpad.createLaunchpad({
     programId,
     mintA,
     decimals: 6,
@@ -47,23 +47,21 @@ export const createMint = async () => {
     slippage: new BN(100), // means 1%
     buyAmount: inAmount,
     createOnly: true, // true means create mint only, false will "create and buy together"
+    extraSigners: [pair],
 
-    // shareFeeReceiver: new PublicKey('share wallet'), // only works when createOnly=false
-    // shareFeeRate: new BN(1000),  // only works when createOnly=false
+    // shareFeeReceiver: new PublicKey('your share wallet'), // only works when createOnly=false
+    // shareFeeRate: new BN(1000), // only works when createOnly=false
 
     // computeBudgetConfig: {
     //   units: 600000,
-    //   microLamports: 600000,
+    //   microLamports: 46591500,
     // },
   })
 
-  builder.addInstruction({ signers: [pair] })
-  const { execute, transaction } = await builder.buildV0()
-
-  // printSimulate([transaction])
+  printSimulate(transactions)
 
   try {
-    const sentInfo = await execute({ sendAndConfirm: true })
+    const sentInfo = await execute({ sequentially: true })
     console.log('poolId: ', extInfo)
     console.log(sentInfo)
   } catch (e: any) {
