@@ -16,7 +16,7 @@ import Decimal from 'decimal.js'
 export const buy = async () => {
   const raydium = await initSdk()
 
-  const mintA = new PublicKey('mint address')
+  const mintA = new PublicKey('mint address') //Such as '6596PvLrJfN6bPUKU85KdSDuU4nAL2QoSarDZF5Yzo9j'
   const mintB = NATIVE_MINT
   const inAmount = new BN(1000)
 
