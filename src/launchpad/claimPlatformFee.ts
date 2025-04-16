@@ -1,17 +1,14 @@
 import { PublicKey } from '@solana/web3.js'
 import { NATIVE_MINT } from '@solana/spl-token'
-import { TxVersion, DEV_LAUNCHPAD_PROGRAM, printSimulate } from '@raydium-io/raydium-sdk-v2'
+import { TxVersion, DEV_LAUNCHPAD_PROGRAM, LAUNCHPAD_PROGRAM, printSimulate } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 
 export const claimPlatformFee = async () => {
   const raydium = await initSdk()
   const poolId = new PublicKey('pool id')
 
-  if (raydium.cluster !== 'devnet')
-    throw new Error('Please check rpc setting, launchpad currently only support in devent')
-
   const { execute, transaction, extInfo, builder } = await raydium.launchpad.claimPlatformFee({
-    programId: DEV_LAUNCHPAD_PROGRAM, // launchpad currently only support in devent
+    programId: LAUNCHPAD_PROGRAM, // devnet: DEV_LAUNCHPAD_PROGRAM
     platformId: new PublicKey('your platform id'),
     platformClaimFeeWallet: new PublicKey('your platform fee wallet'),
     poolId,

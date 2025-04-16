@@ -2,6 +2,7 @@ import {
   Curve,
   TxVersion,
   DEV_LAUNCHPAD_PROGRAM,
+  LAUNCHPAD_PROGRAM,
   printSimulate,
   getPdaLaunchpadPoolId,
   PlatformConfig,
@@ -18,10 +19,7 @@ export const sell = async () => {
   const mintA = new PublicKey('your mint')
   const mintB = NATIVE_MINT
 
-  const programId = DEV_LAUNCHPAD_PROGRAM
-
-  if (!programId.equals(DEV_LAUNCHPAD_PROGRAM) || raydium.cluster !== 'devnet')
-    throw new Error('Please check program id and rpc setting, launchpad currently only support in devent')
+  const programId = LAUNCHPAD_PROGRAM // devnet: DEV_LAUNCHPAD_PROGRAM
 
   const poolId = getPdaLaunchpadPoolId(programId, mintA, mintB).publicKey
   const poolInfo = await raydium.launchpad.getRpcPoolInfo({ poolId })

@@ -5,6 +5,7 @@ import {
   getPdaLaunchpadPoolId,
   Curve,
   PlatformConfig,
+  LAUNCHPAD_PROGRAM,
 } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
@@ -15,14 +16,11 @@ import Decimal from 'decimal.js'
 export const buy = async () => {
   const raydium = await initSdk()
 
-  const mintA = new PublicKey('your mint')
+  const mintA = new PublicKey('mint address')
   const mintB = NATIVE_MINT
   const inAmount = new BN(1000)
 
-  const programId = DEV_LAUNCHPAD_PROGRAM
-
-  if (!programId.equals(DEV_LAUNCHPAD_PROGRAM) || raydium.cluster !== 'devnet')
-    throw new Error('Please check program id and rpc setting, launchpad currently only support in devent')
+  const programId = LAUNCHPAD_PROGRAM // devnet: DEV_LAUNCHPAD_PROGRAM
 
   const poolId = getPdaLaunchpadPoolId(programId, mintA, mintB).publicKey
   const poolInfo = await raydium.launchpad.getRpcPoolInfo({ poolId })

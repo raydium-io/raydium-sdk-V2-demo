@@ -4,6 +4,7 @@ import {
   printSimulate,
   getPdaLaunchpadConfigId,
   LaunchpadConfig,
+  LAUNCHPAD_PROGRAM,
 } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
@@ -13,10 +14,7 @@ import { NATIVE_MINT } from '@solana/spl-token'
 export const createMint = async () => {
   const raydium = await initSdk()
 
-  const programId = DEV_LAUNCHPAD_PROGRAM // currently only support in devent
-
-  if (!programId.equals(DEV_LAUNCHPAD_PROGRAM) || raydium.cluster !== 'devnet')
-    throw new Error('Please check program id and rpc setting, launchpad currently only support in devent')
+  const programId = LAUNCHPAD_PROGRAM // devent: DEV_LAUNCHPAD_PROGRAM
 
   const pair = Keypair.generate()
   const mintA = pair.publicKey

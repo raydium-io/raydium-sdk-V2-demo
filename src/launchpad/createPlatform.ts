@@ -1,4 +1,4 @@
-import { TxVersion, DEV_LAUNCHPAD_PROGRAM, printSimulate } from '@raydium-io/raydium-sdk-v2'
+import { TxVersion, DEV_LAUNCHPAD_PROGRAM, printSimulate, LAUNCHPAD_PROGRAM } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
 
@@ -6,12 +6,9 @@ export const createPlatform = async () => {
   const raydium = await initSdk()
   const owner = raydium.ownerPubKey
 
-  if (raydium.cluster !== 'devnet')
-    throw new Error('Please check rpc setting, launchpad currently only support in devent')
-
   /** notice: every wallet only enable to create "1" platform config */
   const { transaction, extInfo, execute } = await raydium.launchpad.createPlatformConfig({
-    programId: DEV_LAUNCHPAD_PROGRAM, // launchpad currently only support in devent
+    programId: LAUNCHPAD_PROGRAM, // devnet: DEV_LAUNCHPAD_PROGRAM,
     platformAdmin: owner,
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,
