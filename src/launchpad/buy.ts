@@ -59,6 +59,11 @@ export const buy = async () => {
     buyAmount: inAmount,
     // shareFeeReceiver, // optional
     // shareFeeRate,  // optional, do not exceed poolInfo.configInfo.maxShareFeeRate
+
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 600000,
+    // },
   })
 
   console.log('expected receive amount:', extInfo.outAmount.toString())
