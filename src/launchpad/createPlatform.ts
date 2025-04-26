@@ -1,5 +1,6 @@
 import { TxVersion, DEV_LAUNCHPAD_PROGRAM, printSimulate, LAUNCHPAD_PROGRAM } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
+import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 
 export const createPlatform = async () => {
@@ -12,6 +13,7 @@ export const createPlatform = async () => {
     platformAdmin: owner,
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,
+    cpConfigId: new PublicKey(' cp config id '),
     migrateCpLockNftScale: {
       platformScale: new BN(400000), // set up your config
       creatorScale: new BN(400000), // set up your config
