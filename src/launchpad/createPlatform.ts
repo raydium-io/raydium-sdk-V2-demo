@@ -14,12 +14,18 @@ export const createPlatform = async () => {
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,
     cpConfigId: new PublicKey(' cp config id '),
+    /**
+     * when migration, launchpad pool will deposit mints in vaultA/vaultB to new cpmm pool
+     * and return lp to migration wallet
+     * migrateCpLockNftScale config is to set up usage of these lp
+     * note: sum of these 3 should be 10**6, means percent (0%~100%)
+     */
     migrateCpLockNftScale: {
-      platformScale: new BN(400000), // set up your config
-      creatorScale: new BN(400000), // set up your config
-      burnScale: new BN(200000), // set up your config
+      platformScale: new BN(400000), // means 40%, locked 40% of return lp and return to platform nft wallet
+      creatorScale: new BN(500000), // means 50%, locked 50% of return lp and return to creator nft wallet
+      burnScale: new BN(100000), // means 10%, burned return lp percent after migration
     },
-    feeRate: new BN(1000), // set up your config
+    feeRate: new BN(1000), // launch lab buy and sell platform feeRate, from 0~100000, means 0% ~ 100%
     name: 'your platform name',
     web: 'https://your.platform.org',
     img: 'https://your.platform.org/img',
