@@ -46,6 +46,7 @@ export const sell = async () => {
     new Decimal(res.amountB.toString()).mul((10000 - slippage.toNumber()) / 10000).toFixed(0)
   )
 
+  // Raydium UI usage: https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/store/useLaunchpadStore.ts#L637
   const { execute, transaction, builder } = await raydium.launchpad.sellToken({
     programId,
     mintA,

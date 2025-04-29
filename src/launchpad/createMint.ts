@@ -28,6 +28,8 @@ export const createMint = async () => {
   const mintBInfo = await raydium.token.getTokenInfo(configInfo.mintB)
 
   const inAmount = new BN(1000)
+
+  // Rayidum UI usage: https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/store/useLaunchpadStore.ts#L329
   const { execute, transactions, extInfo } = await raydium.launchpad.createLaunchpad({
     programId,
     mintA,
