@@ -11,6 +11,7 @@ import { initSdk } from '../config'
 import BN from 'bn.js'
 import { Keypair, PublicKey } from '@solana/web3.js'
 import { NATIVE_MINT } from '@solana/spl-token'
+import { generateSpecificKeypair } from './utils'
 
 export const createMint = async () => {
   const raydium = await initSdk()
@@ -18,6 +19,7 @@ export const createMint = async () => {
   const programId = LAUNCHPAD_PROGRAM // devent: DEV_LAUNCHPAD_PROGRAM
 
   const pair = Keypair.generate()
+  // const pair = generateSpecificKeypair() // generate xxxxend mint address
   const mintA = pair.publicKey
 
   const configId = getPdaLaunchpadConfigId(programId, NATIVE_MINT, 0, 0).publicKey
