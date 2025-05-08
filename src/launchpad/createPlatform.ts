@@ -25,7 +25,7 @@ export const createPlatform = async () => {
       creatorScale: new BN(500000), // means 50%, locked 50% of return lp and return to creator nft wallet
       burnScale: new BN(100000), // means 10%, burned return lp percent after migration
     },
-    feeRate: new BN(1000), // launch lab buy and sell platform feeRate, from 0~100000, means 0% ~ 100%
+    feeRate: new BN(1000), // launch lab buy and sell platform feeRate
     name: 'your platform name',
     web: 'https://your.platform.org',
     img: 'https://your.platform.org/img',
