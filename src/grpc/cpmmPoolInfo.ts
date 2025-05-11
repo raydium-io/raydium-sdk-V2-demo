@@ -1,3 +1,4 @@
+// Importing necessary layouts and constants from the Raydium SDK
 import { CpmmPoolInfoLayout, splAccountLayout } from "@raydium-io/raydium-sdk-v2";
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import Client from "@triton-one/yellowstone-grpc";
@@ -5,6 +6,9 @@ import base58 from "bs58";
 import Decimal from "decimal.js";
 import { grpcToken, grpcUrl } from "../config";
 
+/**
+ * Fetches and processes CPMM pool information using gRPC.
+ */
 async function cpmmPoolInfo() {
   const programId = 'CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C'
   const auth = 'GpMZbSM2GgvTKHJirzeGfMFoaZ8UR2X7F4v8vHTvxFbL'
@@ -60,9 +64,22 @@ async function cpmmPoolInfo() {
   });
 }
 
+/**
+ * Maps vault addresses to their corresponding pool IDs and types.
+ * Example: { 'vaultAddress': { poolId: 'poolId', type: 'base' | 'quote' } }
+ */
 const vaultToPoolId: { [key: string]: { poolId: string, type: 'base' | 'quote' } } = {}
+
+/**
+ * Caches pool information, including decoded pool and vault data.
+ */
 const poolInfoCache: { [key: string]: { poolInfo: ReturnType<typeof CpmmPoolInfoLayout.decode>, vaultA: ReturnType<typeof splAccountLayout.decode> | undefined, vaultB: ReturnType<typeof splAccountLayout.decode> | undefined } } = {}
 
+/**
+ * Callback function to process incoming data from the gRPC stream.
+ * @param _data - The data received from the gRPC stream.
+ * @param programId - The program ID associated with the data.
+ */
 async function callback(_data: any, programId: string) {
   if (_data.filters.includes('ammUpdate')) {
     const data = _data.account
@@ -97,4 +114,5 @@ async function callback(_data: any, programId: string) {
   }
 }
 
-cpmmPoolInfo()
+// Execute the function to fetch CPMM pool information
+cpmmPoolInfo();

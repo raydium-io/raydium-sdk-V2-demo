@@ -1,3 +1,4 @@
+// Importing necessary modules and utilities from the Raydium SDK
 import {
   ApiV3PoolInfoStandardItemCpmm,
   CpmmKeys,
@@ -12,14 +13,18 @@ import { NATIVE_MINT } from '@solana/spl-token'
 import { printSimulateInfo } from '../util'
 import { PublicKey } from '@solana/web3.js'
 
-// swapBaseOut means fixed output token amount, calculate needed input token amount
+/**
+ * Executes a swap operation with a fixed output token amount.
+ * Calculates the required input token amount for the swap.
+ */
 export const swapBaseOut = async () => {
+  // Initialize the Raydium SDK
   const raydium = await initSdk()
 
-  // SOL - USDC pool
+  // Define the pool ID for the SOL-USDC pool
   const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
 
-  // means want to buy 1 USDC
+  // Define the desired output amount (e.g., 1 USDC)
   const outputAmount = new BN(1000000)
   const outputMint = USDCMint
 
@@ -28,25 +33,26 @@ export const swapBaseOut = async () => {
   let rpcData: CpmmRpcData
 
   if (raydium.cluster === 'mainnet') {
-    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
-    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
+    // Fetch pool information from the API (mainnet only)
     const data = await raydium.api.fetchPoolById({ ids: poolId })
     poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm
-    if (!isValidCpmm(poolInfo.programId)) throw new Error('target pool is not CPMM pool')
+    if (!isValidCpmm(poolInfo.programId)) throw new Error('Target pool is not a CPMM pool')
     rpcData = await raydium.cpmm.getRpcPoolInfo(poolInfo.id, true)
   } else {
+    // Fetch pool information from the RPC (for devnet or other clusters)
     const data = await raydium.cpmm.getPoolInfoFromRpc(poolId)
     poolInfo = data.poolInfo
     poolKeys = data.poolKeys
     rpcData = data.rpcData
   }
 
+  // Validate that the output mint matches the pool's tokens
   if (outputMint.toBase58() !== poolInfo.mintA.address && outputMint.toBase58() !== poolInfo.mintB.address)
-    throw new Error('input mint does not match pool')
+    throw new Error('Input mint does not match pool')
 
   const baseIn = outputMint.toBase58() === poolInfo.mintB.address
 
-  // swap pool mintA for mintB
+  // Calculate the swap result using the CurveCalculator
   const swapResult = CurveCalculator.swapBaseOut({
     poolMintA: poolInfo.mintA,
     poolMintB: poolInfo.mintB,
@@ -58,21 +64,22 @@ export const swapBaseOut = async () => {
   })
 
   /**
-   * swapResult.sourceAmountSwapped -> input amount
-   * swapResult.destinationAmountSwapped -> output amount
-   * swapResult.tradeFee -> this swap fee, charge input mint
+   * swapResult.sourceAmountSwapped -> Input amount
+   * swapResult.destinationAmountSwapped -> Output amount
+   * swapResult.tradeFee -> Swap fee charged on the input mint
    */
 
+  // Execute the swap transaction
   const { execute, transaction } = await raydium.cpmm.swap({
     poolInfo,
     poolKeys,
-    inputAmount: new BN(0), // if set fixedOut to true, this arguments won't be used
+    inputAmount: new BN(0), // If fixedOut is true, this argument won't be used
     fixedOut: true,
     swapResult: {
       sourceAmountSwapped: swapResult.amountIn,
       destinationAmountSwapped: outputAmount,
     },
-    slippage: 0.001, // range: 1 ~ 0.0001, means 100% ~ 0.01%
+    slippage: 0.001, // Slippage tolerance (e.g., 0.1%)
     baseIn,
     txVersion,
     // optional: set up priority fee here

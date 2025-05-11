@@ -1,49 +1,111 @@
-# RAYDIUM SDK V2 demo
+# Raydium SDK V2 Demo
 
-## About the project
+## About the Project
 
-This project is for [RAYDIUM SDK V2](https://github.com/raydium-io/raydium-sdk-V2) demonstration
+This project demonstrates the usage of the [Raydium SDK V2](https://github.com/raydium-io/raydium-sdk-V2), a powerful toolkit for interacting with the Raydium decentralized exchange (DEX) on the Solana blockchain. It provides examples and utilities for performing various operations such as liquidity management, token swaps, and more.
+
+This documentation is designed to help web2 developers transition into the web3 space by providing clear instructions, explanations, and example codes.
+
+---
 
 ## Getting Started
 
-### Installation
-
-`yarn install`
-
-this will install the dependencies for running the demo script
-
 ### Prerequisites
 
-Modify `config.ts.template` to fit your configuration, and rename it to `config.ts`
+Before you begin, ensure you have the following:
 
-- `<YOUR_WALLET_SECRET_KEY>`: replace to your own one
-- `<YOUR_RPC_URL>`: replace to your prefer one
-- `<API_HOST>`: by default it's no needed to provide raydium api host, only provide it when test on devent.
+1. **Node.js and Yarn**: Install [Node.js](https://nodejs.org/) and [Yarn](https://yarnpkg.com/) on your system.
+2. **Wallet Secret Key**: A Solana wallet secret key for signing transactions. You can generate one using the [Solana CLI](https://docs.solana.com/cli/install-solana-cli-tools).
+3. **RPC URL**: A Solana RPC endpoint for connecting to the blockchain. You can use [QuickNode](https://www.quicknode.com/) or [Alchemy](https://www.alchemy.com/solana) to get an RPC URL.
+4. **Raydium API Host (Optional)**: Only required for testing on development environments.
 
-### Usage
+### Installation
 
-- `yarn dev src/<FOLDER>/<SCRIPT_NAME>` run the specific demo script, e.g. yarn dev src/cpmm/deposit.ts. **Note: if you want to execute tx, remember to uncomment code in last line**
-- `yarn clmm-market 8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj 10 20` run clmm market maker, arguments 0: poolId, 1: create position deviation, 2: close position deviation, remember to uncomment `close position` and `create new position` code part
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/raydium-io/raydium-sdk-V2-demo.git
+   cd raydium-sdk-V2-demo
+   ```
 
-### Sdk Methods
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
 
-#### Transaction methods return data
+3. Configure the project:
+   - Copy `config.ts.template` to `config.ts`:
+     ```bash
+     cp src/config.ts.template src/config.ts
+     ```
+   - Replace placeholders in `config.ts` with your configuration:
+     ```typescript
+     export const CONFIG = {
+       WALLET_SECRET_KEY: '<YOUR_WALLET_SECRET_KEY>', // Your wallet secret key
+       RPC_URL: '<YOUR_RPC_URL>', // Your preferred RPC URL
+       API_HOST: '<API_HOST>' // Optional, only needed for development testing
+     };
+     ```
 
-all transaction related build function (e.g. await raydium.clmm.openPositionFromBase/ await raydium.cpmm.createPool ..etc) will return all transactions and instructions
+---
 
+## Usage
+
+### Running Demo Scripts
+
+To run a specific demo script, use the following command:
+```bash
+yarn dev src/<FOLDER>/<SCRIPT_NAME>
 ```
-const { execute, transaction, builder, extInfo } = await raydium.clmm.openPositionFromBase({ xxx })
-
+Example:
+```bash
+yarn dev src/cpmm/deposit.ts
 ```
+**Note**: Uncomment the last line in the script if you want to execute transactions.
 
-- `transaction or transactions`: all built transactions
-- `builder`: all instructions in transaction. e.g. builder.allInstructions, builder.AllTxData
-- `extInfo`: transaction related publicKeys. (e.g: extInfo from raydium.cpmm.createPool includes poolId, programId...etc)
+### Example: Running a Token Swap
 
-#### Fetch pool list by mints (mainnet only)
+Here is an example of running a token swap using the `swap.ts` script:
 
+1. Open the `src/amm/swap.ts` file and ensure the configuration matches your setup.
+2. Run the script:
+   ```bash
+   yarn dev src/amm/swap.ts
+   ```
+3. Example output:
+   ```bash
+   Transaction successful! Swap completed with transaction ID: <TRANSACTION_ID>
+   ```
+
+### Running the CLMM Market Maker
+
+Use the following command to run the CLMM market maker:
+```bash
+yarn clmm-market <POOL_ID> <CREATE_POSITION_DEVIATION> <CLOSE_POSITION_DEVIATION>
 ```
-import { PoolFetchType } from '@raydium-io/raydium-sdk-v2'
+Example:
+```bash
+yarn clmm-market 8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj 10 20
+```
+**Note**: Uncomment the `close position` and `create new position` code parts in the script.
+
+---
+
+## SDK Methods
+
+### Transaction Methods
+
+All transaction-related build functions return the following data:
+```javascript
+const { execute, transaction, builder, extInfo } = await raydium.clmm.openPositionFromBase({ ...params });
+```
+- **`transaction` or `transactions`**: All built transactions.
+- **`builder`**: All instructions in the transaction (e.g., `builder.allInstructions`, `builder.AllTxData`).
+- **`extInfo`**: Transaction-related public keys (e.g., `poolId`, `programId`).
+
+### Example: Fetch Pool List by Mints (Mainnet Only)
+
+```javascript
+import { PoolFetchType } from '@raydium-io/raydium-sdk-v2';
 
 const list = await raydium.api.fetchPoolByMints({
   mint1: '4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R', // required
@@ -52,37 +114,55 @@ const list = await raydium.api.fetchPoolByMints({
   sort: 'liquidity', // optional
   order: 'desc', // optional
   page: 1, // optional
-})
+});
+console.log('Fetched Pool List:', list);
 ```
 
-### Fetch Mint info from Api or Rpc
+### Example: Fetch Mint Info
 
-```
-await raydium.token.getTokenInfo('<Mint address>')
-```
-
-### Fetch token account
-
-```
-await raydium.account.fetchWalletTokenAccounts() // if need to force fetching token account, pass param { forceUpdate: true }
+```javascript
+const mintInfo = await raydium.token.getTokenInfo('<Mint address>');
+console.log('Mint Info:', mintInfo);
 ```
 
-### More api methods [check here](https://github.com/raydium-io/raydium-sdk-V2?tab=readme-ov-file#api-methods-httpsgithubcomraydium-ioraydium-sdk-v2blobmastersrcapiapits)
+### Example: Fetch Token Accounts
 
-### FAQ
+```javascript
+const tokenAccounts = await raydium.account.fetchWalletTokenAccounts({ forceUpdate: true });
+console.log('Token Accounts:', tokenAccounts);
+```
 
-#### Error: block height exceeded / exceeded CUs meter at BPF instruction
+### More API Methods
 
-- transactions were expired, set higher priority fees (computeBudgetConfig) to make it go through smoothly
-- if you are testing in devnet, remember to replace programId to devnet one.
+For more API methods, refer to the [Raydium SDK V2 documentation](https://github.com/raydium-io/raydium-sdk-V2#api-methods).
 
-#### raydium.api.fetchPoolById/raydium.api.fetchFarmInfoById return null
+---
 
-- currently api doesn't support devnet pool/farm data, please test on mainnet.
-- only raydium.xxxx.getRpcPoolInfos support get devnet `rpc` pool info.
-- new created pool needs couple minutes to sync data to api, if you want to get info immediately, use raydium.xxxx.getRpcPoolInfos instead.
+## FAQ
 
-#### create amm pool error
+### Common Errors
 
-- `0x10001a9`: you might use https://openbook-tools.dexlab.space/market/create?network=devnet to create devnet market, and they used wrong devent program id, so please use createMarket.ts in demo to create market
-- `lp amount is too less`: please provide more base/quote amount when create pool, if there's SOL/WSOL in your market, it's better provide more than 4 sol(4\*10\*\*9) in initial amount.
+#### 1. **Error: Block height exceeded / exceeded CUs meter at BPF instruction**
+   - Transactions expired. Set higher priority fees (`computeBudgetConfig`) to ensure smooth execution.
+   - For devnet testing, replace the `programId` with the devnet one.
+
+#### 2. **`raydium.api.fetchPoolById` or `raydium.api.fetchFarmInfoById` returns null**
+   - The API does not support devnet pool/farm data. Test on mainnet.
+   - Use `raydium.xxxx.getRpcPoolInfos` for devnet `rpc` pool info.
+   - Newly created pools may take a few minutes to sync data to the API. Use `raydium.xxxx.getRpcPoolInfos` for immediate info.
+
+#### 3. **Create AMM Pool Error**
+   - **Error Code `0x10001a9`**: Use the provided `createMarket.ts` script to create the market instead of external tools.
+   - **LP Amount Too Low**: Provide a higher base/quote amount when creating the pool. For SOL/WSOL markets, provide more than 4 SOL (4 * 10^9).
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests to improve this project.
+
+---
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

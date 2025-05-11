@@ -1,24 +1,31 @@
+// Importing necessary modules and utilities from the Raydium SDK
 import { ApiV3PoolInfoConcentratedItem, TickUtils, PoolUtils, ClmmKeys } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 import { isValidClmm } from './utils'
 
+/**
+ * Creates a new position in a CLMM (Concentrated Liquidity Market Maker) pool.
+ */
 export const createPosition = async () => {
+  // Initialize the Raydium SDK
   const raydium = await initSdk()
 
   let poolInfo: ApiV3PoolInfoConcentratedItem
-  // RAY-USDC pool
+  // Define the pool ID for the target CLMM pool
   const poolId = '61R1ndXxvsWXXkWSyNkCxnzwd3zUNB8Q2ibmkiLPC8ht'
   let poolKeys: ClmmKeys | undefined
 
   if (raydium.cluster === 'mainnet') {
+    // Fetch pool information from the API (mainnet only)
     // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
     // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
     const data = await raydium.api.fetchPoolById({ ids: poolId })
     poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
     if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
   } else {
+    // Fetch pool information from the RPC (for devnet or other clusters)
     const data = await raydium.clmm.getPoolInfoFromRpc(poolId)
     poolInfo = data.poolInfo
     poolKeys = data.poolKeys
@@ -28,9 +35,11 @@ export const createPosition = async () => {
   // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
   // poolInfo.price = rpcData.currentPrice
 
+  // Define the input amount and price range for the position
   const inputAmount = 0.000001 // RAY amount
   const [startPrice, endPrice] = [0.000001, 100000]
 
+  // Calculate the tick range based on the price range
   const { tick: lowerTick } = TickUtils.getPriceAndTick({
     poolInfo,
     price: new Decimal(startPrice),
@@ -56,6 +65,7 @@ export const createPosition = async () => {
     epochInfo: epochInfo,
   })
 
+  // Execute the create position transaction
   const { execute, extInfo } = await raydium.clmm.openPositionFromBase({
     poolInfo,
     poolKeys,

@@ -1,3 +1,4 @@
+// Importing necessary modules and utilities from the Raydium SDK
 import {
   USDCMint,
   toFeeConfig,
@@ -16,19 +17,18 @@ import { initSdk, txVersion } from '../config'
 import { readCachePoolData, writeCachePoolData } from '../cache/utils'
 import { printSimulateInfo } from '../util'
 
-const poolType: Record<number, string> = {
-  4: 'AMM',
-  5: 'AMM Stable',
-  6: 'CLMM',
-  7: 'CPMM',
-}
-
+// Setting the logger level for debugging
 setLoggerLevel('Raydium_tradeV2', LogLevel.Debug)
 
+/**
+ * Executes a route swap operation, finding the best swap route between two tokens.
+ */
 async function routeSwap() {
+  // Initialize the Raydium SDK
   const raydium = await initSdk()
   await raydium.fetchChainTime()
 
+  // Define the input and output tokens for the swap
   const inputAmount = '8000000'
   const SOL = NATIVE_MINT // or WSOLMint
   const [inputMint, outputMint] = [SOL, new PublicKey('7i5XE77hnx1a6hjWgSuYwmqdmLoDJNTU1rYA6Gqx7QiE')]
