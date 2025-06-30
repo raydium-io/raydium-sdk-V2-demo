@@ -1,4 +1,4 @@
-import { TxVersion, DEV_LAUNCHPAD_PROGRAM, printSimulate } from '@raydium-io/raydium-sdk-v2'
+import { TxVersion, DEVNET_PROGRAM_ID, printSimulate } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
 import { PublicKey } from '@solana/web3.js'
@@ -9,7 +9,7 @@ export const createVestingAccount = async () => {
   const shareAmount = new BN(100000) // must less than pool's total locked amount
 
   const { transaction, execute } = await raydium.launchpad.createVesting({
-    // programId: DEV_LAUNCHPAD_PROGRAM, // open when develop on devent
+    // programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM, // open when develop on devent
     poolId: new PublicKey('pool Id'),
     beneficiary: new PublicKey('share wallet address'),
     shareAmount,

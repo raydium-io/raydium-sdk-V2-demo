@@ -1,4 +1,4 @@
-import { TxVersion, DEV_LAUNCHPAD_PROGRAM, printSimulate, LAUNCHPAD_PROGRAM } from '@raydium-io/raydium-sdk-v2'
+import { TxVersion, DEVNET_PROGRAM_ID, printSimulate, LAUNCHPAD_PROGRAM } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
@@ -9,7 +9,7 @@ export const createPlatform = async () => {
 
   /** notice: every wallet only enable to create "1" platform config */
   const { transaction, extInfo, execute } = await raydium.launchpad.createPlatformConfig({
-    programId: LAUNCHPAD_PROGRAM, // devnet: DEV_LAUNCHPAD_PROGRAM,
+    programId: LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
     platformAdmin: owner,
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,

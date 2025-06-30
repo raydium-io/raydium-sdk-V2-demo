@@ -19,13 +19,13 @@ export const fetchPositionInfo = async () => {
   const raydium = await initSdk()
   const positionNftMint = new PublicKey('GQxt6TExLLZDQmrS3K4tmDn48yGhiWziVc1nQNmPcb5u')
 
-  // devnet:  DEVNET_PROGRAM_ID.CLMM
+  // devnet:  DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
   const positionPubKey = getPdaPersonalPositionAddress(CLMM_PROGRAM_ID, positionNftMint).publicKey
   const pos = await raydium.connection.getAccountInfo(positionPubKey)
   const position = PositionInfoLayout.decode(pos!.data)
 
   // code below: get all clmm position in wallet
-  // devnet:  DEVNET_PROGRAM_ID.CLMM
+  // devnet:  DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
   // const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: CLMM_PROGRAM_ID }) // devnet:  DEVNET_PROGRAM_ID.CLMM
   // if (!allPosition.length) throw new Error('use do not have position')
   // const position = allPosition[0]

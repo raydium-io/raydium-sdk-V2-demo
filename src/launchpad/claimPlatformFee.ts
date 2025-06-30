@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { NATIVE_MINT } from '@solana/spl-token'
-import { TxVersion, DEV_LAUNCHPAD_PROGRAM, LAUNCHPAD_PROGRAM, printSimulate } from '@raydium-io/raydium-sdk-v2'
+import { TxVersion, DEVNET_PROGRAM_ID, LAUNCHPAD_PROGRAM, printSimulate } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 
 export const claimPlatformFee = async () => {
@@ -8,7 +8,7 @@ export const claimPlatformFee = async () => {
   const poolId = new PublicKey('pool id')
 
   const { execute, transaction, extInfo, builder } = await raydium.launchpad.claimPlatformFee({
-    programId: LAUNCHPAD_PROGRAM, // devnet: DEV_LAUNCHPAD_PROGRAM
+    programId: LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM
     platformId: new PublicKey('your platform id'),
     platformClaimFeeWallet: new PublicKey('your platform fee wallet'),
     poolId,

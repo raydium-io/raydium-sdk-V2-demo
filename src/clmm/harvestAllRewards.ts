@@ -40,7 +40,7 @@ export const harvestAllRewards = async () => {
     ownerInfo: {
       useSOLBalance: true,
     },
-    programId: CLMM_PROGRAM_ID, // devnet: DEVNET_PROGRAM_ID.CLMM
+    programId: CLMM_PROGRAM_ID, // devnet: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
     txVersion,
     // optional: set up priority fee here
     // computeBudgetConfig: {

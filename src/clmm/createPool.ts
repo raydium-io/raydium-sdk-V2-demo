@@ -18,7 +18,7 @@ export const createPool = async () => {
 
   const { execute } = await raydium.clmm.createPool({
     programId: CLMM_PROGRAM_ID,
-    // programId: DEVNET_PROGRAM_ID.CLMM,
+    // programId: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID,
     mint1,
     mint2,
     ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '', description: '' },

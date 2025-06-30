@@ -6,7 +6,6 @@ export const createMarket = async () => {
 
   // check mint info here: https://api-v3.raydium.io/mint/list
   // or get mint info by api: await raydium.token.getTokenInfo('mint address')
-
   const { execute, extInfo, transactions } = await raydium.marketV2.create({
     baseInfo: {
       // create market doesn't support token 2022
@@ -21,7 +20,7 @@ export const createMarket = async () => {
     lotSize: 1,
     tickSize: 0.01,
     dexProgramId: OPEN_BOOK_PROGRAM,
-    // dexProgramId: DEVNET_PROGRAM_ID.OPENBOOK_MARKET, // devnet
+    // dexProgramId: DEVNET_PROGRAM_ID.OPEN_BOOK_PROGRAM, // devnet
 
     // requestQueueSpace: 5120 + 12, // optional
     // eventQueueSpace: 262144 + 12, // optional

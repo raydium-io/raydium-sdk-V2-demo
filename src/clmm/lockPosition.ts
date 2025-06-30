@@ -32,7 +32,6 @@ export const lockPosition = async () => {
   }
 
   if (!poolInfo) throw new Error(`clmm pool ${position.poolId.toBase58()} not found`)
-
   const { execute, transaction } = await raydium.clmm.lockPosition({
     // programId: DEVNET_PROGRAM_ID.CLMM_LOCK_PROGRAM_ID, // devnet
     // authProgramId: DEVNET_PROGRAM_ID.CLMM_LOCK_AUTH_ID, // devnet

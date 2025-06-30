@@ -44,6 +44,9 @@ export const harvestLockedPosition = async () => {
   //   const lockData = allLockPositions[0] // find out which lock position you want to harvest
 
   const { execute, transaction } = await raydium.clmm.harvestLockPosition({
+    // programId: DEVNET_PROGRAM_ID.CLMM_LOCK_PROGRAM_ID, //devnet
+    // authProgramId: DEVNET_PROGRAM_ID.CLMM_LOCK_AUTH_ID, //devnet
+    // clmmProgram: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID, // devnet
     lockData,
     txVersion,
     // optional: set up priority fee here

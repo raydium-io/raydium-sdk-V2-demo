@@ -42,11 +42,11 @@ export const createAmmPool = async () => {
 
   const { execute, extInfo } = await raydium.liquidity.createPoolV4({
     programId: AMM_V4,
-    // programId: DEVNET_PROGRAM_ID.AmmV4, // devnet
+    // programId: DEVNET_PROGRAM_ID.AMM_V4, // devnet
     marketInfo: {
       marketId,
       programId: OPEN_BOOK_PROGRAM,
-      // programId: DEVNET_PROGRAM_ID.OPENBOOK_MARKET, // devent
+      // programId: DEVNET_PROGRAM_ID.OPEN_BOOK_PROGRAM, // devent
     },
     baseMintInfo: {
       mint: baseMint,

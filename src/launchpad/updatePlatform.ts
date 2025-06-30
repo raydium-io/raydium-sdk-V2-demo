@@ -19,7 +19,7 @@ export const updatePlatform = async () => {
    * 3. after 1 platform config updated, platform config epoch will be updated to on-chain epoch, next update should wait on-chian epoch grows up
    */
   const { execute, transaction } = await raydium.launchpad.updatePlatformConfig({
-    programId: DEV_LAUNCHPAD_PROGRAM,
+    // programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
     platformAdmin: new PublicKey('owner'),
     updateInfo: { type: 'updateFeeRate', value: new BN(10) },
 

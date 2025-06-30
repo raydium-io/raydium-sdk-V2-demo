@@ -1,9 +1,4 @@
-import {
-  ApiV3PoolInfoStandardItemCpmm,
-  DEV_LOCK_CPMM_PROGRAM,
-  DEV_LOCK_CPMM_AUTH,
-  CpmmKeys,
-} from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoStandardItemCpmm, DEVNET_PROGRAM_ID, CpmmKeys } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import { isValidCpmm } from './utils'
 
@@ -31,8 +26,8 @@ export const lockLiquidity = async () => {
   if (!lpBalance) throw new Error(`you do not have balance in pool: ${poolId}`)
 
   const { execute, extInfo } = await raydium.cpmm.lockLp({
-    // programId: DEV_LOCK_CPMM_PROGRAM, // devnet
-    // authProgram: DEV_LOCK_CPMM_AUTH, // devnet
+    // programId: EVNET_PROGRAM_ID.LOCK_CPMM_PROGRAM, // devnet
+    // authProgram: DEVNET_PROGRAM_ID.LOCK_CPMM_AUTH, // devnet
     // poolKeys, // devnet
     poolInfo,
     lpAmount: lpBalance.amount,

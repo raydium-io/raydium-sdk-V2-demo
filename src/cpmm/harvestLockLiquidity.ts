@@ -1,10 +1,4 @@
-import {
-  ApiV3PoolInfoStandardItemCpmm,
-  printSimulate,
-  DEV_LOCK_CPMM_PROGRAM,
-  DEV_LOCK_CPMM_AUTH,
-  CpmmKeys,
-} from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoStandardItemCpmm, printSimulate, DEVNET_PROGRAM_ID, CpmmKeys } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import { isValidCpmm } from './utils'
 import { PublicKey } from '@solana/web3.js'
@@ -29,8 +23,8 @@ export const harvestLockLiquidity = async () => {
   }
 
   const { execute, transaction } = await raydium.cpmm.harvestLockLp({
-    // programId: DEV_LOCK_CPMM_PROGRAM, // devent
-    // authProgram: DEV_LOCK_CPMM_AUTH, // devent
+    // programId: DEVNET_PROGRAM_ID.LOCK_CPMM_PROGRAM, // devent
+    // authProgram: DEVNET_PROGRAM_ID.LOCK_CPMM_AUTH, // devent
     // poolKeys, // devent
     poolInfo,
     nftMint: new PublicKey('CgkdQL6eRN1nxG2AmC8NFG5iboXuKtSjT4pShnspomZy'), // locked nft mint
