@@ -1,3 +1,4 @@
+// Importing necessary modules and utilities from the Raydium SDK
 import {
   ApiV3PoolInfoStandardItem,
   TokenAmount,
@@ -13,21 +14,24 @@ import Decimal from 'decimal.js'
 import BN from 'bn.js'
 import { PublicKey } from '@solana/web3.js'
 
+/**
+ * Adds liquidity to a specified AMM pool.
+ */
 export const addLiquidity = async () => {
+  // Initialize the Raydium SDK
   const raydium = await initSdk()
 
-  // RAY-USDC pool
+  // Define the pool ID for the RAY-USDC pool
   const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
   let poolKeys: AmmV4Keys | AmmV5Keys | undefined
   let poolInfo: ApiV3PoolInfoStandardItem
 
   if (raydium.cluster === 'mainnet') {
-    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
-    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
+    // Fetch pool information from the API (mainnet only)
     const data = await raydium.api.fetchPoolById({ ids: poolId })
     poolInfo = data[0] as ApiV3PoolInfoStandardItem
   } else {
-    // note: getPoolInfoFromRpc method only return required pool data for computing not all detail pool info
+    // Fetch pool information from the RPC (for devnet or other clusters)
     const data = await raydium.liquidity.getPoolInfoFromRpc({ poolId })
     poolInfo = data.poolInfo
     poolKeys = data.poolKeys
@@ -35,8 +39,10 @@ export const addLiquidity = async () => {
 
   if (!isValidAmm(poolInfo.programId)) throw new Error('target pool is not AMM pool')
 
+  // Define the input amount for adding liquidity
   const inputAmount = '1'
 
+  // Compute the pair amount for the liquidity addition
   const r = raydium.liquidity.computePairAmount({
     poolInfo,
     amount: inputAmount,
@@ -44,6 +50,7 @@ export const addLiquidity = async () => {
     slippage: new Percent(1, 100), // 1%
   })
 
+  // Execute the add liquidity transaction
   const { execute, transaction } = await raydium.liquidity.addLiquidity({
     poolInfo,
     poolKeys,
