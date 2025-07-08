@@ -9,20 +9,38 @@ import {
   ApiV3Token,
   PositionInfoLayout,
   DEVNET_PROGRAM_ID,
+  Raydium,
 } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
 import Decimal from 'decimal.js'
 import BN from 'bn.js'
 import { initSdk } from '../config'
 
-export const fetchPositionInfo = async () => {
-  const raydium = await initSdk()
-  const positionNftMint = new PublicKey('GQxt6TExLLZDQmrS3K4tmDn48yGhiWziVc1nQNmPcb5u')
+export const fetchPositionInfo = async ({
+  positionNftMint,
+  positionData,
+  raydium: propsRaydium,
+  programId = CLMM_PROGRAM_ID,
+  notExit,
+}: {
+  positionNftMint: PublicKey
+  positionData?: ReturnType<typeof PositionInfoLayout.decode>
+  raydium?: Raydium
+  programId?: PublicKey
+  notExit?: boolean
+}) => {
+  const raydium = propsRaydium ?? (await initSdk())
 
-  // devnet:  DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
-  const positionPubKey = getPdaPersonalPositionAddress(CLMM_PROGRAM_ID, positionNftMint).publicKey
-  const pos = await raydium.connection.getAccountInfo(positionPubKey)
-  const position = PositionInfoLayout.decode(pos!.data)
+  let position = positionData
+  if (!position) {
+    // devnet:  DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
+    const positionPubKey = getPdaPersonalPositionAddress(programId, positionNftMint).publicKey
+    const pos = await raydium.connection.getAccountInfo(positionPubKey)
+    if (!pos) {
+      console.log(`${positionNftMint.toBase58()} position data not found`)
+    }
+    position = PositionInfoLayout.decode(pos!.data)
+  }
 
   // code below: get all clmm position in wallet
   // devnet:  DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
@@ -153,8 +171,8 @@ export const fetchPositionInfo = async () => {
       amount: r.amount.toString(),
     })),
   })
-  process.exit() // if you don't want to end up node execution, comment this line
+  if (!notExit) process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */
-fetchPositionInfo()
+// fetchPositionInfo({ positionNftMint: new PublicKey('position nft mint') })
