@@ -10,6 +10,7 @@ import {
   PositionInfoLayout,
   DEVNET_PROGRAM_ID,
   Raydium,
+  LockClPositionLayoutV2,
 } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
 import Decimal from 'decimal.js'
@@ -21,12 +22,14 @@ export const fetchPositionInfo = async ({
   positionData,
   raydium: propsRaydium,
   programId = CLMM_PROGRAM_ID,
+  isLock = false,
   notExit,
 }: {
   positionNftMint: PublicKey
   positionData?: ReturnType<typeof PositionInfoLayout.decode>
   raydium?: Raydium
   programId?: PublicKey
+  isLock?: boolean
   notExit?: boolean
 }) => {
   const raydium = propsRaydium ?? (await initSdk())
@@ -34,7 +37,9 @@ export const fetchPositionInfo = async ({
   let position = positionData
   if (!position) {
     // devnet:  DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
-    const positionPubKey = getPdaPersonalPositionAddress(programId, positionNftMint).publicKey
+    const positionPubKey = isLock
+      ? positionNftMint
+      : getPdaPersonalPositionAddress(programId, positionNftMint).publicKey
     const pos = await raydium.connection.getAccountInfo(positionPubKey)
     if (!pos) {
       console.log(`${positionNftMint.toBase58()} position data not found`)
@@ -159,7 +164,7 @@ export const fetchPositionInfo = async ({
     poolRewardInfos[feeBRewardIdx].amount = poolRewardInfos[feeBRewardIdx].amount.add(rewardMintBFee.amount)
   else poolRewardInfos.push(rewardMintBFee)
 
-  console.log('position info', {
+  console.log(`${isLock ? 'Locked ' : ''}position info`, {
     pool: `${poolInfo.mintA.symbol} - ${poolInfo.mintB.symbol}`,
     nft: position.nftMint.toBase58(),
     priceLower: priceLower.price.toString(),
