@@ -1,6 +1,6 @@
 import {
   TxVersion,
-  DEV_LAUNCHPAD_PROGRAM,
+  DEVNET_PROGRAM_ID,
   printSimulate,
   getPdaLaunchpadConfigId,
   LaunchpadConfig,
@@ -16,7 +16,7 @@ import { generateSpecificKeypair } from './utils'
 export const createMint = async () => {
   const raydium = await initSdk()
 
-  const programId = LAUNCHPAD_PROGRAM // devent: DEV_LAUNCHPAD_PROGRAM
+  const programId = LAUNCHPAD_PROGRAM // devent: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM
 
   const pair = Keypair.generate()
   // const pair = generateSpecificKeypair() // generate xxxxend mint address
