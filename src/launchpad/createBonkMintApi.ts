@@ -33,7 +33,6 @@ interface ConfigInfo {
   mintB: string
 }
 
-// https://launch-mint-v1.raydium.io
 const mintHost = 'https://launch-mint-v1.raydium.io'
 
 export const createBonkMintApi = async () => {
@@ -53,11 +52,34 @@ export const createBonkMintApi = async () => {
     }
   } = await axios.get(`${mintHost}/main/configs`)
 
+  const configs = configRes.data.data.data[0].key
+  const configInfo: ReturnType<typeof LaunchpadConfig.decode> = {
+    index: configs.index,
+    mintB: new PublicKey(configs.mintB),
+    tradeFeeRate: new BN(configs.tradeFeeRate),
+    epoch: new BN(configs.epoch),
+    curveType: configs.curveType,
+    migrateFee: new BN(configs.migrateFee),
+    maxShareFeeRate: new BN(configs.maxShareFeeRate),
+    minSupplyA: new BN(configs.minSupplyA),
+    maxLockRate: new BN(configs.maxLockRate),
+    minSellRateA: new BN(configs.minSellRateA),
+    minMigrateRateA: new BN(configs.minMigrateRateA),
+    minFundRaisingB: new BN(configs.minFundRaisingB),
+    protocolFeeOwner: new PublicKey(configs.protocolFeeOwner),
+    migrateFeeOwner: new PublicKey(configs.migrateFeeOwner),
+    migrateToAmmWallet: new PublicKey(configs.migrateToAmmWallet),
+    migrateToCpmmWallet: new PublicKey(configs.migrateToCpmmWallet),
+  }
+
   const configId = new PublicKey(configRes.data.data.data[0].key.pubKey)
-  const configData = await raydium.connection.getAccountInfo(configId)
-  if (!configData) throw new Error('config not found')
-  const configInfo = LaunchpadConfig.decode(configData.data)
-  const mintBInfo = await raydium.token.getTokenInfo(configInfo.mintB)
+  const mintBInfo = configRes.data.data.data[0].mintInfoB
+
+  /** fetch config info from rpc */
+  // const configData = await raydium.connection.getAccountInfo(configId)
+  // if (!configData) throw new Error('config not found')
+  // const configInfo = LaunchpadConfig.decode(configData.data)
+  // const mintBInfo = await raydium.token.getTokenInfo(configInfo.mintB)
 
   const file = fs.readFileSync('./src/launchpad/testPic.png')
 
@@ -77,8 +99,8 @@ export const createBonkMintApi = async () => {
     cliffPeriod: LaunchpadPoolInitParam.cliffPeriod,
     unlockPeriod: LaunchpadPoolInitParam.unlockPeriod,
     // set your platform id, current platform: bonk
-    platformId: new PublicKey('8pCtbn9iatQ8493mDQax4xfEUjhoVBpUWYVQoRU18333'), // or set up your platform id
-    migrateType: 'amm',
+    platformId: new PublicKey('8pCtbn9iatQ8493mDQax4xfEUjhoVBpUWYVQoRU18333'),
+    migrateType: 'amm', // or cpmm
     description: 'description',
   }
 
@@ -89,7 +111,7 @@ export const createBonkMintApi = async () => {
   })
 
   // @ts-ignore
-  form.append('file', new Blob([file]), 'textPic.png')
+  form.append('file', new Blob([file]), 'testPic.png')
 
   const r: {
     data: {
@@ -103,7 +125,7 @@ export const createBonkMintApi = async () => {
 
   const mintA = new PublicKey(r.data.data.mint)
 
-  const { execute, transactions } = await raydium.launchpad.createLaunchpad({
+  const { transactions } = await raydium.launchpad.createLaunchpad({
     programId,
     mintA,
     decimals: newMintData.decimals,
