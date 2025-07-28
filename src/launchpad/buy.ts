@@ -26,6 +26,8 @@ export const buy = async () => {
   const poolInfo = await raydium.launchpad.getRpcPoolInfo({ poolId })
   const data = await raydium.connection.getAccountInfo(poolInfo.platformId)
   const platformInfo = PlatformConfig.decode(data!.data)
+  const mintInfo = await raydium.token.getTokenInfo(mintA)
+  const epochInfo = await raydium.connection.getEpochInfo()
 
   const shareFeeReceiver = undefined
   const shareFeeRate = shareFeeReceiver ? new BN(0) : new BN(10000) // do not exceed poolInfo.configInfo.maxShareFeeRate
@@ -38,6 +40,25 @@ export const buy = async () => {
     platformFeeRate: platformInfo.feeRate,
     curveType: poolInfo.configInfo.curveType,
     shareFeeRate,
+    creatorFeeRate: platformInfo.creatorFeeRate,
+    transferFeeConfigA: mintInfo.extensions.feeConfig
+      ? {
+          transferFeeConfigAuthority: PublicKey.default,
+          withdrawWithheldAuthority: PublicKey.default,
+          withheldAmount: BigInt(0),
+          olderTransferFee: {
+            epoch: BigInt(epochInfo?.epoch ?? 0),
+            maximumFee: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.maximumFee),
+            transferFeeBasisPoints: mintInfo.extensions.feeConfig.olderTransferFee.transferFeeBasisPoints,
+          },
+          newerTransferFee: {
+            epoch: BigInt(epochInfo?.epoch ?? 0),
+            maximumFee: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.maximumFee),
+            transferFeeBasisPoints: mintInfo.extensions.feeConfig.newerTransferFee.transferFeeBasisPoints,
+          },
+        }
+      : undefined,
+    slot: await raydium.connection.getSlot(),
   })
 
   console.log(
@@ -67,7 +88,7 @@ export const buy = async () => {
     // },
   })
 
-  console.log('expected receive amount:', extInfo.outAmount.toString())
+  console.log('expected receive amount:', extInfo.decimalOutAmount.toString())
   // printSimulate([transaction])
 
   try {

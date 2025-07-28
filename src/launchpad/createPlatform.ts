@@ -14,6 +14,8 @@ export const createPlatform = async () => {
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,
     cpConfigId: new PublicKey(' cp config id '),
+    transferFeeExtensionAuth: new PublicKey('auth'), // or just set owner
+    creatorFeeRate: new BN('fee rate'), // fee rate
     /**
      * when migration, launchpad pool will deposit mints in vaultA/vaultB to new cpmm pool
      * and return lp to migration wallet
