@@ -7,3 +7,4 @@ src/config.ts
 **/*.todo
 src/test/**/*
 src/data/**/*
+src/**/*.test.ts

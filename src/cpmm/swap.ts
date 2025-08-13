@@ -1,4 +1,12 @@
-import { ApiV3PoolInfoStandardItemCpmm, CpmmKeys, CpmmRpcData, CurveCalculator } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoStandardItemCpmm,
+  CpmmKeys,
+  CpmmRpcData,
+  CurveCalculator,
+  FeeOn,
+  printSimulate,
+  TxVersion,
+} from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
 import { isValidCpmm } from './utils'
@@ -38,26 +46,43 @@ export const swap = async () => {
   const baseIn = inputMint === poolInfo.mintA.address
 
   // swap pool mintA for mintB
-  const swapResult = CurveCalculator.swap(
+  const swapResult = CurveCalculator.swapBaseInput(
     inputAmount,
     baseIn ? rpcData.baseReserve : rpcData.quoteReserve,
     baseIn ? rpcData.quoteReserve : rpcData.baseReserve,
-    rpcData.configInfo!.tradeFeeRate
+    rpcData.configInfo!.tradeFeeRate,
+    rpcData.configInfo!.creatorFeeRate,
+    rpcData.configInfo!.protocolFeeRate,
+    rpcData.configInfo!.fundFeeRate,
+    rpcData.feeOn === FeeOn.BothToken || rpcData.feeOn === FeeOn.OnlyTokenB
+  )
+
+  console.log(
+    'swap result',
+    Object.keys(swapResult).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: swapResult[cur as keyof typeof swapResult].toString(),
+      }),
+      {}
+    )
   )
 
   /**
-   * swapResult.sourceAmountSwapped -> input amount
-   * swapResult.destinationAmountSwapped -> output amount
+   * swapResult.inputAmount -> input amount
+   * swapResult.outputAmount -> output amount
    * swapResult.tradeFee -> this swap fee, charge input mint
    */
 
-  const { execute } = await raydium.cpmm.swap({
+  const { execute, transaction } = await raydium.cpmm.swap({
     poolInfo,
     poolKeys,
     inputAmount,
     swapResult,
     slippage: 0.001, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn,
+
+    txVersion: TxVersion.V0,
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
@@ -71,7 +96,9 @@ export const swap = async () => {
     // },
   })
 
-  printSimulateInfo()
+  printSimulate([transaction])
+
+  // printSimulateInfo()
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
   const { txId } = await execute({ sendAndConfirm: true })
   console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, {
@@ -81,4 +108,4 @@ export const swap = async () => {
 }
 
 /** uncomment code below to execute */
-// swap()
+swap()

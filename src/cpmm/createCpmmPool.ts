@@ -3,7 +3,6 @@ import {
   CREATE_CPMM_POOL_FEE_ACC,
   DEVNET_PROGRAM_ID,
   getCpmmPdaAmmConfigId,
-  UI_DEVNET_PROGRAM_ID,
   printSimulate,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
@@ -32,10 +31,7 @@ export const createPool = async () => {
   if (raydium.cluster === 'devnet') {
     feeConfigs.forEach((config) => {
       // config.id = getCpmmPdaAmmConfigId(DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM, config.index).publicKey.toBase58()
-      config.id = getCpmmPdaAmmConfigId(
-        UI_DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
-        config.index
-      ).publicKey.toBase58()
+      config.id = getCpmmPdaAmmConfigId(DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM, config.index).publicKey.toBase58()
     })
   }
 
@@ -43,8 +39,8 @@ export const createPool = async () => {
     // poolId: // your custom publicKey, default sdk will automatically calculate pda pool id
     // programId: CREATE_CPMM_POOL_PROGRAM, // devnet: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM
     // poolFeeAccount: CREATE_CPMM_POOL_FEE_ACC, // devnet:  DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_FEE_ACC
-    programId: UI_DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
-    poolFeeAccount: UI_DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_FEE_ACC,
+    programId: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
+    poolFeeAccount: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_FEE_ACC,
     mintA,
     mintB,
     mintAAmount: new BN(100),

@@ -4,6 +4,8 @@ import {
   CpmmRpcData,
   CurveCalculator,
   USDCMint,
+  FeeOn,
+  printSimulate,
 } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import BN from 'bn.js'
@@ -20,8 +22,8 @@ export const swapBaseOut = async () => {
   const poolId = '7JuwJuNU88gurFnyWeiyGKbFmExMWcmRZntn9imEzdny'
 
   // means want to buy 1 USDC
-  const outputAmount = new BN(1000000)
-  const outputMint = USDCMint
+  const outputAmount = new BN(1000000000)
+  const outputMint = new PublicKey('HzE9e1d3PzsuqgPV6YV4Ggh2JLVm5LZEB9DNF9VecEgu')
 
   let poolInfo: ApiV3PoolInfoStandardItemCpmm
   let poolKeys: CpmmKeys | undefined
@@ -47,16 +49,29 @@ export const swapBaseOut = async () => {
   const baseIn = outputMint.toBase58() === poolInfo.mintB.address
 
   // swap pool mintA for mintB
-  const swapResult = CurveCalculator.swapBaseOut({
-    poolMintA: poolInfo.mintA,
-    poolMintB: poolInfo.mintB,
-    tradeFeeRate: rpcData.configInfo!.tradeFeeRate,
-    baseReserve: rpcData.baseReserve,
-    quoteReserve: rpcData.quoteReserve,
-    outputMint,
-    outputAmount,
-  })
+  const swapResult = CurveCalculator.swapBaseOutput(
+    outputAmount.gt(rpcData[baseIn ? 'quoteReserve' : 'baseReserve'])
+      ? rpcData[baseIn ? 'quoteReserve' : 'baseReserve'].sub(new BN(1))
+      : outputAmount,
+    baseIn ? rpcData.baseReserve : rpcData.quoteReserve,
+    baseIn ? rpcData.quoteReserve : rpcData.baseReserve,
+    rpcData.configInfo!.tradeFeeRate,
+    rpcData.configInfo!.creatorFeeRate,
+    rpcData.configInfo!.protocolFeeRate,
+    rpcData.configInfo!.fundFeeRate,
+    rpcData.feeOn === FeeOn.BothToken || rpcData.feeOn === FeeOn.OnlyTokenB
+  )
 
+  console.log(
+    'swap result',
+    Object.keys(swapResult).reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur]: swapResult[cur as keyof typeof swapResult].toString(),
+      }),
+      {}
+    )
+  )
   /**
    * swapResult.sourceAmountSwapped -> input amount
    * swapResult.destinationAmountSwapped -> output amount
@@ -68,11 +83,8 @@ export const swapBaseOut = async () => {
     poolKeys,
     inputAmount: new BN(0), // if set fixedOut to true, this arguments won't be used
     fixedOut: true,
-    swapResult: {
-      sourceAmountSwapped: swapResult.amountIn,
-      destinationAmountSwapped: outputAmount,
-    },
-    slippage: 0.001, // range: 1 ~ 0.0001, means 100% ~ 0.01%
+    swapResult,
+    slippage: 0.0001, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     baseIn,
     txVersion,
     // optional: set up priority fee here
@@ -88,14 +100,15 @@ export const swapBaseOut = async () => {
     // },
   })
 
-  printSimulateInfo()
+  printSimulate([transaction])
+  // printSimulateInfo()
   // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
-  const { txId } = await execute({ sendAndConfirm: true })
-  console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, {
-    txId: `https://explorer.solana.com/tx/${txId}`,
-  })
+  // const { txId } = await execute({ sendAndConfirm: true })
+  // console.log(`swapped: ${poolInfo.mintA.symbol} to ${poolInfo.mintB.symbol}:`, {
+  //   txId: `https://explorer.solana.com/tx/${txId}`,
+  // })
   process.exit() // if you don't want to end up node execution, comment this line
 }
 
 /** uncomment code below to execute */
-// swapBaseOut()
+swapBaseOut()
