@@ -1,4 +1,4 @@
-import { ApiV3Token } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3Token, CpmmCreatorFeeOn } from '@raydium-io/raydium-sdk-v2'
 
 export interface ConfigInfo {
   name: string
@@ -19,6 +19,39 @@ export interface ConfigInfo {
   migrateToAmmWallet: string
   migrateToCpmmWallet: string
   mintB: string
+}
+
+export interface PlatformCurveAPI {
+  epoch: number
+  index: number
+  configId: string
+  bondingCurveParam: {
+    migrateType: number | null
+    migrateCpmmFeeOn: number | null
+    supply: string | null
+    totalSellA: string | null
+    totalFundRaisingB: string | null
+    totalLockedAmount: string | null
+    cliffPeriod: string | null
+    unlockPeriod: string | null
+  }
+}
+
+export interface PlatformConfig {
+  pubKey: string
+  platformClaimFeeWallet: string
+  platformLockNftWallet: string
+  transferFeeExtensionAuth: string
+  cpConfigId: string
+  platformScale: string
+  creatorScale: string
+  burnScale: string
+  feeRate: string
+  creatorFeeRate: string
+  name: string
+  web: string
+  img: string
+  platformCurve: PlatformCurveAPI[]
 }
 
 export interface MintInfo {
@@ -43,6 +76,10 @@ export interface MintInfo {
   initPrice: string
   endPrice: string
   migrateAmmId?: string
+
+  migrateCreatorNftMint?: string
+  migratePlatformNftMint?: string
+
   priceStageTime1?: number
   priceStageTime2?: number
   priceFinalTime?: number
@@ -54,14 +91,7 @@ export interface MintInfo {
   configId: string
   configInfo: ConfigInfo
 
-  platformInfo: {
-    feeRate: string
-    img: string
-    name: string
-    platformClaimFeeWallet: string
-    pubKey: string
-    web: string
-  }
+  platformInfo: PlatformConfig
 
   cliffPeriod: string
   unlockPeriod: string
@@ -69,6 +99,17 @@ export interface MintInfo {
   totalLockedAmount: number
 
   defaultCurve?: boolean
+
+  totalSellA: string
+  totalFundRaisingB: string
+
+  migrateType: 'cpmm' | 'amm'
+  mintProgramA: string
+
+  transferFeeBasePoints?: number
+  maxinumFee?: string
+
+  cpmmCreatorFeeOn: CpmmCreatorFeeOn
 }
 
 export interface TradeHistory {

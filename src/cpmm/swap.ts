@@ -1,7 +1,7 @@
 import {
   ApiV3PoolInfoStandardItemCpmm,
   CpmmKeys,
-  CpmmRpcData,
+  CpmmParsedRpcData,
   CurveCalculator,
   FeeOn,
   printSimulate,
@@ -24,7 +24,7 @@ export const swap = async () => {
 
   let poolInfo: ApiV3PoolInfoStandardItemCpmm
   let poolKeys: CpmmKeys | undefined
-  let rpcData: CpmmRpcData
+  let rpcData: CpmmParsedRpcData
 
   if (raydium.cluster === 'mainnet') {
     // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
