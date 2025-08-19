@@ -22,9 +22,17 @@ export const initSdk = async (params?: { loadToken?: boolean }) => {
     disableFeatureCheck: true,
     disableLoadToken: !params?.loadToken,
     blockhashCommitment: 'finalized',
-    // urlConfigs: {
-    //   BASE_HOST: '<API_HOST>', // api url configs, currently api doesn't support devnet
-    // },
+     ...(cluster === 'devnet'
+      ? {
+          urlConfigs: {
+            ...DEV_API_URLS,
+            BASE_HOST: 'https://api-v3-devnet.raydium.io',
+            OWNER_BASE_HOST: 'https://owner-v1-devnet.raydium.io',
+            SWAP_HOST: 'https://transaction-v1-devnet.raydium.io',
+            CPMM_LOCK: 'https://dynamic-ipfs-devnet.raydium.io/lock/cpmm/position',
+          },
+        }
+      : {}),
   })
 
   /**
