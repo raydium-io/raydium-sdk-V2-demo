@@ -54,11 +54,8 @@ export const createMint = async () => {
     createOnly: true, // true means create mint only, false will "create and buy together"
     extraSigners: [pair],
 
-    // !! DEVNET ONLY optional: default CpmmCreatorFeeOn.OnlyTokenB
-    // creatorFeeOn: CpmmCreatorFeeOn.OnlyTokenB,
-
-    // !! DEVNET ONLY, MAINNET NOT SUPPORT V2 CURRENTLY optional: devnet default true, mainnet false
-    // initV2: programId === DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
+    // creatorFeeOn: CpmmCreatorFeeOn.OnlyTokenB, //optional: default CpmmCreatorFeeOn.OnlyTokenB
+    // initV2: programId === DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM, // optional: devnet default true, mainnet false
 
     // supply: new BN(1_000_000_000_000_000), // lauchpad mint supply amount, default: LaunchpadPoolInitParam.supply
     // totalSellA: new BN(793_100_000_000_000),  // lauchpad mint sell amount, default: LaunchpadPoolInitParam.totalSellA
