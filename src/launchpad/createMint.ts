@@ -55,7 +55,6 @@ export const createMint = async () => {
     extraSigners: [pair],
 
     // creatorFeeOn: CpmmCreatorFeeOn.OnlyTokenB, //optional: default CpmmCreatorFeeOn.OnlyTokenB
-    // initV2: programId === DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM, // optional: devnet default true, mainnet false
 
     // supply: new BN(1_000_000_000_000_000), // lauchpad mint supply amount, default: LaunchpadPoolInitParam.supply
     // totalSellA: new BN(793_100_000_000_000),  // lauchpad mint sell amount, default: LaunchpadPoolInitParam.totalSellA
