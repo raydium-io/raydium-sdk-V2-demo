@@ -47,12 +47,12 @@ export const buy = async () => {
           withdrawWithheldAuthority: PublicKey.default,
           withheldAmount: BigInt(0),
           olderTransferFee: {
-            epoch: BigInt(epochInfo?.epoch ?? 0),
+            epoch: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.epoch ?? epochInfo?.epoch ?? 0),
             maximumFee: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.maximumFee),
             transferFeeBasisPoints: mintInfo.extensions.feeConfig.olderTransferFee.transferFeeBasisPoints,
           },
           newerTransferFee: {
-            epoch: BigInt(epochInfo?.epoch ?? 0),
+            epoch: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.epoch ?? epochInfo?.epoch ?? 0),
             maximumFee: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.maximumFee),
             transferFeeBasisPoints: mintInfo.extensions.feeConfig.newerTransferFee.transferFeeBasisPoints,
           },
@@ -72,6 +72,8 @@ export const buy = async () => {
   const { transaction, extInfo, execute } = await raydium.launchpad.buyToken({
     programId,
     mintA,
+    mintAProgram: new PublicKey(mintInfo.programId),
+    poolInfo,
     // mintB: poolInfo.configInfo.mintB, // optional, default is sol
     // minMintAAmount: res.amountA, // optional, default sdk will calculated by realtime rpc data
     slippage,

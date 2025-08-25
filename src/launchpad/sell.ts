@@ -31,6 +31,9 @@ export const sell = async () => {
   const shareFeeRate = shareFeeReceiver ? new BN(0) : new BN(10000) // do not exceed poolInfo.configInfo.maxShareFeeRate
   const slippage = new BN(100) // means 1%
 
+  const mintInfo = await raydium.token.getTokenInfo(mintA)
+  const epochInfo = await raydium.connection.getEpochInfo()
+
   const res = Curve.sellExactIn({
     poolInfo,
     amountA: inAmount,
@@ -38,6 +41,25 @@ export const sell = async () => {
     platformFeeRate: platformInfo.feeRate,
     curveType: poolInfo.configInfo.curveType,
     shareFeeRate,
+    creatorFeeRate: platformInfo.creatorFeeRate,
+    slot: await raydium.connection.getSlot(),
+    transferFeeConfigA: mintInfo.extensions.feeConfig
+      ? {
+          transferFeeConfigAuthority: PublicKey.default,
+          withdrawWithheldAuthority: PublicKey.default,
+          withheldAmount: BigInt(0),
+          olderTransferFee: {
+            epoch: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.epoch ?? epochInfo?.epoch ?? 0),
+            maximumFee: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.maximumFee),
+            transferFeeBasisPoints: mintInfo.extensions.feeConfig.olderTransferFee.transferFeeBasisPoints,
+          },
+          newerTransferFee: {
+            epoch: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.epoch ?? epochInfo?.epoch ?? 0),
+            maximumFee: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.maximumFee),
+            transferFeeBasisPoints: mintInfo.extensions.feeConfig.newerTransferFee.transferFeeBasisPoints,
+          },
+        }
+      : undefined,
   })
   console.log(
     'expected out amount: ',
@@ -50,7 +72,9 @@ export const sell = async () => {
   const { execute, transaction, builder } = await raydium.launchpad.sellToken({
     programId,
     mintA,
+    mintAProgram: new PublicKey(mintInfo.programId),
     // mintB, // default is sol
+    poolInfo,
     configInfo: poolInfo.configInfo,
     platformFeeRate: platformInfo.feeRate,
     txVersion: TxVersion.V0,
