@@ -9,11 +9,12 @@ export const createPlatform = async () => {
 
   /** notice: every wallet only enable to create "1" platform config */
   const { transaction, extInfo, execute } = await raydium.launchpad.createPlatformConfig({
-    programId: LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
+    // programId: LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
+    programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
     platformAdmin: owner,
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,
-    cpConfigId: new PublicKey(' cp config id '),
+    cpConfigId: new PublicKey('5MxLgy9oPdTC3YgkiePHqr3EoCRD9uLVYRQS2ANAs7wy'),
 
     // !!! transferFeeExtensionAuth is active on devent only, mainnet doesn't support yet!!
     transferFeeExtensionAuth: new PublicKey('auth'), // or just set owner

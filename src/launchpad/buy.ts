@@ -63,9 +63,11 @@ export const buy = async () => {
 
   console.log(
     'expected out amount: ',
-    res.amountA.toString(),
+    res.amountA.amount.sub(res.amountA.fee ?? new BN(0)).toString(),
     'minimum out amount: ',
-    new Decimal(res.amountA.toString()).mul((10000 - slippage.toNumber()) / 10000).toFixed(0)
+    new Decimal(res.amountA.amount.sub(res.amountA.fee ?? new BN(0)).toString())
+      .mul((10000 - slippage.toNumber()) / 10000)
+      .toFixed(0)
   )
 
   // Raydium UI usage: https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/store/useLaunchpadStore.ts#L563
