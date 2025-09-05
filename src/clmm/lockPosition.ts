@@ -12,7 +12,7 @@ export const lockPosition = async () => {
   const raydium = await initSdk()
 
   const positionNftMint = new PublicKey('your position nft mint')
-  // devent: DEVNET_PROGRAM_ID.CLMM
+  // devnet: DEVNET_PROGRAM_ID.CLMM
   const positionPubKey = getPdaPersonalPositionAddress(CLMM_PROGRAM_ID, positionNftMint).publicKey // devnet:  DEVNET_PROGRAM_ID.CLMM
   const pos = await raydium.connection.getAccountInfo(positionPubKey)
   const position = PositionInfoLayout.decode(pos!.data)
@@ -22,7 +22,6 @@ export const lockPosition = async () => {
 
   let poolInfo: ApiV3PoolInfoConcentratedItem
   if (raydium.cluster === 'mainnet') {
-    // note: api doesn't support get devnet pool info
     poolInfo = (
       await raydium.api.fetchPoolById({ ids: position.poolId.toBase58() })
     )[0] as ApiV3PoolInfoConcentratedItem

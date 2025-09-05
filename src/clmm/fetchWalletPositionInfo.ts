@@ -15,7 +15,7 @@ import { PublicKey } from '@solana/web3.js'
 export const fetchWalletPositionInfo = async () => {
   const raydium = await initSdk()
 
-  const programId = CLMM_PROGRAM_ID // devent: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
+  const programId = CLMM_PROGRAM_ID // devnet: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
   const positionInfo = await raydium.clmm.getOwnerPositionInfo({ programId })
   const lockPositionInfo = await raydium.clmm.getOwnerLockedPositionInfo({ programId: CLMM_LOCK_PROGRAM_ID }) // devnet:  DEVNET_PROGRAM_ID.CLMM_LOCK_PROGRAM_ID
 
@@ -32,7 +32,7 @@ export const fetchWalletPositionInfo = async () => {
   //   if (amount.toString() === '1') possibleMints.push(mint)
   // }
 
-  // // devent: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
+  // // devnet: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID
   // const allPositionKey = possibleMints.map((key) => getPdaPersonalPositionAddress(CLMM_PROGRAM_ID, key).publicKey)
   // const accountInfo = await connection.getMultipleAccountsInfo(allPositionKey)
   // const allPosition: ReturnType<typeof PositionInfoLayout.decode>[] = []
@@ -43,7 +43,7 @@ export const fetchWalletPositionInfo = async () => {
   // })
 
   // /** fetch locked info */
-  // // devent: DEVNET_PROGRAM_ID.CLMM_LOCK_PROGRAM_ID
+  // // devnet: DEVNET_PROGRAM_ID.CLMM_LOCK_PROGRAM_ID
   // const allLockedKey = possibleMints.map((key) => getPdaLockClPositionIdV2(CLMM_LOCK_PROGRAM_ID, key).publicKey)
   // const lockedAccountInfo = await connection.getMultipleAccountsInfo(allLockedKey)
   // const allLocked: ReturnType<typeof LockClPositionLayoutV2.decode>[] = []

@@ -11,7 +11,6 @@ export const withdraw = async () => {
   let poolKeys: CpmmKeys | undefined
 
   if (raydium.cluster === 'mainnet') {
-    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
     // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
     const data = await raydium.api.fetchPoolById({ ids: poolId })
     poolInfo = data[0] as ApiV3PoolInfoStandardItemCpmm

@@ -14,7 +14,6 @@ export const withdrawLiquidity = async () => {
   const withdrawLpAmount = new BN(1000) // please check your token account lpMint balance
 
   if (raydium.cluster === 'mainnet') {
-    // note: api doesn't support get devnet pool info, so in devnet else we go rpc method
     // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
     const data = await raydium.api.fetchPoolById({ ids: poolId })
     poolInfo = data[0] as ApiV3PoolInfoStandardItem

@@ -9,7 +9,7 @@ export const createVestingAccount = async () => {
   const shareAmount = new BN(100000) // must less than pool's total locked amount
 
   const { transaction, execute } = await raydium.launchpad.createVesting({
-    // programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM, // open when develop on devent
+    // programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM, // open when develop on devnet
     poolId: new PublicKey('pool Id'),
     beneficiary: new PublicKey('share wallet address'),
     shareAmount,

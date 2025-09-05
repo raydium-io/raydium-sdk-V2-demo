@@ -44,10 +44,10 @@ async function routeSwap() {
     )
     console.log('fetching all pool basic info, this might take a while (more than 1 minutes)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
-    // devent pool info
+    // devnet pool info
     // fetchRoutePoolBasicInfo({
-    //   amm: DEVNET_PROGRAM_ID.AmmV4,
-    //   clmm: DEVNET_PROGRAM_ID.CLMM,
+    //   amm: DEVNET_PROGRAM_ID.AMM_V4,
+    //   clmm: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID,
     //   cpmm: DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
     // })
     writeCachePoolData(poolData)

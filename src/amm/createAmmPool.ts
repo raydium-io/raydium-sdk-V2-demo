@@ -46,7 +46,7 @@ export const createAmmPool = async () => {
     marketInfo: {
       marketId,
       programId: OPEN_BOOK_PROGRAM,
-      // programId: DEVNET_PROGRAM_ID.OPEN_BOOK_PROGRAM, // devent
+      // programId: DEVNET_PROGRAM_ID.OPEN_BOOK_PROGRAM, // devnet
     },
     baseMintInfo: {
       mint: baseMint,
@@ -60,8 +60,8 @@ export const createAmmPool = async () => {
     quoteAmount: new BN(1000),
 
     // sol devnet faucet: https://faucet.solana.com/
-    // baseAmount: new BN(4 * 10 ** 9), // if devent pool with sol/wsol, better use amount >= 4*10**9
-    // quoteAmount: new BN(4 * 10 ** 9), // if devent pool with sol/wsol, better use amount >= 4*10**9
+    // baseAmount: new BN(4 * 10 ** 9), // if devnet pool with sol/wsol, better use amount >= 4*10**9
+    // quoteAmount: new BN(4 * 10 ** 9), // if devnet pool with sol/wsol, better use amount >= 4*10**9
 
     startTime: new BN(0), // unit in seconds
     ownerInfo: {

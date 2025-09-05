@@ -16,6 +16,10 @@ export const swapClmmToLaunch = async () => {
   const raydium = await initSdk()
 
   // !!! please ensure your clmm out mint equals to launch pool mint B !!!
+  /** this is DEVNET demo !!
+   * if you want to use in mainnet, use xxx - sol clmm pool and input mint should be xxx
+   * if there're launch mints support non sol config, you can use those clmm pools
+   * */
   // e.g. swap CLMM sol -> 'usdc' -----> LAUNCH 'usdc' -> xxx mint
   const clmmPoolId = 'FXAXqgjNK6JVzVV2frumKTEuxC8hTEUhVTJTRhMMwLmM' // sol -> usdc
   // this is launchpad pool id not mint address
@@ -55,7 +59,6 @@ export const swapClmmToLaunch = async () => {
   //     `swap ${inputAmount.toString()} ${inputMint.toBase58()} to ${data.outAmount.toString()}, min amount out: ${data.minOutAmount.toString()}`
   //   )
 
-  /** DEVNET demo at this moment!! */
   const { transaction, extInfo, execute } = await raydium.tradeV2.swapClmmToLaunchMint({
     inputAmount,
     inputMint,
@@ -71,14 +74,14 @@ export const swapClmmToLaunch = async () => {
     extInfo.routes.map((data) => `${data.mint.toString()}: ${data.amount.toString()}`).join(' -> ')
   )
 
-  printSimulate([transaction])
+  //   printSimulate([transaction])
 
-  //   try {
-  //     const sentInfo = await execute({ sendAndConfirm: true })
-  //     console.log(sentInfo)
-  //   } catch (e: any) {
-  //     console.log(e)
-  //   }
+  try {
+    const sentInfo = await execute({ sendAndConfirm: true })
+    console.log(sentInfo)
+  } catch (e: any) {
+    console.log(e)
+  }
 
   process.exit() // if you don't want to end up node execution, comment this line
 }

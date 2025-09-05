@@ -18,7 +18,7 @@ Modify `config.ts.template` to fit your configuration, and rename it to `config.
 
 - `<YOUR_WALLET_SECRET_KEY>`: replace to your own one
 - `<YOUR_RPC_URL>`: replace to your prefer one
-- `<API_HOST>`: by default it's no needed to provide raydium api host, only provide it when test on devent.
+- `<API_HOST>`: by default it's no needed to provide raydium api host, only provide it when test on devnet.
 
 ### Usage
 
@@ -84,5 +84,5 @@ await raydium.account.fetchWalletTokenAccounts() // if need to force fetching to
 
 #### create amm pool error
 
-- `0x10001a9`: you might use https://openbook-tools.dexlab.space/market/create?network=devnet to create devnet market, and they used wrong devent program id, so please use createMarket.ts in demo to create market
+- `0x10001a9`: you might use https://openbook-tools.dexlab.space/market/create?network=devnet to create devnet market, and they used wrong devnet program id, so please use createMarket.ts in demo to create market
 - `lp amount is too less`: please provide more base/quote amount when create pool, if there's SOL/WSOL in your market, it's better provide more than 4 sol(4\*10\*\*9) in initial amount.

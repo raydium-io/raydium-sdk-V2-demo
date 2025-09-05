@@ -16,10 +16,8 @@ export const createPlatform = async () => {
     platformLockNftWallet: owner,
     cpConfigId: new PublicKey('5MxLgy9oPdTC3YgkiePHqr3EoCRD9uLVYRQS2ANAs7wy'),
 
-    // !!! transferFeeExtensionAuth is active on devent only, mainnet doesn't support yet!!
     transferFeeExtensionAuth: new PublicKey('auth'), // or just set owner
 
-    // !!! creatorFeeRate is active on devent only, mainnet doesn't support yet!!
     creatorFeeRate: new BN('0'), // set number for fee rate
     /**
      * when migration, launchpad pool will deposit mints in vaultA/vaultB to new cpmm pool

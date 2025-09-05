@@ -6,7 +6,7 @@ export const claimVesting = async () => {
   const raydium = await initSdk()
 
   const { transaction, extInfo, execute } = await raydium.launchpad.claimVesting({
-    programId: LAUNCHPAD_PROGRAM, // devent: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM
+    programId: LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM
     poolId: new PublicKey('pool id'),
     txVersion: TxVersion.V0,
     // computeBudgetConfig: {
