@@ -41,27 +41,48 @@ export const swapClmmToLaunch = async () => {
   const inputMint = NATIVE_MINT
   const slippage = 0.01
 
+  /** if set to true, fixed clmm amount out,
+   *  e.g. swap usdc -> sol -> launch mint, set fixClmmOut = true and inputAmount (SOL) = 10**9
+   *       will generate {computed amount in} usdc => 1 sol =>  {computed amount out} launch mint
+   * */
+  const fixClmmOut = false
+
   /** code below is to display pre-calculated swap result only */
-  //   const data = await raydium.tradeV2.computeClmmToLaunchAmount({
-  //     inputAmount,
-  //     inputMint: NATIVE_MINT,
+  // const data = await raydium.tradeV2.computeClmmToLaunchAmount({
+  //   inputAmount,
+  //   inputMint: NATIVE_MINT,
 
-  //     clmmPoolId,
-  //     launchPoolId,
-  //     slippage,
+  //   clmmPoolId,
+  //   launchPoolId,
+  //   slippage,
 
-  //     // clmmPoolData,
-  //     // launchPoolInfo,
-  //     // launchPlatformInfo,
-  //   })
+  //   // clmmPoolData,
+  //   // launchPoolInfo,
+  //   // launchPlatformInfo,
+  // })
 
-  //   console.log(
-  //     `swap ${inputAmount.toString()} ${inputMint.toBase58()} to ${data.outAmount.toString()}, min amount out: ${data.minOutAmount.toString()}`
+  // const inputDecimal =
+  //   data.clmmPoolData.poolInfo.mintA.address === inputMint.toBase58()
+  //     ? data.clmmPoolData.poolInfo.mintA.decimals
+  //     : data.clmmPoolData.poolInfo.mintB.decimals
+
+  // console.log(
+  //   `swap ${fixClmmOut ? 'max ' : ''}${new Decimal(
+  //     fixClmmOut ? data.clmmComputeAmount.maxClmmAmountIn.toString() : inputAmount.toString()
   //   )
+  //     .div(10 ** inputDecimal)
+  //     .toString()} ${inputMint.toBase58()} to ${new Decimal(data.outAmount.toString())
+  //     .div(10 ** data.launchPoolInfo.mintDecimalsA)
+  //     .toString()}, min amount out: ${new Decimal(data.minOutAmount.toString())
+  //     .div(10 ** data.launchPoolInfo.mintDecimalsA)
+  //     .toString()}`
+  // )
 
   const { transaction, extInfo, execute } = await raydium.tradeV2.swapClmmToLaunchMint({
-    inputAmount,
     inputMint,
+    inputAmount,
+
+    fixClmmOut,
 
     clmmPoolId,
     launchPoolId,
@@ -71,7 +92,11 @@ export const swapClmmToLaunch = async () => {
 
   console.log(
     'swap route info',
-    extInfo.routes.map((data) => `${data.mint.toString()}: ${data.amount.toString()}`).join(' -> ')
+    extInfo.routes
+      .map(
+        (data) => `${new Decimal(data.amount.toString()).div(10 ** data.decimal).toString()}: ${data.mint.toString()}`
+      )
+      .join(' -> ')
   )
 
   //   printSimulate([transaction])
@@ -87,4 +112,4 @@ export const swapClmmToLaunch = async () => {
 }
 
 /** uncomment code below to execute */
-swapClmmToLaunch()
+// swapClmmToLaunch()
