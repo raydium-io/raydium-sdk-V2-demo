@@ -3,7 +3,6 @@ import { PublicKey } from '@solana/web3.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 import BN from 'bn.js'
-import { devConfigs } from './utils'
 
 export const createPool = async () => {
   const raydium = await initSdk({ loadToken: true })
@@ -13,8 +12,7 @@ export const createPool = async () => {
   const mint1 = await raydium.token.getTokenInfo('4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R')
   // USDT
   const mint2 = await raydium.token.getTokenInfo('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')
-  const clmmConfigs = await raydium.api.getClmmConfigs()
-  // const clmmConfigs = devConfigs // devnet configs
+  const clmmConfigs = await raydium.api.getClmmConfigs() // note: in devnet, remember set cluster to devent in config.ts (data from api: https://api-v3-devnet.raydium.io/main/clmm-config)
 
   const { execute } = await raydium.clmm.createPool({
     programId: CLMM_PROGRAM_ID,

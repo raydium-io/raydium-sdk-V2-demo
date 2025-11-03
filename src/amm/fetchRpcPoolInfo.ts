@@ -1,5 +1,4 @@
 import { initSdk } from '../config'
-import Decimal from 'decimal.js'
 
 export const fetchRpcPoolInfo = async () => {
   const raydium = await initSdk()
