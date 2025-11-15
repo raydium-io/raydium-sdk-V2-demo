@@ -278,10 +278,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@raydium-io/raydium-sdk-v2@0.2.25-alpha":
-  version "0.2.25-alpha"
-  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.2.25-alpha.tgz#d12a7ebbae05b1ad09af7804684d589090f5c3aa"
-  integrity sha512-p8/RF0tANfKQL3dgFoytvrk7k7pf3i5ptetDMootCQQ2yq3+selO1KPzxuomrD6FjX0JQlbRhdvisFk90tp3/Q==
+"@raydium-io/raydium-sdk-v2@0.2.30-alpha":
+  version "0.2.30-alpha"
+  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.2.30-alpha.tgz#cbdb540edbcf402f1fbe0f8a80bae2e7501202cd"
+  integrity sha512-S7K9cfqDMqOkLpcUbZx4j6oatE/2g7fdtfmbQKZXjeKQP3iteNLbZ+dOQM8t9YWksdPJiWEBGVm5sAiNNhHQqg==
   dependencies:
     "@solana/buffer-layout" "^4.0.1"
     "@solana/spl-token" "^0.4.8"
