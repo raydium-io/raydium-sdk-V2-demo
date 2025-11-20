@@ -1,4 +1,4 @@
-import { ApiV3PoolInfoConcentratedItem, ClmmKeys, RAYMint } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoConcentratedItem, ClmmKeys, RAYMint, WSOLMint } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
 import { isValidClmm } from './utils'
@@ -24,7 +24,8 @@ export const setFarmRewards = async () => {
 
   const mint = await raydium.token.getTokenInfo(RAYMint.toBase58())
   const currentChainTime = await raydium.currentBlockChainTime()
-  const openTime = Math.floor(currentChainTime / 1000) // in seconds
+  const offset = await raydium.chainTimeOffset()
+  const openTime = Math.floor(currentChainTime / 1000) + offset * 2 // in seconds, offset for more buffer
   const endTime = openTime + 60 * 60 * 24 * 7
 
   const editRewardInfos = [
@@ -59,7 +60,7 @@ export const setFarmRewards = async () => {
 
   /** example below: if you want to combine edit reward and add new rewards in one tx  */
   /*
-  const mint2 = await raydium.token.getTokenInfo(SOLMint.toBase58())
+  const mint2 = await raydium.token.getTokenInfo(WSOLMint.toBase58())
   const newRewardInfos = [
     {
       mint:mint2,
