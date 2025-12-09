@@ -14,7 +14,8 @@ export const createPlatform = async () => {
     platformAdmin: owner,
     platformClaimFeeWallet: owner,
     platformLockNftWallet: owner,
-    cpConfigId: new PublicKey('5MxLgy9oPdTC3YgkiePHqr3EoCRD9uLVYRQS2ANAs7wy'),
+    // configs from api: https://api-v3.raydium.io/main/cpmm-config (devnet:https://api-v3-devnet.raydium.io/main/cpmm-config)
+    cpConfigId: new PublicKey('config id'),
 
     transferFeeExtensionAuth: new PublicKey('auth'), // or just set owner
 
