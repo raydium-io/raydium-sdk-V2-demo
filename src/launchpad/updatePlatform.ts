@@ -22,6 +22,7 @@ export const updatePlatform = async () => {
     // programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
     platformAdmin: new PublicKey('owner'),
     updateInfo: { type: 'updateFeeRate', value: new BN(10) },
+    //  updateInfo: { type: "updateVestingWallet", value: new PublicKey("wallet address") },
 
     /** other update example */
     // updateInfo: { type: 'updateClaimFeeWallet', value: new PublicKey('wallet') },
