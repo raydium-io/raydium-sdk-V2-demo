@@ -1,12 +1,7 @@
 import {
-  getOrderTick,
   getPdaLimitOrderAddress,
   getPdaLimitOrderNonceAddress,
-  LimitOrderLayout,
   LimitOrderNonceLayout,
-  PoolInfoLayout,
-  printSimulate,
-  Raydium,
   TxVersion,
 } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
@@ -20,9 +15,6 @@ async function settleLimitOrder() {
 
   const poolId = new PublicKey('pool id')
   const { poolInfo } = await raydium.clmm.getSimplePoolInfo(poolId)
-  const inputMint = poolInfo.mintA.address
-  const zeroForOne = inputMint.toString() === poolInfo.mintA.address.toString()
-  const openPrice = new Decimal(1.2)
 
   const limitOrderNonce = getPdaLimitOrderNonceAddress(CLMM_PROGRAM_ID, raydium.ownerPubKey, 0).publicKey
   const res = await raydium.connection.getAccountInfo(limitOrderNonce)

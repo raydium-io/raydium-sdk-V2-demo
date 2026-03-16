@@ -6,11 +6,8 @@ import {
   ReturnTypeFetchMultiplePoolTickArrays,
   RAYMint,
   swapInternal,
-  TickArrayLayout,
   getPdaExBitmapAccount,
-  TickArrayBitmapUtil,
   TickArrayBitmapExtensionLayout,
-  getMultipleAccountsInfo,
   fetchTickArrays,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'

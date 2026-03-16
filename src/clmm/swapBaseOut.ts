@@ -3,15 +3,11 @@ import {
   ClmmKeys,
   ComputeClmmPoolInfo,
   fetchTickArrays,
-  getMultipleAccountsInfo,
   getPdaExBitmapAccount,
   PoolUtils,
   ReturnTypeFetchMultiplePoolTickArrays,
   swapInternal,
   TickArrayBitmapExtensionLayout,
-  TickArrayBitmapUtil,
-  TickArrayLayout,
-  USDCMint,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
