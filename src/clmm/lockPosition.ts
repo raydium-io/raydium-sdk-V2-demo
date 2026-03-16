@@ -2,7 +2,7 @@ import {
   ApiV3PoolInfoConcentratedItem,
   CLMM_PROGRAM_ID,
   DEVNET_PROGRAM_ID,
-  PositionInfoLayout,
+  PersonalPositionLayout,
   getPdaPersonalPositionAddress,
 } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
@@ -15,7 +15,7 @@ export const lockPosition = async () => {
   // devnet: DEVNET_PROGRAM_ID.CLMM
   const positionPubKey = getPdaPersonalPositionAddress(CLMM_PROGRAM_ID, positionNftMint).publicKey // devnet:  DEVNET_PROGRAM_ID.CLMM
   const pos = await raydium.connection.getAccountInfo(positionPubKey)
-  const position = PositionInfoLayout.decode(pos!.data)
+  const position = PersonalPositionLayout.decode(pos!.data)
 
   /** if you want to fetch all existed position to find which position you want */
   //  const allPosition = await raydium.clmm.getOwnerPositionInfo({ programId: CLMM_PROGRAM_ID }) // devnet: DEVNET_PROGRAM_ID.CLMM

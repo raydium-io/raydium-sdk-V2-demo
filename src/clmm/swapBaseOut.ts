@@ -2,8 +2,15 @@ import {
   ApiV3PoolInfoConcentratedItem,
   ClmmKeys,
   ComputeClmmPoolInfo,
+  fetchTickArrays,
+  getMultipleAccountsInfo,
+  getPdaExBitmapAccount,
   PoolUtils,
   ReturnTypeFetchMultiplePoolTickArrays,
+  swapInternal,
+  TickArrayBitmapExtensionLayout,
+  TickArrayBitmapUtil,
+  TickArrayLayout,
   USDCMint,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
@@ -51,13 +58,44 @@ export const swapBaseOut = async () => {
   if (outputMint.toBase58() !== poolInfo.mintA.address && outputMint.toBase58() !== poolInfo.mintB.address)
     throw new Error('input mint does not match pool')
 
-  const { remainingAccounts, ...res } = await PoolUtils.computeAmountIn({
-    poolInfo: clmmPoolInfo,
-    tickArrayCache: tickCache[poolId],
-    amountOut,
-    baseMint: outputMint,
-    slippage: 0.01,
-    epochInfo: await raydium.fetchEpochInfo(),
+  // const { remainingAccounts, ...res } = await PoolUtils.computeAmountIn({
+  //   poolInfo: clmmPoolInfo,
+  //   tickArrayCache: tickCache[poolId],
+  //   amountOut,
+  //   baseMint: outputMint,
+  //   slippage: 0.01,
+  //   epochInfo: await raydium.fetchEpochInfo(),
+  // })
+
+  const tickArrayBitmapExtension = getPdaExBitmapAccount(clmmPoolInfo.programId, clmmPoolInfo.id).publicKey
+  const tickArrayBitmapExtensionRes = await raydium.connection.getAccountInfo(tickArrayBitmapExtension)
+  const tickArrays = await fetchTickArrays(
+    clmmPoolInfo.programId,
+    raydium.connection,
+    clmmPoolInfo.id,
+    clmmPoolInfo.tickCurrent,
+    clmmPoolInfo.tickCurrent,
+    clmmPoolInfo.tickArrayBitmap,
+  )
+
+  const simulation = swapInternal({
+    programId: clmmPoolInfo.programId,
+    poolId: clmmPoolInfo.id,
+    poolInfo: clmmPoolInfo.accInfo,
+    tickArrays,
+    configInfo: {
+      ...clmmPoolInfo.ammConfig,
+      fundOwner: new PublicKey(clmmPoolInfo.ammConfig.fundOwner),
+      owner: PublicKey.default,
+      bump: 0,
+    },
+    tickarrayBitmapExtension: TickArrayBitmapExtensionLayout.decode(tickArrayBitmapExtensionRes!.data),
+    amountSpecified: amountOut,
+    sqrtPriceLimitX64: clmmPoolInfo.accInfo.sqrtPriceX64,
+    zeroForOne: outputMint.toBase58() === clmmPoolInfo.mintA.address, // sell A for B,
+    isBaseInput: true, // isBaseInput = false for exact output,
+    blockTimestamp: Math.floor(Date.now() / 1000),
+    includeExtraTickArrays: true,
   })
 
   const [mintIn, mintOut] =
@@ -66,26 +104,21 @@ export const swapBaseOut = async () => {
       : [poolInfo.mintB, poolInfo.mintA]
 
   console.log({
-    amountIn: `${new Decimal(res.amountIn.amount.toString()).div(10 ** mintIn.decimals).toString()} ${mintIn.symbol}`,
-    maxAmountIn: `${new Decimal(res.maxAmountIn.amount.toString()).div(10 ** mintIn.decimals).toString()} ${
-      mintIn.symbol
-    }`,
-    realAmountOut: `${new Decimal(res.realAmountOut.amount.toString()).div(10 ** mintOut.decimals).toString()} ${
-      mintOut.symbol
-    }`,
+    amountIn: `${new Decimal(simulation.amountCalculated.toString()).div(10 ** mintIn.decimals).toString()} ${mintIn.symbol}`,
+    realAmountOut: `${new Decimal(amountOut.toString()).div(10 ** mintOut.decimals).toString()} ${mintOut.symbol}`,
   })
 
   const { execute } = await raydium.clmm.swapBaseOut({
     poolInfo,
     poolKeys,
     outputMint,
-    amountInMax: res.maxAmountIn.amount,
-    amountOut: res.realAmountOut.amount,
+    amountInMax: simulation.amountCalculated,
+    amountOut: amountOut,
     observationId: clmmPoolInfo.observationId,
     ownerInfo: {
       useSOLBalance: true, // if wish to use existed wsol token account, pass false
     },
-    remainingAccounts,
+    remainingAccounts: simulation.accounts,
     txVersion,
 
     // optional: set up priority fee here

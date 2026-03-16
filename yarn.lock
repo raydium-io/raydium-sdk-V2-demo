@@ -278,10 +278,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@raydium-io/raydium-sdk-v2@0.2.32-alpha":
-  version "0.2.32-alpha"
-  resolved "https://registry.yarnpkg.com/@raydium-io/raydium-sdk-v2/-/raydium-sdk-v2-0.2.32-alpha.tgz#e2a4518f468ffe2787eacbb04f3b5de72e05e13e"
-  integrity sha512-/CTw0sGSOwLIOyfV+fSkDGwt4PeQVA8W0DlNiC9sBDOXZtUHk1VH3UPuHi2ZJKY5SXTTMTJ8WV4r8tKeJFdTxQ==
+"@raydium-io/raydium-sdk-v2@npm:r-test-5@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/r-test-5/-/r-test-5-0.0.2.tgz#03e59fea00a95f03b85b71864f918d27a0d58fd1"
+  integrity sha512-bQrYbdpQkzn4sjoVMkv9ZnBVEWU7OOYhkrWcN+u2Ww3zYPTkHh3/JQzp7mpdSb72LH7mA7SbKI2rM4MDAJVHAg==
   dependencies:
     "@solana/buffer-layout" "^4.0.1"
     "@solana/spl-token" "^0.4.8"
@@ -291,7 +291,9 @@
     bn.js "^5.2.1"
     bs58 "^6.0.0"
     dayjs "^1.11.5"
+    decimal.js "^10.4.2"
     decimal.js-light "^2.5.1"
+    js-sha256 "^0.11.1"
     jsonfile "^6.1.0"
     lodash "^4.17.21"
     toformat "^2.0.0"
@@ -1205,6 +1207,11 @@ decimal.js-light@^2.5.1:
   resolved "https://registry.yarnpkg.com/decimal.js-light/-/decimal.js-light-2.5.1.tgz#134fd32508f19e208f4fb2f8dac0d2626a867934"
   integrity sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==
 
+decimal.js@^10.4.2:
+  version "10.6.0"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.6.0.tgz#e649a43e3ab953a72192ff5983865e509f37ed9a"
+  integrity sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg==
+
 decimal.js@^10.4.3:
   version "10.4.3"
   resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.4.3.tgz#1044092884d245d1b7f65725fa4ad4c6f781cc23"
@@ -1945,6 +1952,11 @@ jju@^1.1.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==
+
+js-sha256@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/js-sha256/-/js-sha256-0.11.1.tgz#712262e8fc9569d6f7f6eea72c0d8e5ccc7c976c"
+  integrity sha512-o6WSo/LUvY2uC4j7mO50a2ms7E/EAdbP0swigLV+nzHKTTaYnaLIWJ02VdXrsJX0vGedDESQnLsOekr94ryfjg==
 
 js-yaml@^4.1.0:
   version "4.1.0"

@@ -1,10 +1,4 @@
-import {
-  ApiV3PoolInfoConcentratedItem,
-  TickUtils,
-  PoolUtils,
-  ClmmKeys,
-  printSimulate,
-} from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoConcentratedItem, TickUtil, PoolUtils, ClmmKeys, printSimulate } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
@@ -31,7 +25,7 @@ export const createPositionFromLiquidity = async () => {
     `sol balance: ${new Decimal(raydium.account.tokenAccounts.find((t) => t.isNative)?.amount.toString() ?? 0)
       .div(10 ** 9)
       .toDecimalPlaces(9)
-      .toString()}`
+      .toString()}`,
   )
 
   // we do NOT suggest use all sol amount as input amount
@@ -44,17 +38,14 @@ export const createPositionFromLiquidity = async () => {
   //   const inputAmount = 0.025 // SOL "UI" amount
   const [startPrice, endPrice] = [560.979027728865622, 647.86110003403338]
 
-  const { tick: lowerTick } = TickUtils.getPriceAndTick({
-    poolInfo,
-    price: new Decimal(startPrice),
-    baseIn: true,
-  })
-
-  const { tick: upperTick } = TickUtils.getPriceAndTick({
-    poolInfo,
-    price: new Decimal(endPrice),
-    baseIn: true,
-  })
+  const lowerTick = TickUtil.toTickIndex(
+    TickUtil.priceToTick(new Decimal(startPrice), poolInfo.mintA.decimals, poolInfo.mintB.decimals),
+    poolInfo.config.tickSpacing,
+  )
+  const upperTick = TickUtil.toTickIndex(
+    TickUtil.priceToTick(new Decimal(endPrice), poolInfo.mintA.decimals, poolInfo.mintB.decimals),
+    poolInfo.config.tickSpacing,
+  )
 
   const epochInfo = await raydium.fetchEpochInfo()
   const res = await PoolUtils.getLiquidityAmountOutFromAmountIn({
