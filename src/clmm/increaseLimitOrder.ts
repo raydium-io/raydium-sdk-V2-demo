@@ -35,7 +35,6 @@ async function increaseLimitOrder() {
   const data = await raydium.connection.getAccountInfo(limitOrder)
   if (!data) throw new Error(`limit order ${limitOrder.toBase58()} not exist`)
   const limitOrderData = LimitOrderLayout.decode(data!.data)
-  console.log(123123, limitOrderData)
 
   const { execute, extInfo, transaction } = await raydium.clmm.increaseLimitOrder({
     poolInfo,

@@ -278,10 +278,10 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@raydium-io/raydium-sdk-v2@npm:r-test-5@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/r-test-5/-/r-test-5-0.0.2.tgz#03e59fea00a95f03b85b71864f918d27a0d58fd1"
-  integrity sha512-bQrYbdpQkzn4sjoVMkv9ZnBVEWU7OOYhkrWcN+u2Ww3zYPTkHh3/JQzp7mpdSb72LH7mA7SbKI2rM4MDAJVHAg==
+"@raydium-io/raydium-sdk-v2@npm:r-test-5@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/r-test-5/-/r-test-5-0.0.5.tgz#6212e7894ff1283b431e0bdd1e54a97330324cc3"
+  integrity sha512-TIO0joL/uItQdaAsyCijhTv9GaZRIG7p9sJv7ozsxEBWTBL01x5D+x3amzYoM5WfuhZGPsjhumc/QA+diDy7+A==
   dependencies:
     "@solana/buffer-layout" "^4.0.1"
     "@solana/spl-token" "^0.4.8"

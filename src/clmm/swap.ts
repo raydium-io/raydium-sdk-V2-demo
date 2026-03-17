@@ -9,91 +9,59 @@ import {
   getPdaExBitmapAccount,
   TickArrayBitmapExtensionLayout,
   fetchTickArrays,
+  printSimulate,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import { isValidClmm } from './utils'
-import { printSimulateInfo } from '../util'
+import { formatBN, printSimulateInfo } from '../util'
 import { PublicKey } from '@solana/web3.js'
 
 export const swap = async () => {
   const raydium = await initSdk()
-  let poolInfo: ApiV3PoolInfoConcentratedItem
-  // RAY-USDC pool
-  const poolId = 'DiwsGxJYoRZURvyCtMsJVyxR86yZBBbSYeeWNm7YCmT6'
-  const inputMint = RAYMint.toBase58()
+  const poolId = 'pool id'
+
   let poolKeys: ClmmKeys | undefined
-  let clmmPoolInfo: ComputeClmmPoolInfo
-  let tickCache: ReturnTypeFetchMultiplePoolTickArrays
 
   const inputAmount = new BN(1000000)
+  const zeroForOne = false // sell pool mint A for B
 
-  if (raydium.cluster === 'mainnet') {
-    // if you wish to get pool info from rpc, also can modify logic to go rpc method directly
-    const data = await raydium.api.fetchPoolById({ ids: poolId })
-    poolInfo = data[0] as ApiV3PoolInfoConcentratedItem
-    if (!isValidClmm(poolInfo.programId)) throw new Error('target pool is not CLMM pool')
+  const { poolInfo, rpcData, configInfo, tickArrays } = await raydium.clmm.getSwapPoolInfo(poolId, zeroForOne)
+  const [programId, poolIdPub] = [new PublicKey(poolInfo.programId), new PublicKey(poolInfo.id)]
+  const [inputMint, outputMint, inputDecimals, outputDecimals] = zeroForOne
+    ? [poolInfo.mintA.address, poolInfo.mintB.address, poolInfo.mintA.decimals, poolInfo.mintB.decimals]
+    : [poolInfo.mintB.address, poolInfo.mintA.address, poolInfo.mintB.decimals, poolInfo.mintA.decimals]
 
-    clmmPoolInfo = await PoolUtils.fetchComputeClmmInfo({
-      connection: raydium.connection,
-      poolInfo,
-    })
-    tickCache = await PoolUtils.fetchMultiplePoolTickArrays({
-      connection: raydium.connection,
-      poolKeys: [clmmPoolInfo],
-    })
-  } else {
-    const data = await raydium.clmm.getPoolInfoFromRpc(poolId)
-    poolInfo = data.poolInfo
-    poolKeys = data.poolKeys
-    clmmPoolInfo = data.computePoolInfo
-    tickCache = data.tickData
-  }
-
-  if (inputMint !== poolInfo.mintA.address && inputMint !== poolInfo.mintB.address)
-    throw new Error('input mint does not match pool')
-
-  const baseIn = inputMint === poolInfo.mintA.address
-
-  const tickArrayBitmapExtension = getPdaExBitmapAccount(clmmPoolInfo.programId, clmmPoolInfo.id).publicKey
+  const tickArrayBitmapExtension = getPdaExBitmapAccount(programId, poolIdPub).publicKey
   const tickArrayBitmapExtensionRes = await raydium.connection.getAccountInfo(tickArrayBitmapExtension)
 
-  const tickArrays = await fetchTickArrays(
-    clmmPoolInfo.programId,
-    raydium.connection,
-    clmmPoolInfo.id,
-    clmmPoolInfo.tickCurrent,
-    clmmPoolInfo.tickCurrent,
-    clmmPoolInfo.tickArrayBitmap,
-  )
-
   const simulation = swapInternal({
-    programId: clmmPoolInfo.programId,
-    poolId: clmmPoolInfo.id,
-    poolInfo: clmmPoolInfo.accInfo,
+    programId,
+    poolId: poolIdPub,
+    poolInfo: rpcData,
     tickArrays,
-    configInfo: {
-      ...clmmPoolInfo.ammConfig,
-      fundOwner: new PublicKey(clmmPoolInfo.ammConfig.fundOwner),
-      owner: PublicKey.default,
-      bump: 0,
-    },
+    configInfo,
     tickarrayBitmapExtension: TickArrayBitmapExtensionLayout.decode(tickArrayBitmapExtensionRes!.data),
     amountSpecified: inputAmount,
-    sqrtPriceLimitX64: clmmPoolInfo.accInfo.sqrtPriceX64,
-    zeroForOne: baseIn, // sell A for B,
+    sqrtPriceLimitX64: new BN(0),
+    zeroForOne, // sell A for B,
     isBaseInput: true, // isBaseInput = false for exact output,
     blockTimestamp: Math.floor(Date.now() / 1000),
     includeExtraTickArrays: true,
   })
 
-  const { execute } = await raydium.clmm.swap({
+  console.log('swap simulate info')
+  console.log(
+    `swap ${formatBN(inputAmount, inputDecimals)} ${inputMint} for ${formatBN(simulation.amountCalculated.toString(), outputDecimals)} ${outputMint.toString()}`,
+  )
+
+  const { execute, transaction } = await raydium.clmm.swap({
     poolInfo,
     poolKeys,
-    inputMint: poolInfo[baseIn ? 'mintA' : 'mintB'].address,
+    inputMint,
     amountIn: inputAmount,
     amountOutMin: simulation.amountCalculated,
-    observationId: clmmPoolInfo.observationId,
+    observationId: rpcData.observationId,
     ownerInfo: {
       useSOLBalance: true, // if wish to use existed wsol token account, pass false
     },
@@ -101,10 +69,10 @@ export const swap = async () => {
     txVersion,
 
     // optional: set up priority fee here
-    // computeBudgetConfig: {
-    //   units: 600000,
-    //   microLamports: 465915,
-    // },
+    computeBudgetConfig: {
+      units: 600000,
+      microLamports: 465915,
+    },
 
     // optional: add transfer sol to tip account instruction. e.g sent tip to jito
     // txTipConfig: {
@@ -114,6 +82,7 @@ export const swap = async () => {
   })
 
   printSimulateInfo()
+  printSimulate([transaction])
   // const { txId } = await execute()
   // console.log('swapped in clmm pool:', { txId: `https://explorer.solana.com/tx/${txId}` })
   // process.exit() // if you don't want to end up node execution, comment this line
