@@ -40,7 +40,7 @@ async function routeSwap() {
   let poolData = readCachePoolData(1000 * 60 * 60 * 24 * 10) // example for cache 1 day
   if (poolData.ammPools.length === 0) {
     console.log(
-      '**Please ensure you are using "paid" rpc node or you might encounter fetch data error due to pretty large pool data**'
+      '**Please ensure you are using "paid" rpc node or you might encounter fetch data error due to pretty large pool data**',
     )
     console.log('fetching all pool basic info, this might take a while (more than 1 minutes)..')
     poolData = await raydium.tradeV2.fetchRoutePoolBasicInfo()
@@ -89,11 +89,11 @@ async function routeSwap() {
         decimals: mintInfos[inputMintStr].decimals,
         isToken2022: mintInfos[inputMintStr].programId.equals(TOKEN_2022_PROGRAM_ID),
       }),
-      inputAmount
+      inputAmount,
     ),
     directPath: routes.directPath.map(
       (p) =>
-        ammSimulateCache[p.id.toBase58()] || computeClmmPoolInfo[p.id.toBase58()] || computeCpmmData[p.id.toBase58()]
+        ammSimulateCache[p.id.toBase58()] || computeClmmPoolInfo[p.id.toBase58()] || computeCpmmData[p.id.toBase58()],
     ),
     routePathDict,
     simulateCache: ammSimulateCache,
@@ -112,6 +112,7 @@ async function routeSwap() {
     chainTime: Math.floor(raydium.chainTimeData?.chainTime ?? Date.now() / 1000),
     slippage: 0.005, // range: 1 ~ 0.0001, means 100% ~ 0.01%
     epochInfo: await raydium.connection.getEpochInfo(),
+    blockTimestamp: Math.floor(Date.now() / 1000),
   })
 
   // swapRoutes are sorted by out amount, so first one should be the best route

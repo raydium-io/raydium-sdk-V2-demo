@@ -13,8 +13,6 @@ const CLMM_PROGRAM_ID = new PublicKey('AWbDSWgBr44rbUKE2VN5tLx3tHWJ5SDZBPLuKg8uc
 async function settleLimitOrder() {
   const raydium = await initSdk()
 
-  const poolId = new PublicKey('pool id')
-
   const limitOrderNonce = getPdaLimitOrderNonceAddress(CLMM_PROGRAM_ID, raydium.ownerPubKey, 0).publicKey
   const res = await raydium.connection.getAccountInfo(limitOrderNonce)
   const orderNonce = res ? LimitOrderNonceLayout.decode(res.data).orderNonce : new BN(0)

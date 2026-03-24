@@ -1,7 +1,5 @@
 import { printSimulate, TxVersion } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
-import Decimal from 'decimal.js'
 import { initSdk } from '../config'
 const CLMM_PROGRAM_ID = new PublicKey('AWbDSWgBr44rbUKE2VN5tLx3tHWJ5SDZBPLuKg8ucthH')
 

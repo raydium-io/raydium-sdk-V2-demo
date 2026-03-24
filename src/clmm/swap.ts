@@ -1,14 +1,8 @@
 import {
-  ApiV3PoolInfoConcentratedItem,
   ClmmKeys,
-  ComputeClmmPoolInfo,
-  PoolUtils,
-  ReturnTypeFetchMultiplePoolTickArrays,
-  RAYMint,
   swapInternal,
   getPdaExBitmapAccount,
   TickArrayBitmapExtensionLayout,
-  fetchTickArrays,
   printSimulate,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
