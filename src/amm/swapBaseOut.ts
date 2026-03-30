@@ -19,7 +19,7 @@ import { PublicKey } from '@solana/web3.js'
 // swapBaseOut means fixed output token amount, calculate needed input token amount
 export const swapBaseOut = async () => {
   const raydium = await initSdk()
-  const poolId = '58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2' // SOL-USDC pool
+  const poolId = '' // SOL-USDC pool
   const amountOut = 10000000 // means want to buy 0.01 sol
   const inputMint = USDCMint.toBase58() // means use USDC to buy sol
 
@@ -70,7 +70,7 @@ export const swapBaseOut = async () => {
       .div(10 ** mintIn.decimals)
       .toFixed(mintIn.decimals)} ${mintIn.symbol || mintIn.address}, maximum ${new Decimal(out.maxAmountIn.toString())
       .div(10 ** mintIn.decimals)
-      .toFixed(mintIn.decimals)} ${mintIn.symbol || mintIn.address} needed`
+      .toFixed(mintIn.decimals)} ${mintIn.symbol || mintIn.address} needed`,
   )
 
   const { execute } = await raydium.liquidity.swap({
