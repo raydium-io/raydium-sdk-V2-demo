@@ -16,7 +16,7 @@ export const swap = async () => {
   const raydium = await initSdk()
   let poolInfo: ApiV3PoolInfoConcentratedItem
   // RAY-USDC pool
-  const poolId = 'DiwsGxJYoRZURvyCtMsJVyxR86yZBBbSYeeWNm7YCmT6'
+  const poolId = ''
   const inputMint = RAYMint.toBase58()
   let poolKeys: ClmmKeys | undefined
   let clmmPoolInfo: ComputeClmmPoolInfo
