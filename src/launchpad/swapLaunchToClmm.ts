@@ -65,15 +65,16 @@ export const swapLaunchToClmm = async () => {
     launchPoolId,
     slippage,
     txVersion: TxVersion.V0,
+    blockTimestamp: Math.floor(Date.now() / 1000),
   })
 
   console.log(
     'swap route info',
     extInfo.routes
       .map(
-        (data) => `${data.mint.toString()}: ${new Decimal(data.amount.toString()).div(10 ** data.decimal).toString()}`
+        (data) => `${data.mint.toString()}: ${new Decimal(data.amount.toString()).div(10 ** data.decimal).toString()}`,
       )
-      .join(' -> ')
+      .join(' -> '),
   )
 
   // printSimulate([transaction])
