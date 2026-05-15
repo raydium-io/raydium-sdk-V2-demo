@@ -23,7 +23,7 @@ export const swapBaseOut = async () => {
   const amountOut = 10000000 // means want to buy 0.01 sol
   const inputMint = USDCMint.toBase58() // means use USDC to buy sol
 
-  let poolInfo: ApiV3PoolInfoStandardItem | undefined
+  let poolInfo: ApiV3PoolInfoStandardItem
   let poolKeys: AmmV4Keys | undefined
   let rpcData: AmmRpcData
 
@@ -70,7 +70,7 @@ export const swapBaseOut = async () => {
       .div(10 ** mintIn.decimals)
       .toFixed(mintIn.decimals)} ${mintIn.symbol || mintIn.address}, maximum ${new Decimal(out.maxAmountIn.toString())
       .div(10 ** mintIn.decimals)
-      .toFixed(mintIn.decimals)} ${mintIn.symbol || mintIn.address} needed`
+      .toFixed(mintIn.decimals)} ${mintIn.symbol || mintIn.address} needed`,
   )
 
   const { execute } = await raydium.liquidity.swap({

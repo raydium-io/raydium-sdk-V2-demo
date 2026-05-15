@@ -13,7 +13,7 @@ export const swap = async () => {
   const inputMint = NATIVE_MINT.toBase58()
   const poolId = '58oQChx4yWmvKdwLLZzBi4ChoCc2fqCUWBkwMihLYQo2' // SOL-USDC pool
 
-  let poolInfo: ApiV3PoolInfoStandardItem | undefined
+  let poolInfo: ApiV3PoolInfoStandardItem
   let poolKeys: AmmV4Keys | undefined
   let rpcData: AmmRpcData
 
@@ -62,7 +62,7 @@ export const swap = async () => {
       .toDecimalPlaces(mintOut.decimals)
       .toString()} ${mintOut.symbol || mintOut.address}, minimum amount out ${new Decimal(out.minAmountOut.toString())
       .div(10 ** mintOut.decimals)
-      .toDecimalPlaces(mintOut.decimals)} ${mintOut.symbol || mintOut.address}`
+      .toDecimalPlaces(mintOut.decimals)} ${mintOut.symbol || mintOut.address}`,
   )
 
   const { execute } = await raydium.liquidity.swap({
