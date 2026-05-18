@@ -2,7 +2,6 @@ import {
   CLMM_PROGRAM_ID,
   CLMM_LOCK_PROGRAM_ID,
   getPdaPersonalPositionAddress,
-  PositionInfoLayout,
   DEVNET_PROGRAM_ID,
   getPdaLockClPositionIdV2,
   LockClPositionLayoutV2,

@@ -1,0 +1,44 @@
+import { CLMM_PROGRAM_ID, CollectFeeOn, DEVNET_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
+import { PublicKey } from '@solana/web3.js'
+import { initSdk, txVersion } from '../config'
+import Decimal from 'decimal.js'
+
+export const createCustomizablePool = async () => {
+  const raydium = await initSdk({ loadToken: true })
+
+  // you can call sdk api to get mint info or paste mint info from api: https://api-v3.raydium.io/mint/list
+  // RAY
+  const mint1 = await raydium.token.getTokenInfo('4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R')
+  // USDT
+  const mint2 = await raydium.token.getTokenInfo('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')
+  const clmmConfigs = await raydium.api.getClmmConfigs() // note: in devnet, remember set cluster to devent in config.ts (data from api: https://api-v3-devnet.raydium.io/main/clmm-config)
+  const dynamicFeeConfigs = await raydium.api.getClmmDynamicConfigs() // current dynamic fee config
+
+  const ammConfig = clmmConfigs[0]
+  // suggested dynamic fee config from api
+  const dynamicFee = dynamicFeeConfigs.find((c) => c.recommendConfigId.includes(ammConfig.id))
+
+  const { execute } = await raydium.clmm.createCustomizablePool({
+    programId: CLMM_PROGRAM_ID,
+    // programId: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID,
+    mint1,
+    mint2,
+    ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '', description: '' },
+    collectFeeOn: CollectFeeOn.FromInput,
+    dynamicFeeConfig: dynamicFee ? new PublicKey(dynamicFee.id) : undefined, // optional
+    initialPrice: new Decimal(1),
+    txVersion,
+    // optional: set up priority fee here
+    // computeBudgetConfig: {
+    //   units: 600000,
+    //   microLamports: 46591500,
+    // },
+  })
+  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  const { txId } = await execute({ sendAndConfirm: true })
+  console.log('clmm pool created:', { txId: `https://explorer.solana.com/tx/${txId}` })
+  process.exit() // if you don't want to end up node execution, comment this line
+}
+
+/** uncomment code below to execute */
+createCustomizablePool()

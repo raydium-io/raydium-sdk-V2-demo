@@ -1,4 +1,4 @@
-import { ApiV3PoolInfoConcentratedItem, TickUtils, PoolUtils, ClmmKeys } from '@raydium-io/raydium-sdk-v2'
+import { ApiV3PoolInfoConcentratedItem, TickUtil, LiquidityMathUtil, ClmmKeys } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
@@ -27,33 +27,52 @@ export const createPosition = async () => {
   // const rpcData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: poolInfo.id })
   // poolInfo.price = rpcData.currentPrice
 
-  const inputAmount = 0.000001 // RAY amount
+  const inputAmount = 1 // RAY amount
   const [startPrice, endPrice] = [0.000001, 100000]
 
-  const { tick: lowerTick } = TickUtils.getPriceAndTick({
-    poolInfo,
-    price: new Decimal(startPrice),
-    baseIn: true,
+  const lowerTick = TickUtil.toTickIndex(
+    TickUtil.priceToTick(new Decimal(startPrice), poolInfo.mintA.decimals, poolInfo.mintB.decimals),
+    poolInfo.config.tickSpacing,
+  )
+  const upperTick = TickUtil.toTickIndex(
+    TickUtil.priceToTick(new Decimal(endPrice), poolInfo.mintA.decimals, poolInfo.mintB.decimals),
+    poolInfo.config.tickSpacing,
+  )
+
+  const sqrtPriceCurrentX64 = TickUtil.priceToSqrtPriceX64(
+    new Decimal(poolInfo.price),
+    poolInfo.mintA.decimals,
+    poolInfo.mintB.decimals,
+  )
+  const sqrtPriceLowerX64 = TickUtil.getSqrtPriceAtTick(lowerTick)
+  const sqrtPriceUpperX64 = TickUtil.getSqrtPriceAtTick(upperTick)
+
+  console.log('Tick Lower', lowerTick)
+  console.log('Tick Upper', upperTick)
+  console.log(
+    'Price Lower',
+    TickUtil.tickToPrice(lowerTick, poolInfo.mintA.decimals, poolInfo.mintB.decimals).toFixed(6),
+  )
+  console.log(
+    'Price Upper',
+    TickUtil.tickToPrice(upperTick, poolInfo.mintA.decimals, poolInfo.mintB.decimals).toFixed(6),
+  )
+
+  const desiredAmount0 = new BN(inputAmount).mul(new BN(10).pow(new BN(poolInfo.mintA.decimals)))
+  const res = LiquidityMathUtil.getLiquidityAndAmountsFromAmount({
+    sqrtPriceCurrentX64,
+    sqrtPriceLowerX64,
+    sqrtPriceUpperX64,
+    amountInfo: {
+      type: 'amountA',
+      amount: desiredAmount0,
+    },
   })
 
-  const { tick: upperTick } = TickUtils.getPriceAndTick({
-    poolInfo,
-    price: new Decimal(endPrice),
-    baseIn: true,
-  })
-
-  const epochInfo = await raydium.fetchEpochInfo()
-  const res = await PoolUtils.getLiquidityAmountOutFromAmountIn({
-    poolInfo,
-    slippage: 0,
-    inputA: true,
-    tickUpper: Math.max(lowerTick, upperTick),
-    tickLower: Math.min(lowerTick, upperTick),
-    amount: new BN(new Decimal(inputAmount || '0').mul(10 ** poolInfo.mintA.decimals).toFixed(0)),
-    add: true,
-    amountHasFee: true,
-    epochInfo: epochInfo,
-  })
+  // Set slippage from config
+  const SLIPPAGE_BPS = 100 // 1% slippage
+  const amount0Max = res.amountA.muln(10000 + SLIPPAGE_BPS).divn(10000)
+  const amount1Max = res.amountB.muln(10000 + SLIPPAGE_BPS).divn(10000)
 
   const { execute, extInfo } = await raydium.clmm.openPositionFromBase({
     poolInfo,
@@ -64,8 +83,10 @@ export const createPosition = async () => {
     ownerInfo: {
       useSOLBalance: true,
     },
-    baseAmount: new BN(new Decimal(inputAmount || '0').mul(10 ** poolInfo.mintA.decimals).toFixed(0)),
-    otherAmountMax: res.amountSlippageB.amount,
+    liquidity: res.liquidity,
+    baseAmount: amount0Max,
+    otherAmountMax: amount1Max,
+    nft2022: true,
     txVersion,
     // optional: set up priority fee here
     computeBudgetConfig: {

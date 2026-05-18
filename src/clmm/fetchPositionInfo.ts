@@ -1,16 +1,19 @@
 import {
   CLMM_PROGRAM_ID,
   getPdaPersonalPositionAddress,
-  TickUtils,
+  TickUtil,
   ApiV3PoolInfoConcentratedItem,
   PositionUtils,
   TickArrayLayout,
   U64_IGNORE_RANGE,
   ApiV3Token,
-  PositionInfoLayout,
+  PersonalPositionLayout,
   DEVNET_PROGRAM_ID,
   Raydium,
   LockClPositionLayoutV2,
+  LiquidityMathUtil,
+  TickArrayUtil,
+  getPdaTickArrayAddress,
 } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
 import Decimal from 'decimal.js'
@@ -26,7 +29,7 @@ export const fetchPositionInfo = async ({
   notExit,
 }: {
   positionNftMint: PublicKey
-  positionData?: ReturnType<typeof PositionInfoLayout.decode>
+  positionData?: ReturnType<typeof PersonalPositionLayout.decode>
   raydium?: Raydium
   programId?: PublicKey
   isLock?: boolean
@@ -44,7 +47,7 @@ export const fetchPositionInfo = async ({
     if (!pos) {
       console.log(`${positionNftMint.toBase58()} position data not found`)
     }
-    position = PositionInfoLayout.decode(pos!.data)
+    position = PersonalPositionLayout.decode(pos!.data)
   }
 
   // code below: get all clmm position in wallet
@@ -53,56 +56,39 @@ export const fetchPositionInfo = async ({
   // if (!allPosition.length) throw new Error('use do not have position')
   // const position = allPosition[0]
 
-  let poolInfo: ApiV3PoolInfoConcentratedItem
-
-  if (raydium.cluster === 'mainnet') {
-    poolInfo = (
-      await raydium.api.fetchPoolById({ ids: position.poolId.toBase58() })
-    )[0] as ApiV3PoolInfoConcentratedItem
-  } else {
-    const data = await raydium.clmm.getPoolInfoFromRpc(position.poolId.toBase58())
-    poolInfo = data.poolInfo
-  }
-
-  const epochInfo = await raydium.connection.getEpochInfo()
+  const poolInfo = (
+    await raydium.api.fetchPoolById({ ids: position.poolId.toBase58() })
+  )[0] as ApiV3PoolInfoConcentratedItem
+  const { rpcPoolInfo } = await raydium.clmm.getPoolInfoFromRpc(position.poolId.toBase58())
 
   /** get position pooled amount and price range */
-  const priceLower = TickUtils.getTickPrice({
-    poolInfo,
-    tick: position.tickLower,
-    baseIn: true,
-  })
-  const priceUpper = TickUtils.getTickPrice({
-    poolInfo,
-    tick: position.tickUpper,
-    baseIn: true,
-  })
-  const { amountA, amountB } = PositionUtils.getAmountsFromLiquidity({
-    poolInfo,
-    ownerPosition: position,
-    liquidity: position.liquidity,
-    slippage: 0,
-    add: false,
-    epochInfo,
-  })
+  const priceLower = TickUtil.tickToPrice(position.tickLower, poolInfo.mintA.decimals, poolInfo.mintB.decimals)
+  const priceUpper = TickUtil.tickToPrice(position.tickUpper, poolInfo.mintA.decimals, poolInfo.mintB.decimals)
+
+  const sqrtPriceX64 = TickUtil.priceToSqrtPriceX64(
+    new Decimal(poolInfo.price),
+    poolInfo.mintA.decimals,
+    poolInfo.mintB.decimals,
+  )
+
+  const sqrtPriceX64A = TickUtil.getSqrtPriceAtTick(position.tickLower)
+  const sqrtPriceX64B = TickUtil.getSqrtPriceAtTick(position.tickUpper)
+
+  const { amountA, amountB } = LiquidityMathUtil.getAmountsForLiquidity(
+    sqrtPriceX64,
+    sqrtPriceX64A,
+    sqrtPriceX64B,
+    position.liquidity,
+    false,
+  )
   const [pooledAmountA, pooledAmountB] = [
-    new Decimal(amountA.amount.toString()).div(10 ** poolInfo.mintA.decimals),
-    new Decimal(amountB.amount.toString()).div(10 ** poolInfo.mintB.decimals),
+    new Decimal(amountA.toString()).div(10 ** poolInfo.mintA.decimals),
+    new Decimal(amountB.toString()).div(10 ** poolInfo.mintB.decimals),
   ]
 
   const [tickLowerArrayAddress, tickUpperArrayAddress] = [
-    TickUtils.getTickArrayAddressByTick(
-      new PublicKey(poolInfo.programId),
-      new PublicKey(poolInfo.id),
-      position.tickLower,
-      poolInfo.config.tickSpacing
-    ),
-    TickUtils.getTickArrayAddressByTick(
-      new PublicKey(poolInfo.programId),
-      new PublicKey(poolInfo.id),
-      position.tickUpper,
-      poolInfo.config.tickSpacing
-    ),
+    getTickArrayAddress({ pool: poolInfo, tickNumber: position.tickLower }),
+    getTickArrayAddress({ pool: poolInfo, tickNumber: position.tickUpper }),
   ]
 
   const tickArrayRes = await raydium.connection.getMultipleAccountsInfo([tickLowerArrayAddress, tickUpperArrayAddress])
@@ -110,13 +96,12 @@ export const fetchPositionInfo = async ({
   const tickArrayLower = TickArrayLayout.decode(tickArrayRes[0].data)
   const tickArrayUpper = TickArrayLayout.decode(tickArrayRes[1].data)
   const tickLowerState =
-    tickArrayLower.ticks[TickUtils.getTickOffsetInArray(position.tickLower, poolInfo.config.tickSpacing)]
+    tickArrayLower.ticks[TickArrayUtil.getTickOffsetInArray(position.tickLower, poolInfo.config.tickSpacing)]
   const tickUpperState =
-    tickArrayUpper.ticks[TickUtils.getTickOffsetInArray(position.tickUpper, poolInfo.config.tickSpacing)]
+    tickArrayUpper.ticks[TickArrayUtil.getTickOffsetInArray(position.tickUpper, poolInfo.config.tickSpacing)]
   const rpcPoolData = await raydium.clmm.getRpcClmmPoolInfo({ poolId: position.poolId })
-  const tokenFees = PositionUtils.GetPositionFeesV2(rpcPoolData, position, tickLowerState, tickUpperState)
-  const rewards = PositionUtils.GetPositionRewardsV2(rpcPoolData, position, tickLowerState, tickUpperState)
-
+  const tokenFees = PositionUtils.GetPositionFees(rpcPoolData, position, tickLowerState, tickUpperState)
+  const rewards = PositionUtils.GetPositionRewards(rpcPoolData, position, tickLowerState, tickUpperState)
   const [tokenFeeAmountA, tokenFeeAmountB] = [
     tokenFees.tokenFeeAmountA.gte(new BN(0)) && tokenFees.tokenFeeAmountA.lt(U64_IGNORE_RANGE)
       ? tokenFees.tokenFeeAmountA
@@ -144,7 +129,7 @@ export const fetchPositionInfo = async ({
   const poolRewardInfos = rewardInfos
     .map((r, idx) => {
       const rewardMint = poolInfo.rewardDefaultInfos.find(
-        (r) => r.mint.address === rpcPoolData.rewardInfos[idx].tokenMint.toBase58()
+        (r) => r.mint.address === rpcPoolInfo.rewardInfos[idx].mint.toBase58(),
       )?.mint
 
       if (!rewardMint) return undefined
@@ -167,8 +152,8 @@ export const fetchPositionInfo = async ({
   console.log(`${isLock ? 'Locked ' : ''}position info`, {
     pool: `${poolInfo.mintA.symbol} - ${poolInfo.mintB.symbol}`,
     nft: position.nftMint.toBase58(),
-    priceLower: priceLower.price.toString(),
-    priceUpper: priceUpper.price.toString(),
+    priceLower: priceLower.toString(),
+    priceUpper: priceUpper.toString(),
     pooledAmountA: pooledAmountA.toString(),
     pooledAmountB: pooledAmountB.toString(),
     rewardInfos: poolRewardInfos.map((r) => ({
@@ -181,3 +166,13 @@ export const fetchPositionInfo = async ({
 
 /** uncomment code below to execute */
 // fetchPositionInfo({ positionNftMint: new PublicKey('position nft mint') })
+
+const getTickArrayAddress = (props: { pool: ApiV3PoolInfoConcentratedItem; tickNumber: number }) => {
+  const startIndex = TickArrayUtil.getTickArrayStartIndex(props.tickNumber, props.pool.config.tickSpacing)
+  const { publicKey: tickArrayAddress } = getPdaTickArrayAddress(
+    new PublicKey(props.pool.programId),
+    new PublicKey(props.pool.id),
+    startIndex,
+  )
+  return tickArrayAddress
+}
