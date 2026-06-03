@@ -1,4 +1,10 @@
-import { ApiV3PoolInfoConcentratedItem, TickUtil, LiquidityMathUtil, ClmmKeys } from '@raydium-io/raydium-sdk-v2'
+import {
+  ApiV3PoolInfoConcentratedItem,
+  TickUtil,
+  LiquidityMathUtil,
+  ClmmKeys,
+  getTransferAmountFeeV2,
+} from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
 import Decimal from 'decimal.js'
@@ -59,13 +65,19 @@ export const createPosition = async () => {
   )
 
   const desiredAmount0 = new BN(inputAmount).mul(new BN(10).pow(new BN(poolInfo.mintA.decimals)))
+  const { fee = new BN(0) } = getTransferAmountFeeV2(
+    desiredAmount0,
+    poolInfo.mintA.extensions.feeConfig,
+    await raydium.fetchEpochInfo(),
+    false,
+  )
   const res = LiquidityMathUtil.getLiquidityAndAmountsFromAmount({
     sqrtPriceCurrentX64,
     sqrtPriceLowerX64,
     sqrtPriceUpperX64,
     amountInfo: {
       type: 'amountA',
-      amount: desiredAmount0,
+      amount: desiredAmount0.sub(fee),
     },
   })
 
