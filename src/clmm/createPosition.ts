@@ -81,10 +81,18 @@ export const createPosition = async () => {
     },
   })
 
+  const { amountA: calculatedAmount0, amountB: calculatedAmount1 } = LiquidityMathUtil.getAmountsForLiquidity(
+    sqrtPriceCurrentX64,
+    sqrtPriceLowerX64,
+    sqrtPriceUpperX64,
+    res.liquidity,
+    true,
+  )
+
   // Set slippage from config
   const SLIPPAGE_BPS = 100 // 1% slippage
-  const amount0Max = res.amountA.muln(10000 + SLIPPAGE_BPS).divn(10000)
-  const amount1Max = res.amountB.muln(10000 + SLIPPAGE_BPS).divn(10000)
+  const amount0Max = calculatedAmount0.muln(10000 + SLIPPAGE_BPS).divn(10000)
+  const amount1Max = calculatedAmount1.muln(10000 + SLIPPAGE_BPS).divn(10000)
 
   const { execute, extInfo } = await raydium.clmm.openPositionFromBase({
     poolInfo,
@@ -95,8 +103,8 @@ export const createPosition = async () => {
     ownerInfo: {
       useSOLBalance: true,
     },
-    liquidity: res.liquidity,
-    baseAmount: amount0Max,
+    liquidity: new BN(0), // pass 0 contract auto calculate lp by baseAmount, if pass res.liquidity contract will calculate amount by this lp
+    baseAmount: desiredAmount0, // max is input amount
     otherAmountMax: amount1Max,
     nft2022: true,
     txVersion,
