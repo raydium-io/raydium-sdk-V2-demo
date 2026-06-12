@@ -47,6 +47,7 @@ export const createPool = async () => {
     mintBAmount: new BN(100),
     startTime: new BN(0),
     feeConfig: feeConfigs[0],
+    addSupportMintExt: true, // if your 2022 mints has verified extension
     associatedOnly: false,
     ownerInfo: {
       useSOLBalance: true,

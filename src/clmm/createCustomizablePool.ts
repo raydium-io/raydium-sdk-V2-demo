@@ -28,6 +28,7 @@ export const createCustomizablePool = async () => {
     dynamicFeeConfig: dynamicFee ? new PublicKey(dynamicFee.id) : undefined, // optional
     initialPrice: new Decimal(1),
     txVersion,
+    addSupportMintExt: true, // if your 2022 mints has verified extension
     // optional: set up priority fee here
     // computeBudgetConfig: {
     //   units: 600000,
