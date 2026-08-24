@@ -1,10 +1,36 @@
-.DS_Store
+# --- Dependency and Environment ---
+# Node package manager dependencies
 node_modules/
+# macOS system files
+.DS_Store
+
+# Log and Debug files
 npm-debug.log*
 yarn-debug.log*
+yarn-debug.log.tgz # Added: A common artifact
 yarn-error.log*
+
+# --- Critical Local/Private Files ---
+# EXPLICITLY IGNORED: This file is assumed to contain sensitive data (keys/secrets) 
+# or local environment variables that must NOT be committed.
 src/config.ts
+
+# --- Build and Intermediate Files (TypeScript/JavaScript) ---
+# Compiler output directories (if tsconfig.json specifies an output folder)
+dist/
+build/
+*.js.map
+*.d.ts
+
+# Automatically generated files
 **/*.todo
+
+# --- Runtime, Test Output, and Local Data ---
+# Compiled test output files or temporary test data (not the source test files).
+# If these were source files, they should be removed from the .gitignore.
 src/test/**/*
 src/data/**/*
-src/**/*.test.ts
+
+# Explicitly exclude compiled JavaScript test files 
+# (assuming the .ts source files are intended to be included in Git)
+src/**/*.test.js
