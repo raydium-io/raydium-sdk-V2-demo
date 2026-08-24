@@ -136,6 +136,7 @@ export const createBonkMintApi = async () => {
     configInfo, // optional, sdk will get data by configId if not provided
     migrateType: newMintData.migrateType as 'amm' | 'cpmm',
     mintBDecimals: mintBInfo.decimals, // default 9
+    mintBProgram: new PublicKey(mintBInfo.programId),
 
     platformId: newMintData.platformId,
     txVersion: TxVersion.V0,

@@ -45,6 +45,7 @@ export const createMint = async () => {
     configId,
     configInfo, // optional, sdk will get data by configId if not provided
     mintBDecimals: mintBInfo.decimals, // default 9
+    mintBProgram: new PublicKey(mintBInfo.programId),
     /** default platformId is Raydium platform, you can create your platform config in ./createPlatform.ts script */
 
     // platformId: new PublicKey('your platform id'), // default RAYDIUM playform 4Bu96XjU84XjPDSpveTVf6LYGCkfW5FK7SNkREWcEfV4

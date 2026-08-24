@@ -6,6 +6,7 @@ import {
   printSimulate,
   getPdaLaunchpadPoolId,
   PlatformConfig,
+  toTransferFeeConfig,
 } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
@@ -32,6 +33,7 @@ export const sell = async () => {
   const slippage = new BN(100) // means 1%
 
   const mintInfo = await raydium.token.getTokenInfo(mintA)
+  const mintBInfo = await raydium.token.getTokenInfo(poolInfo.mintB)
   const epochInfo = await raydium.connection.getEpochInfo()
 
   const res = Curve.sellExactIn({
@@ -43,29 +45,14 @@ export const sell = async () => {
     shareFeeRate,
     creatorFeeRate: platformInfo.creatorFeeRate,
     slot: await raydium.connection.getSlot(),
-    transferFeeConfigA: mintInfo.extensions.feeConfig
-      ? {
-          transferFeeConfigAuthority: PublicKey.default,
-          withdrawWithheldAuthority: PublicKey.default,
-          withheldAmount: BigInt(0),
-          olderTransferFee: {
-            epoch: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.epoch ?? epochInfo?.epoch ?? 0),
-            maximumFee: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.maximumFee),
-            transferFeeBasisPoints: mintInfo.extensions.feeConfig.olderTransferFee.transferFeeBasisPoints,
-          },
-          newerTransferFee: {
-            epoch: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.epoch ?? epochInfo?.epoch ?? 0),
-            maximumFee: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.maximumFee),
-            transferFeeBasisPoints: mintInfo.extensions.feeConfig.newerTransferFee.transferFeeBasisPoints,
-          },
-        }
-      : undefined,
+    transferFeeConfigA: mintInfo.extensions.feeConfig ? toTransferFeeConfig(mintInfo, epochInfo.epoch) : undefined,
+    transferFeeConfigB: mintBInfo.extensions.feeConfig ? toTransferFeeConfig(mintBInfo, epochInfo.epoch) : undefined,
   })
   console.log(
     'expected out amount: ',
     res.amountB.toString(),
     'minimum out amount: ',
-    new Decimal(res.amountB.toString()).mul((10000 - slippage.toNumber()) / 10000).toFixed(0)
+    new Decimal(res.amountB.toString()).mul((10000 - slippage.toNumber()) / 10000).toFixed(0),
   )
 
   // Raydium UI usage: https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/store/useLaunchpadStore.ts#L637
@@ -73,7 +60,9 @@ export const sell = async () => {
     programId,
     mintA,
     mintAProgram: new PublicKey(mintInfo.programId),
-    // mintB, // default is sol
+    mintB: poolInfo.mintB,
+    mintBProgram: new PublicKey(mintBInfo.programId),
+    transferFeeConfigB: mintBInfo.extensions.feeConfig ? toTransferFeeConfig(mintBInfo, epochInfo.epoch) : undefined,
     poolInfo,
     configInfo: poolInfo.configInfo,
     platformFeeRate: platformInfo.feeRate,

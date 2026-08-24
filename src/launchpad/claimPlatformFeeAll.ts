@@ -67,7 +67,7 @@ export const claimPlatformFeeAll = async () => {
         const mintPriceB = cacheMintPriceB[mintBStr]
 
         const pendingClaim = new Decimal(poolInfo.platformFee.toString()).div(
-          new Decimal(10).pow(poolInfo.mintDecimalsB)
+          new Decimal(10).pow(poolInfo.mintDecimalsB),
         )
         const pendingClaimU = pendingClaim.mul(mintPriceB)
 
@@ -79,8 +79,9 @@ export const claimPlatformFeeAll = async () => {
           platformClaimFeeWallet: raydium.ownerPubKey,
           poolId: itemPool.pubkey,
 
-          mintB: NATIVE_MINT,
+          mintB: NATIVE_MINT, // or other mints as mintB
           vaultB: poolInfo.vaultB,
+          // mintBProgram: TOKEN_PROGRAM_ID, // or TOKEN_2022_PROGRAM_ID
 
           txVersion: TxVersion.V0,
           // computeBudgetConfig: {
@@ -97,7 +98,7 @@ export const claimPlatformFeeAll = async () => {
         // } catch (e: any) {
         //   console.log(e)
         // }
-      })
+      }),
     )
   }
 

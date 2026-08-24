@@ -6,6 +6,7 @@ import {
   Curve,
   PlatformConfig,
   LAUNCHPAD_PROGRAM,
+  toTransferFeeConfig,
 } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
 import BN from 'bn.js'
@@ -27,6 +28,7 @@ export const buy = async () => {
   const data = await raydium.connection.getAccountInfo(poolInfo.platformId)
   const platformInfo = PlatformConfig.decode(data!.data)
   const mintInfo = await raydium.token.getTokenInfo(mintA)
+  const mintBInfo = await raydium.token.getTokenInfo(poolInfo.mintB)
   const epochInfo = await raydium.connection.getEpochInfo()
 
   const shareFeeReceiver = undefined
@@ -41,23 +43,8 @@ export const buy = async () => {
     curveType: poolInfo.configInfo.curveType,
     shareFeeRate,
     creatorFeeRate: platformInfo.creatorFeeRate,
-    transferFeeConfigA: mintInfo.extensions.feeConfig
-      ? {
-          transferFeeConfigAuthority: PublicKey.default,
-          withdrawWithheldAuthority: PublicKey.default,
-          withheldAmount: BigInt(0),
-          olderTransferFee: {
-            epoch: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.epoch ?? epochInfo?.epoch ?? 0),
-            maximumFee: BigInt(mintInfo.extensions.feeConfig.olderTransferFee.maximumFee),
-            transferFeeBasisPoints: mintInfo.extensions.feeConfig.olderTransferFee.transferFeeBasisPoints,
-          },
-          newerTransferFee: {
-            epoch: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.epoch ?? epochInfo?.epoch ?? 0),
-            maximumFee: BigInt(mintInfo.extensions.feeConfig.newerTransferFee.maximumFee),
-            transferFeeBasisPoints: mintInfo.extensions.feeConfig.newerTransferFee.transferFeeBasisPoints,
-          },
-        }
-      : undefined,
+    transferFeeConfigA: mintInfo.extensions.feeConfig ? toTransferFeeConfig(mintInfo, epochInfo.epoch) : undefined,
+    transferFeeConfigB: mintBInfo.extensions.feeConfig ? toTransferFeeConfig(mintBInfo, epochInfo.epoch) : undefined,
     slot: await raydium.connection.getSlot(),
   })
 
@@ -67,8 +54,9 @@ export const buy = async () => {
     'minimum out amount: ',
     new Decimal(res.amountA.amount.sub(res.amountA.fee ?? new BN(0)).toString())
       .mul((10000 - slippage.toNumber()) / 10000)
-      .toFixed(0)
+      .toFixed(0),
   )
+  if (res.transferFeeB?.gtn(0)) console.log('mintB tranfer fee:', res.transferFeeB.toString())
 
   // Raydium UI usage: https://github.com/raydium-io/raydium-ui-v3-public/blob/master/src/store/useLaunchpadStore.ts#L563
   const { transaction, extInfo, execute } = await raydium.launchpad.buyToken({
@@ -76,6 +64,9 @@ export const buy = async () => {
     mintA,
     mintAProgram: new PublicKey(mintInfo.programId),
     poolInfo,
+    mintB: poolInfo.mintB,
+    mintBProgram: new PublicKey(mintBInfo.programId),
+    transferFeeConfigB: toTransferFeeConfig(mintBInfo, epochInfo.epoch),
     // mintB: poolInfo.configInfo.mintB, // optional, default is sol
     // minMintAAmount: res.amountA, // optional, default sdk will calculated by realtime rpc data
     slippage,

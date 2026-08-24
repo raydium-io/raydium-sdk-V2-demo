@@ -6,13 +6,15 @@ import { initSdk } from '../config'
 export const claimPlatformFeeFromVault = async () => {
   const raydium = await initSdk()
 
+  // const { programId } = await raydium.token.getTokenInfo('mintB')
+
   const { execute, transaction, extInfo, builder } = await raydium.launchpad.claimVaultPlatformFee({
     programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM
     platformId: new PublicKey('your platform id'),
     claimFeeWallet: new PublicKey('your platform fee wallet'),
 
-    mintB: NATIVE_MINT, // currently all mintB is WSOL
-    // mintBProgram?: TOKEN_PROGRAM_ID;
+    mintB: NATIVE_MINT, // or other mints as mintB
+    // mintBProgram: TOKEN_PROGRAM_ID, // or TOKEN_2022_PROGRAM_ID
 
     txVersion: TxVersion.V0,
     // computeBudgetConfig: {

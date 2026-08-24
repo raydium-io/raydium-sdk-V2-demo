@@ -7,6 +7,8 @@ export const claimPlatformFee = async () => {
   const raydium = await initSdk()
   const poolId = new PublicKey('pool id')
 
+  // const { programId } = await raydium.token.getTokenInfo('mintB')
+
   const { execute, transaction, extInfo, builder } = await raydium.launchpad.claimPlatformFee({
     programId: LAUNCHPAD_PROGRAM, // devnet: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM
     platformId: new PublicKey('your platform id'),
@@ -15,7 +17,7 @@ export const claimPlatformFee = async () => {
 
     // mintB: NATIVE_MINT,
     // vaultB: new PublicKey('4hovbmAKVRCyj6vmBxZ533ntnrUVGkQfwxzdxzewnR47'),
-    // mintBProgram?: PublicKey;
+    // mintBProgram: TOKEN_PROGRAM_ID, // or TOKEN_2022_PROGRAM_ID
 
     txVersion: TxVersion.V0,
     // computeBudgetConfig: {

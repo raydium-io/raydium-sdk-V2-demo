@@ -1,15 +1,17 @@
 import { TxVersion, DEVNET_PROGRAM_ID, printSimulate, LAUNCHPAD_PROGRAM } from '@raydium-io/raydium-sdk-v2'
 import { initSdk } from '../config'
-import { NATIVE_MINT, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { NATIVE_MINT, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 export const claimCreatorFee = async () => {
   const raydium = await initSdk()
 
+  // const { programId } = await raydium.token.getTokenInfo('mintB')
+
   const { transaction, execute } = await raydium.launchpad.claimCreatorFee({
     programId: DEVNET_PROGRAM_ID.LAUNCHPAD_PROGRAM,
 
-    mintB: NATIVE_MINT, // currently all launchlab pool mintB is WSOL
-    // mintBProgram: TOKEN_PROGRAM_ID,
+    mintB: NATIVE_MINT, // or other mints
+    // mintBProgram: TOKEN_PROGRAM_ID, // or TOKEN_2022_PROGRAM_ID
 
     txVersion: TxVersion.V0,
     // computeBudgetConfig: {
