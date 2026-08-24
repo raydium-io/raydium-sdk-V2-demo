@@ -13,66 +13,93 @@ import Decimal from 'decimal.js'
 import BN from 'bn.js'
 import { PublicKey } from '@solana/web3.js'
 
+/**
+ * Adds liquidity to a specified Raydium AMM pool (RAY-USDC in this example).
+ */
 export const addLiquidity = async () => {
   const raydium = await initSdk()
 
-  // RAY-USDC pool
-  const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg'
+  // Configuration for the target pool
+  const poolId = '6UmmUiYoBjSrhakAobJw8BvkmJtDVxaeBtbt7rxWo1mg' // RAY-USDC Pool ID
+  
   let poolKeys: AmmV4Keys | AmmV5Keys | undefined
-  let poolInfo: ApiV3PoolInfoStandardItem
+  let poolInfo: ApiV3PoolInfoStandardItem | undefined
 
+  // 1. Fetch Pool Information
   if (raydium.cluster === 'mainnet') {
+    // On mainnet, fetch comprehensive pool details from the Raydium API.
     const data = await raydium.api.fetchPoolById({ ids: poolId })
-    poolInfo = data[0] as ApiV3PoolInfoStandardItem
+    poolInfo = data[0]
   } else {
-    // note: getPoolInfoFromRpc method only return required pool data for computing not all detail pool info
+    // On devnet/testnet, fetch minimal pool data directly from the RPC node.
     const data = await raydium.liquidity.getPoolInfoFromRpc({ poolId })
     poolInfo = data.poolInfo
     poolKeys = data.poolKeys
   }
 
-  if (!isValidAmm(poolInfo.programId)) throw new Error('target pool is not AMM pool')
+  // Ensure pool data was successfully fetched
+  if (!poolInfo) {
+    throw new Error(`Failed to fetch pool information for ID: ${poolId}`)
+  }
 
-  const inputAmount = '1'
+  // Validate the pool type
+  if (!isValidAmm(poolInfo.programId)) {
+    throw new Error('Target pool is not a valid AMM pool.')
+  }
 
-  const r = raydium.liquidity.computePairAmount({
+  // The amount of the fixed side token (Mint A) to input (human-readable format).
+  const inputAmountHuman = '1' 
+
+  // 2. Compute the required output amount (Mint B) based on slippage
+  const computedAmounts = raydium.liquidity.computePairAmount({
     poolInfo,
-    amount: inputAmount,
-    baseIn: true,
-    slippage: new Percent(1, 100), // 1%
+    amount: inputAmountHuman,
+    baseIn: true, // Use Mint A (RAY) as the input token
+    slippage: new Percent(1, 100), // 1% maximum slippage tolerance
   })
+  
+  // Calculate the amount of Mint B required, ensuring the fixed amount is correctly scaled.
+  const amountA = new Decimal(inputAmountHuman)
+    .mul(new Decimal(10).pow(poolInfo.mintA.decimals))
+    .toFixed(0) // Scale input amount to base units
+    
+  // Calculate the maximum amount of Mint B to deposit, scaled to base units.
+  const amountBMax = new Decimal(computedAmounts.maxAnotherAmount.toExact())
+    .mul(new Decimal(10).pow(poolInfo.mintB.decimals))
+    .toFixed(0)
 
+  // 3. Prepare and Execute the Transaction
   const { execute, transaction } = await raydium.liquidity.addLiquidity({
     poolInfo,
-    poolKeys,
-    amountInA: new TokenAmount(
-      toToken(poolInfo.mintA),
-      new Decimal(inputAmount).mul(10 ** poolInfo.mintA.decimals).toFixed(0)
-    ),
-    amountInB: new TokenAmount(
-      toToken(poolInfo.mintB),
-      new Decimal(r.maxAnotherAmount.toExact()).mul(10 ** poolInfo.mintB.decimals).toFixed(0)
-    ),
-    otherAmountMin: r.minAnotherAmount,
-    fixedSide: 'a',
+    poolKeys, // Required for non-mainnet or specific logic, passed if available.
+    
+    // Amount of token A to deposit (scaled to base units)
+    amountInA: new TokenAmount(toToken(poolInfo.mintA), amountA),
+    
+    // Maximum amount of token B to deposit (scaled to base units)
+    amountInB: new TokenAmount(toToken(poolInfo.mintB), amountBMax),
+    
+    // The minimum amount of the other token (Mint B) that must be received to prevent slippage.
+    otherAmountMin: computedAmounts.minAnotherAmount,
+    
+    fixedSide: 'a', // Mint A is the fixed input amount
     txVersion,
-    // optional: set up priority fee here
+    
+    // optional: set up priority fee here (Jito tip example)
     // computeBudgetConfig: {
     //   units: 600000,
     //   microLamports: 46591500,
     // },
-
-    // optional: add transfer sol to tip account instruction. e.g sent tip to jito
-    // txTipConfig: {
-    //   address: new PublicKey('96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5'),
-    //   amount: new BN(10000000), // 0.01 sol
-    // },
   })
 
-  // don't want to wait confirm, set sendAndConfirm to false or don't pass any params to execute
+  // Execute the transaction and wait for confirmation
   const { txId } = await execute({ sendAndConfirm: true })
-  console.log('liquidity added:', { txId: `https://explorer.solana.com/tx/${txId}` })
-  process.exit() // if you don't want to end up node execution, comment this line
+  
+  console.log('Liquidity successfully added.')
+  console.log(`Transaction ID: https://explorer.solana.com/tx/${txId}`)
+  
+  // Exit the process cleanly if running as a standalone script
+  // process.exit() 
 }
 
 /** uncomment code below to execute */
