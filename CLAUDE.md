@@ -45,6 +45,7 @@ There is no test suite. Each `src/` file is an independent demo script run indiv
 - `farm/` — Staking operations
 - `grpc/` — Real-time pool subscriptions via Yellowstone gRPC
 - `cache/` — JSON file caching for pool data with TTL (default 10 min)
+- `rent/` — SIMD-0437 rent reduction: scan token accounts for excess lamports and reclaim them via `WithdrawExcessLamports`
 
 **Common script pattern**:
 ```
