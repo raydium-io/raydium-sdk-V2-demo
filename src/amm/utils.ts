@@ -7,4 +7,3 @@ const VALID_PROGRAM_ID = new Set([
   DEVNET_PROGRAM_ID.AMM_STABLE.toBase58(),
 ])
 
-export const isValidAmm = (id: string) => VALID_PROGRAM_ID.has(id)

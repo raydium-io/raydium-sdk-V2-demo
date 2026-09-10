@@ -8,3 +8,4 @@ src/config.ts
 src/test/**/*
 src/data/**/*
 src/**/*.test.ts
+raydium-sdk-V2-demo/src/config.ts
