@@ -1,4 +1,4 @@
-import { printSimulate, LimitOrderLayout } from '@raydium-io/raydium-sdk-v2'
+import { printSimulate, LimitOrderLayout, getPdaExBitmapAccount, CLMM_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
 import { initSdk, txVersion } from '../config'
 import { PublicKey } from '@solana/web3.js'
 
@@ -19,6 +19,8 @@ async function decreaseLimitOrder() {
     poolInfo,
     limitOrder,
     amount: decreaseAmount,
+    tickArrayBitmap: getPdaExBitmapAccount(CLMM_PROGRAM_ID, new PublicKey(poolInfo.id)).publicKey,
+    // tickArrayBitmap: getPdaExBitmapAccount(DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID, new PublicKey('pool id')).publicKey, // devnet
     slippage: 100,
     txVersion,
   })
