@@ -1,10 +1,23 @@
+/**
+ * Prettier configuration file for consistent code formatting.
+ * * NOTE: The 'eslintIntegration' flag has been removed as it is deprecated 
+ * in Prettier v2.0.0 and later. ESLint integration should be handled 
+ * via dedicated plugins within the ESLint configuration.
+ */
 {
-  "tabWidth": 2,
-  "useTabs": false,
-  "singleQuote": true,
-  "semi": false,
-  "bracketSpacing": true,
-  "printWidth": 120,
-  "arrowParens": "always",
-  "eslintIntegration": true
+  // Tabs and Indentation
+  "tabWidth": 2,                      // Set the size of the tab (indent) to 2 spaces.
+  "useTabs": false,                     // Use spaces instead of tabs for indentation.
+  
+  // Line Control
+  "printWidth": 120,                    // Specify the maximum line length.
+  
+  // JavaScript Specific Styles
+  "singleQuote": true,                  // Use single quotes instead of double quotes.
+  "semi": false,                        // Do not print semicolons at the end of statements.
+  "arrowParens": "always",              // Always include parentheses around a single arrow function parameter (e.g., (x) => x).
+
+  // Bracketing
+  // NOTE: 'bracketSpacing' is omitted as 'true' is the default value.
+  "trailingComma": "all"                // Print trailing commas wherever valid (recommended for diff clarity).
 }
