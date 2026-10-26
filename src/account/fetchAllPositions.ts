@@ -1,10 +1,4 @@
-import {
-  API_URLS,
-  DEV_API_URLS,
-  getCpLockPda,
-  ALL_PROGRAM_ID,
-  DEVNET_PROGRAM_ID,
-} from '@raydium-io/raydium-sdk-v2'
+import { API_URLS, DEV_API_URLS, getCpLockPda, ALL_PROGRAM_ID, DEVNET_PROGRAM_ID } from '@raydium-io/raydium-sdk-v2'
 import { PublicKey } from '@solana/web3.js'
 import { initSdk } from '../config'
 import { MintLayout, Mint } from '@solana/spl-token'
@@ -58,7 +52,7 @@ export const fetchAllPositions = async () => {
 
   // Fetch mint account info for all possible LP mints
   const mintAccountInfos = await Promise.all(
-    addressGroups.map((list) => raydium.connection.getMultipleAccountsInfo(list))
+    addressGroups.map((list) => raydium.connection.getMultipleAccountsInfo(list)),
   )
 
   // Decode and filter the fetched account data to identify actual LP mints
@@ -70,9 +64,9 @@ export const fetchAllPositions = async () => {
         // Use try-catch to safely decode in case of unexpected data
         try {
           const decoded = MintLayout.decode(accountData.data)
-          const mintData: LpMintData = { 
-            ...decoded, 
-            address: nonZeroMintAddresses[idx] // Attach the original PublicKey
+          const mintData: any = {
+            ...decoded,
+            address: nonZeroMintAddresses[idx], // Attach the original PublicKey
           }
 
           // In mainnet, only accept mints whose authority matches known Raydium authorities
@@ -90,7 +84,6 @@ export const fetchAllPositions = async () => {
     })
     .filter((d): d is LpMintData => !!d)
 
-
   // 2. QUERY POOL INFO VIA RAYDIUM API
   // Group LP mint addresses into chunks for API calls
   const lpAddressGroups: LpMintData[][] = []
@@ -102,10 +95,8 @@ export const fetchAllPositions = async () => {
   const poolResponses = await Promise.all(
     lpAddressGroups.map((list) => {
       const lpAddresses = list.map((d) => d.address.toBase58()).join(',')
-      return axios.get<{ data: any[] }>(
-        `${urlConfigs.BASE_HOST!}${urlConfigs.POOL_SEARCH_LP!}?lps=${lpAddresses}`
-      )
-    })
+      return axios.get<{ data: any[] }>(`${urlConfigs.BASE_HOST!}${urlConfigs.POOL_SEARCH_LP!}?lps=${lpAddresses}`)
+    }),
   )
 
   // Combine and structure pool data into a Map for easy lookup by LP address
@@ -121,7 +112,7 @@ export const fetchAllPositions = async () => {
   console.log('\n--- Found Raydium LP Positions ---')
   lpMintDatas.forEach((lpMintData) => {
     const pool = lpPoolsMap.get(lpMintData.address.toBase58())
-    
+
     if (!pool) return // Skip if no corresponding pool found
 
     const isCpmm = pool.programId === programId.CREATE_CPMM_POOL_PROGRAM.toBase58()
@@ -131,28 +122,21 @@ export const fetchAllPositions = async () => {
     const walletAccount = raydium.account.tokenAccounts.find((acc) => acc.mint.equals(lpMintData.address))
     const lpBalance = walletAccount?.amount ?? new BN(0)
 
-    const formattedBalance = new Decimal(lpBalance.toString())
-      .div(new Decimal(10).pow(pool.lpMint.decimals))
-      .toString()
+    const formattedBalance = new Decimal(lpBalance.toString()).div(new Decimal(10).pow(pool.lpMint.decimals)).toString()
 
-    console.log(
-      `${poolType} Pool: ${pool.mintA.symbol}-${pool.mintB.symbol} (ID: ${pool.id})`
-    )
-    console.log(
-      `  LP Mint: ${lpMintData.address.toBase58()}, Balance: ${formattedBalance}\n`
-    )
+    console.log(`${poolType} Pool: ${pool.mintA.symbol}-${pool.mintB.symbol} (ID: ${pool.id})`)
+    console.log(`  LP Mint: ${lpMintData.address.toBase58()}, Balance: ${formattedBalance}\n`)
   })
-
 
   // 4. IDENTIFY POSSIBLE LOCKED CPMM POSITIONS (NFTs)
   // Look for token accounts with a balance of 1 (potential NFTs used for locks)
   const possibleLockNFTs = raydium.account.tokenAccounts.filter(
-    (acc) => acc.amount.eq(new BN(1)) && !raydium.token.tokenMap.has(acc.mint.toBase58())
+    (acc) => acc.amount.eq(new BN(1)) && !raydium.token.tokenMap.has(acc.mint.toBase58()),
   )
 
   // Calculate the PDA for the lock account corresponding to each potential NFT
   const allPossibleLockPdas = possibleLockNFTs.map(
-    (acc) => getCpLockPda(programId.LOCK_CPMM_PROGRAM, acc.mint).publicKey
+    (acc) => getCpLockPda(programId.LOCK_CPMM_PROGRAM, acc.mint).publicKey,
   )
 
   // Chunk the PDAs for RPC call
@@ -163,13 +147,13 @@ export const fetchAllPositions = async () => {
 
   // Check the chain for accounts at these PDAs (a non-null response means a lock exists)
   const pdaCheckResponses = await Promise.all(
-    pdaCheckGroups.map((list) => raydium.connection.getMultipleAccountsInfo(list))
+    pdaCheckGroups.map((list) => raydium.connection.getMultipleAccountsInfo(list)),
   )
 
   // Filter for PDAs where an account was actually found
   const existingLockPdas = pdaCheckResponses
     .flat()
-    .map((data, idx) => data ? allPossibleLockPdas[idx] : undefined)
+    .map((data, idx) => (data ? allPossibleLockPdas[idx] : undefined))
     .filter((d): d is PublicKey => !!d) // Filter out undefined values
 
   // 5. QUERY LOCK POSITION INFO VIA RAYDIUM API
@@ -178,12 +162,10 @@ export const fetchAllPositions = async () => {
     console.log('No locked CPMM positions found.')
     return
   }
-  
+
   // Fetch details for the existing lock positions
   const lockPosResponses = await Promise.all(
-    existingLockPdas.map((pda) => 
-      axios.get(`${urlConfigs.CPMM_LOCK!}?id=${pda.toBase58()}`)
-    )
+    existingLockPdas.map((pda) => axios.get(`${urlConfigs.CPMM_LOCK!}?id=${pda.toBase58()}`)),
   )
 
   // Display lock position details
@@ -197,4 +179,4 @@ export const fetchAllPositions = async () => {
 }
 
 /** uncomment code below to execute */
-// fetchAllPositions()
+fetchAllPositions()
