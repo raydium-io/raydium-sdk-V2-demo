@@ -4,6 +4,7 @@ import {
   DEVNET_PROGRAM_ID,
   getCpmmPdaAmmConfigId,
   printSimulate,
+  FeeOn,
 } from '@raydium-io/raydium-sdk-v2'
 import BN from 'bn.js'
 import { initSdk, txVersion } from '../config'
@@ -47,6 +48,7 @@ export const createPool = async () => {
     mintBAmount: new BN(100),
     startTime: new BN(0),
     feeConfig: feeConfigs[0],
+    creatorFeeOn: FeeOn.OnlyTokenA, // optional, pass any values will initialize pool with v2 instruction, values: FeeOn.OnlyTokenA | FeeOn.OnlyTokenB | FeeOn.Both
     addSupportMintExt: true, // if your 2022 mints has verified extension
     associatedOnly: false,
     ownerInfo: {

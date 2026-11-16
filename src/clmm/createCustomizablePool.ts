@@ -18,13 +18,13 @@ export const createCustomizablePool = async () => {
   // suggested dynamic fee config from api
   const dynamicFee = dynamicFeeConfigs.find((c) => c.recommendConfigId.includes(ammConfig.id))
 
-  const { execute } = await raydium.clmm.createCustomizablePool({
+  const { execute } = await raydium.clmm.createCustomizablePoolV2({
     programId: CLMM_PROGRAM_ID,
     // programId: DEVNET_PROGRAM_ID.CLMM_PROGRAM_ID,
     mint1,
     mint2,
     ammConfig: { ...clmmConfigs[0], id: new PublicKey(clmmConfigs[0].id), fundOwner: '', description: '' },
-    collectFeeOn: CollectFeeOn.FromInput,
+    collectFeeOnMint: new PublicKey(mint1.address), // optional, default undefined = CollectFeeOn.FromInput, values should be mint1 or mint2
     dynamicFeeConfig: dynamicFee ? new PublicKey(dynamicFee.id) : undefined, // optional
     initialPrice: new Decimal(1),
     txVersion,
